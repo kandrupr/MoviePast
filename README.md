@@ -1,1 +1,1 @@
-"MovieApp" 
+MovieApp

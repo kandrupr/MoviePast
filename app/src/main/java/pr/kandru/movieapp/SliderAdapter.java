@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -20,7 +21,8 @@ public class SliderAdapter extends PagerAdapter {
     public String[] headers = {
             "Profile",
             "Tap to Start",
-            "Find "
+            "Find",
+            "About"
     };
 
     public SliderAdapter(Context context) {
@@ -35,21 +37,47 @@ public class SliderAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == (LinearLayout) object;
+        return view == object;
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.slide_main, container, false);
-        TextView header = (TextView) view.findViewById(R.id.textView);
-        header.setText(headers[position]);
+        View view;
+        TextView header;
+        switch(position) {
+            case 0:
+                view = layoutInflater.inflate(R.layout.slide_main, container, false);
+                header = (TextView) view.findViewById(R.id.textCommand);
+                break;
+            case 1:
+                view = layoutInflater.inflate(R.layout.slide_main, container, false);
+                header = (TextView) view.findViewById(R.id.textCommand);
+
+                break;
+            case 2:
+                view = layoutInflater.inflate(R.layout.slide_search, container, false);
+                //header = (TextView) view.findViewById(R.id.textCommand);
+
+                break;
+            case 3:
+                view = layoutInflater.inflate(R.layout.slide_main, container, false);
+                header = (TextView) view.findViewById(R.id.textCommand);
+
+                break;
+            default:
+                view = layoutInflater.inflate(R.layout.slide_main, container, false);
+                header = (TextView) view.findViewById(R.id.textCommand);
+                break;
+        }
+        //header.setText(headers[position]);
         container.addView(view);
         return view;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((LinearLayout) object);
+        container.removeView((View) object);
     }
+
 }

@@ -1,8 +1,10 @@
 package pr.kandru.movieapp;
 
+import android.content.pm.ActivityInfo;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         slideViewPager = (ViewPager) findViewById(R.id.slideLayout);
@@ -23,4 +26,11 @@ public class MainActivity extends AppCompatActivity {
         slideViewPager.setCurrentItem(1);
     }
 
+    public void scrolltoProfile(View v) {
+        slideViewPager.setCurrentItem(0);
+    }
+
+    public void scrolltoSearch(View v) {
+        slideViewPager.setCurrentItem(2);
+    }
 }

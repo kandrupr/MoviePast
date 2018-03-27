@@ -6,30 +6,65 @@
     android:background="@color/colorPrimary">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/nav_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:orientation="horizontal">
+        android:layout_weight="2.5">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="@color/colorWhite"/>
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/accountImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="50dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/account_button"
+            android:onClick="scrolltoProfile"
+            android:scaleX="2"
+            android:scaleY="2"
+            app:srcCompat="@drawable/account_white" />
+
+        <ImageButton
+            android:id="@+id/searchImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="50dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/search_button"
+            android:onClick="scrolltoSearch"
+            android:scaleX="2"
+            android:scaleY="2"
+            app:srcCompat="@drawable/search_white" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
 
+        <TextView
+            android:id="@+id/textCommand"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/voiceButton"
+            android:layout_alignParentTop="true"
+            android:fontFamily="@font/archivo_narrow_bold"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp" />
+
         <ImageButton
-            android:id="@+id/popcornButton"
+            android:id="@+id/voiceButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
             android:contentDescription="@string/voice_button"
             app:srcCompat="@drawable/popcorn" />
     </RelativeLayout>

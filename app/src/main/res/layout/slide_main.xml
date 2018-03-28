@@ -10,7 +10,8 @@
         android:id="@+id/nav_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2.5">
+        android:layout_weight="2.5"
+        android:onClick="scrollToProfile">
 
         <ImageButton
             android:id="@+id/accountImage"
@@ -21,7 +22,7 @@
             android:layout_marginStart="50dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/account_button"
-            android:onClick="scrolltoProfile"
+            android:onClick="scrollToProfile"
             android:scaleX="2"
             android:scaleY="2"
             app:srcCompat="@drawable/account_white" />
@@ -35,7 +36,7 @@
             android:layout_marginEnd="50dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/search_button"
-            android:onClick="scrolltoSearch"
+            android:onClick="scrollToSearch"
             android:scaleX="2"
             android:scaleY="2"
             app:srcCompat="@drawable/search_white" />

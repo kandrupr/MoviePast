@@ -3,7 +3,6 @@ package pr.kandru.movieapp;
 import android.content.Context;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +65,7 @@ public class SliderAdapter extends PagerAdapter {
                 header = (TextView) view.findViewById(R.id.textCommand);
                 break;
             case 2:
-                view = layoutInflater.inflate(R.layout.slide_search, container, false);
+                view = layoutInflater.inflate(R.layout.slide_find, container, false);
                 header = (TextView) view.findViewById(R.id.searchHeader);
                 header.setText(headers[position]);
                 break;
@@ -99,6 +98,7 @@ public class SliderAdapter extends PagerAdapter {
             }
         };
         h.postDelayed(updateTask,2000);
+
     }
 
     private void changeText(){

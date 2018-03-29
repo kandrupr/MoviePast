@@ -67,6 +67,7 @@
             android:layout_centerVertical="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/voice_button"
+            android:onClick="onStartListening"
             app:srcCompat="@drawable/popcorn" />
     </RelativeLayout>
 

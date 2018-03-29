@@ -4,4 +4,26 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
+    <EditText
+        android:id="@+id/textInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_button"
+        android:inputType="text"
+        android:textColor="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/buttonSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textInput"
+        android:onClick="onSearch" />
+
+    <TextView
+        android:id="@+id/textOutput"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/colorWhite"
+        android:layout_below="@id/buttonSearch"/>
+
 </RelativeLayout>

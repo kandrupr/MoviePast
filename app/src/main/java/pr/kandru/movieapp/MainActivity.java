@@ -12,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     private ViewPager slideViewPager;
     private LinearLayout dotLayout;
+    private ImageView[] dots;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     private SliderAdapter slider;
     private ImageButton listenButton;
-    private TextView resultTextView;
+    //private TextView resultTextView;
     private AIService aiService;
 
     @Override
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
                 } else {
                     slider.endHandler();
                 }
+                createDots(position);
             }
 
             @Override
@@ -67,13 +71,15 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         });
 
         listenButton = (ImageButton) findViewById(R.id.voiceButton);
-        resultTextView = (TextView) findViewById(R.id.resultTextView);
+        //resultTextView = (TextView) findViewById(R.id.resultTextView);
         final AIConfiguration config = new AIConfiguration(getString(R.string.DialogFlowAPI),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
         aiService = AIService.getService(this, config);
         aiService.setListener(this);
+
+        createDots(1);
     }
 
     public void scrollToProfile(View v) { slideViewPager.setCurrentItem(0); }
@@ -108,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         }
 
         // Show results in TextView.
-        resultTextView.setText("Query:" + result.getResolvedQuery() +
+        Log.e("RESULT: ", "Query:" + result.getResolvedQuery() +
                 "\nAction: " + result.getAction() +
                 "\nParameters: " + parameterString);
     }
@@ -121,13 +127,37 @@ public class MainActivity extends AppCompatActivity implements AIListener{
                 permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 break;
         }
-        if (!permissionToRecordAccepted ){};
+        if (!permissionToRecordAccepted ){
+            //TODO: Toast and fix logic;
+        }
 
+    }
+
+    private void createDots(int pos) {
+        int size = slider.getHeaders().length;
+        if(dotLayout != null) {
+            dotLayout.removeAllViews();
+        }
+
+        dots = new ImageView[size];
+        for(int i =0; i < size; i++) {
+            dots[i] = new ImageView(this);
+
+            if(i == pos) {
+                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.active_dots));
+            } else {
+                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_dots));
+            }
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(4,0,4,0);
+            dotLayout.addView(dots[i],params);
+        }
     }
 
     @Override
     public void onError(AIError error) {
-        resultTextView.setText(error.toString());
+        Log.e("ERROR: ", error.toString());
     }
 
     @Override

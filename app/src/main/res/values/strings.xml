@@ -3,4 +3,5 @@
     <string name="voice_button">PopcornButton</string>
     <string name="account_button">Profile</string>
     <string name="search_button">Search</string>
+    <string name="help_button">Help</string>
 </resources>

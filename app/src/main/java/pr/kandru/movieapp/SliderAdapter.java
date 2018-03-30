@@ -115,4 +115,8 @@ public class SliderAdapter extends PagerAdapter {
             updateTask = null;
         }
     }
+
+    public String[] getHeaders() {
+        return headers;
+    }
 }

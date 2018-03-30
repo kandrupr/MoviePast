@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pr.kandru.movieapp.MainActivity">
+    tools:context="pr.kandru.movieapp.MainActivity"
+    android:background="@color/colorPrimary">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/slideLayout"
@@ -13,19 +14,33 @@
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
-    <LinearLayout
-        android:id="@+id/dotsLayout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="8"
-        android:background="@color/colorWhite"
-        android:orientation="horizontal">
+        android:layout_weight="6">
 
-        <TextView
-            android:id="@+id/resultTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/helpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="50dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/help_button"
+            app:srcCompat="@drawable/help_white" />
+
+        <LinearLayout
+            android:id="@+id/dotsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </RelativeLayout>
+
 </LinearLayout>

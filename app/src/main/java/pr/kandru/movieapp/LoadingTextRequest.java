@@ -19,7 +19,7 @@ import ai.api.model.AIResponse;
  * Created by pkkan on 3/28/2018.
  */
 
-public class Loading extends AppCompatActivity {
+public class LoadingTextRequest extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

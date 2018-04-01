@@ -1,11 +1,9 @@
 package pr.kandru.movieapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -26,7 +24,7 @@ public class SearchActivity extends AppCompatActivity {
         String result = text.getText().toString();
 
         if (!result.matches("")) {
-            Intent intent = new Intent(getBaseContext(), Loading.class);
+            Intent intent = new Intent(getBaseContext(), LoadingTextRequest.class);
             intent.putExtra("QUERY", result);
             startActivity(intent);
             finish();

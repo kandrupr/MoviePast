@@ -18,8 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchActivity"></activity>
-        <activity android:name=".Loading"></activity>
+        <activity android:name=".LoadingTextRequest"></activity>
         <activity android:name=".Results"></activity>
+        <activity android:name=".LoadingAPIRequest" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

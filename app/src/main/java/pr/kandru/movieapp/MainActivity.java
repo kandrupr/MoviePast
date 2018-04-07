@@ -16,19 +16,21 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.JsonElement;
+
+import java.util.Map;
 
 import ai.api.AIListener;
 import ai.api.android.AIConfiguration;
 import ai.api.android.AIService;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
+import ai.api.model.Metadata;
 import ai.api.model.Result;
-import com.google.gson.JsonElement;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements AIListener{
-
     private ViewPager slideViewPager;
     private LinearLayout dotLayout;
     private ImageView[] dots;
@@ -37,10 +39,11 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
 
-    private SliderAdapter slider;
+    private SliderAdapter mSlider;
     private ImageButton listenButton;
     //private TextView resultTextView;
     private AIService aiService;
+    private DialogFlowParser mParser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         setContentView(R.layout.activity_main);
         slideViewPager = (ViewPager) findViewById(R.id.slideLayout);
         dotLayout = (LinearLayout) findViewById(R.id.dotsLayout);
-        slider = new SliderAdapter(this);
-        slideViewPager.setAdapter(slider);
+        mSlider = new SliderAdapter(this);
+        slideViewPager.setAdapter(mSlider);
         slideViewPager.setCurrentItem(1);
         slideViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -59,9 +62,9 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             @Override
             public void onPageSelected(int position) {
                 if(slideViewPager.getCurrentItem() == 2) {
-                    slider.createHandler();
+                    mSlider.createHandler();
                 } else {
-                    slider.endHandler();
+                    mSlider.endHandler();
                 }
                 createDots(position);
             }
@@ -104,19 +107,42 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     @Override
     public void onResult(AIResponse response) {
         Result result = response.getResult();
-
-        // Get parameters
-        String parameterString = "";
-        if (result.getParameters() != null && !result.getParameters().isEmpty()) {
-            for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
-                parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
-            }
+        mParser = new DialogFlowParser(getApplicationContext(), result);
+        /*
+        final Metadata metadata =  result.getMetadata();
+        String intent = metadata.getIntentName();
+        if(intent == "Fallback") {
+            Toast toast = Toast.makeText(getApplicationContext(), intent, Toast.LENGTH_LONG);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(), intent, Toast.LENGTH_LONG);
+            toast.show();
         }
-
+        */
+        Log.e("RESULT: ", result.toString());
+        if(mParser.getIntent() == "Fallback") {
+            Log.i("RESULT: ", "TOAST");
+            Toast toast = Toast.makeText(getApplicationContext(), "Didn't quite catch that. Try again!", Toast.LENGTH_LONG);
+            toast.show();
+        } else {
+            /*
+            String parameterString = "";
+            if (result.getParameters() != null && !result.getParameters().isEmpty()) {
+                for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
+                    parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
+                }
+            }
+            */
+            Log.d("INTENT ", result.getMetadata().getIntentName().toString());
+            Log.d("RESULT ", result.getParameters().toString());
+        }
         // Show results in TextView.
+        /*
         Log.e("RESULT: ", "Query:" + result.getResolvedQuery() +
                 "\nAction: " + result.getAction() +
                 "\nParameters: " + parameterString);
+                */
+
     }
 
     @Override
@@ -134,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     }
 
     private void createDots(int pos) {
-        int size = slider.getHeaders().length;
+        int size = mSlider.getHeaders().length;
         if(dotLayout != null) {
             dotLayout.removeAllViews();
         }
@@ -150,14 +176,15 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             }
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(4,0,4,0);
+            params.setMargins(8,0,8,0);
             dotLayout.addView(dots[i],params);
         }
     }
 
     @Override
     public void onError(AIError error) {
-        Log.e("ERROR: ", error.toString());
+        Toast toast = Toast.makeText(getApplicationContext(), "Didn't quite catch that. Try again!", Toast.LENGTH_LONG);
+        toast.show();
     }
 
     @Override
@@ -167,7 +194,19 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     @Override
     public void onListeningStarted() {
+/*
+fading animation
+final Animation in = new AlphaAnimation(0.0f, 1.0f);
+in.setDuration(3000);
 
+final Animation out = new AlphaAnimation(1.0f, 0.0f);
+out.setDuration(3000);
+
+AnimationSet as = new AnimationSet(true);
+as.addAnimation(out);
+in.setStartOffset(3000);
+as.addAnimation(in);
+*/
     }
 
     @Override

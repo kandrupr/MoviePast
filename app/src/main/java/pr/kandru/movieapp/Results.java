@@ -1,6 +1,5 @@
 package pr.kandru.movieapp;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,13 +19,19 @@ import org.json.JSONObject;
 public class Results extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_layout);
 
         String url = "https://api.themoviedb.org/3/movie/upcoming?api_key=c67800592cc9f12da208901fb31247fd&language=en-US&page=1";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+        JsonObjectRequest jsonObjectRequest = createObject(url);
+// Access the RequestQueue through your singleton class.
+        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+    }
+
+    private JsonObjectRequest createObject(String url) {
+        return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -40,7 +45,5 @@ public class Results extends AppCompatActivity {
 
                     }
                 });
-// Access the RequestQueue through your singleton class.
-        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
     }
 }

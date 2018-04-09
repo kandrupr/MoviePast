@@ -107,7 +107,12 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     @Override
     public void onResult(AIResponse response) {
         Result result = response.getResult();
-        mParser = new DialogFlowParser(getApplicationContext(), result);
+        //mParser = new DialogFlowParser(getApplicationContext(), result);
+        Boolean cat = result.getParameters().containsKey("Title");
+        Log.e("INTENT ", cat.toString());
+        Log.e("INTENT NAME ", result.getMetadata().getIntentName().toString());
+
+
         /*
         final Metadata metadata =  result.getMetadata();
         String intent = metadata.getIntentName();
@@ -119,23 +124,26 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             toast.show();
         }
         */
-        Log.e("RESULT: ", result.toString());
+        // Log.d("INTENT ", result.getMetadata().getIntentName().toString());
+/*
         if(mParser.getIntent() == "Fallback") {
             Log.i("RESULT: ", "TOAST");
             Toast toast = Toast.makeText(getApplicationContext(), "Didn't quite catch that. Try again!", Toast.LENGTH_LONG);
             toast.show();
         } else {
-            /*
+
             String parameterString = "";
             if (result.getParameters() != null && !result.getParameters().isEmpty()) {
                 for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
                     parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
                 }
             }
-            */
-            Log.d("INTENT ", result.getMetadata().getIntentName().toString());
-            Log.d("RESULT ", result.getParameters().toString());
+
+             Log.d("INTENT ", result.getMetadata().getIntentName().toString());
+             Log.d("RESULT ", result.getParameters().toString());
+             Log.d("RESULT ", Boolean.toString(mParser.getParams().isJsonNull()));
         }
+        */
         // Show results in TextView.
         /*
         Log.e("RESULT: ", "Query:" + result.getResolvedQuery() +

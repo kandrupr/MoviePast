@@ -50,8 +50,8 @@ public class DialogFlowParser {
                 year = params.get("Year").toString();
                 break;
             case "Movie":
-                title = params.get("Title").toString();
-                if(title != ""){
+                JsonElement dog  = params.get("Title"); /////////////
+                if(dog.isJsonNull()){
                     //FAIL
                 } else {
                     type = params.get("Type").toString().toLowerCase();

@@ -31,4 +31,6 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     annotationProcessor 'org.apache.logging.log4j:log4j-core:2.2'
     compile 'com.android.volley:volley:1.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+
 }

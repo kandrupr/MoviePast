@@ -1,6 +1,7 @@
 package pr.kandru.movieapp;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,70 +35,148 @@ public class DialogFlowParser {
         return metadata.getIntentName();
     }
 
-    public JsonObject getParams() {
+    public JsonObject getURL() {
         String intent = getIntent();
         HashMap<String, JsonElement> params = json.getParameters();
-        String descriptor, type, year, title, genre;
+        String descriptor, type, year, title, genre, name;
         JsonObject val = new JsonObject();
         switch(intent) {
             case "Descriptor":
-                descriptor = params.get("Descriptor").toString().toLowerCase();
-                type = params.get("Type").toString().toLowerCase();
+                if(params.containsKey("Descriptor") && params.containsKey("Type")) {
+                    descriptor = params.get("Descriptor").toString().replace("\"", "").toLowerCase();
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    // BUILD URL
+                } else {
+                    // ERROR
+                }
                 break;
             case "DescriptorByYear":
-                descriptor = params.get("Descriptor").toString().toLowerCase();
-                type = params.get("Type").toString().toLowerCase();
-                year = params.get("Year").toString();
+                if(params.containsKey("Descriptor") && params.containsKey("Type") && params.containsKey("Year")) {
+                    descriptor = params.get("Descriptor").toString().replace("\"", "").toLowerCase();
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    year = params.get("Year").toString().replace("\"", "");
+                    // BUILD URL
+                } else {
+                    // ERROR
+                }
                 break;
             case "Movie":
-                JsonElement dog  = params.get("Title"); /////////////
-                if(dog.isJsonNull()){
-                    //FAIL
+                if(params.containsKey("Title") && params.containsKey("Type")) {
+                    title  = params.get("Title").toString().replace("\"", "");
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    // BUILD URL
+                } else if(params.containsKey("Title")){
+                    title  = params.get("Title").toString().replace("\"", "");
+                    // BUILD URL MULTI?
                 } else {
-                    type = params.get("Type").toString().toLowerCase();
+                    // FAIL
                 }
                 break;
             case "MovieGenre":
-                if(params.size() == 3) {
-                    genre = params.get("MovieGenre").toString();
-                    type = params.get("Type").toString().toLowerCase();
-                    year = params.get("Year").toString();
-
+                if(params.containsKey("MovieGenre") && params.containsKey("Type") && params.containsKey("Year")) {
+                    genre = params.get("MovieGenre").toString().replace("\"", "");
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    year = params.get("Year").toString().replace("\"", "");
+                    // BUILD URL
+                } else if(params.containsKey("MovieGenre") && params.containsKey("Type")) {
+                    genre = params.get("MovieGenre").toString().replace("\"", "");
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    // BUILD URL
                 } else {
-                    genre = params.get("MovieGenre").toString();
-                    type = params.get("Type").toString().toLowerCase();
+                    // FAIL
                 }
                 break;
             case "Person":
+                name = checkPerson(params);
+                if(!name.equals("fail")) {
+                    // BUILD URL
+                } else {
+                    // FAIL
+                }
                 break;
             case "PersonForm":
+                name = checkPerson(params);
+                if(!name.equals("fail")) {
+                    if(params.containsKey("Type")) {
+                        type = params.get("Type").toString().replace("\"", "");
+                    } else {
+                        // FAIL
+                    }
+                } else {
+                    // FAIL
+                }
                 break;
             case "TVShowGenre":
-                if(params.size() == 3) {
-                    genre = params.get("TVGenre").toString();
-                    type = params.get("Type").toString().toLowerCase();
-                    year = params.get("Year").toString();
-
+                if(params.containsKey("TVGenre") && params.containsKey("Type") && params.containsKey("Year")) {
+                    genre = params.get("TVGenre").toString().replace("\"", "");
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    year = params.get("Year").toString().replace("\"", "");
+                    // BUILD URL
+                } else if (params.containsKey("MovieGenre") && params.containsKey("Type")) {
+                    genre = params.get("TVGenre").toString().replace("\"", "");
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    // BUILD URL
                 } else {
-                    genre = params.get("TVGenre").toString();
-                    type = params.get("Type").toString().toLowerCase();
+                    // FAIL
                 }
                 break;
             case "TVShows":
+                if(params.containsKey("TVShow") && params.containsKey("Type")) {
+                    title  = params.get("TVShow").toString().replace("\"", "");
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    // BUILD URL
+                } else if(params.containsKey("TVShow")){
+                    title  = params.get("TVShow").toString().replace("\"", "");
+                    // BUILD URL MULTI?
+                } else {
+                    // FAIL
+                }
                 break;
             case "WithTitle":
-                title = params.get("Title").toString().toLowerCase();
-                type = params.get("Type").toString().toLowerCase();
-
-                if(title != "" || type != ""){
-                    //FAIL
+                if(params.containsKey("Title") && params.containsKey("Type")){
+                    title = params.get("Title").toString().replace("\"", "");
+                    type = params.get("Type").toString().replace("\"", "").toLowerCase();
+                    // BUILD URL
+                } else if(params.containsKey("Title")){
+                    title = params.get("Title").toString().replace("\"", "");
+                    // BUILD URL MULTI
                 } else {
-                    //PASS
+                    // FAIL
                 }
                 break;
             default:
+                // FAIL
                 break;
         }
         return val;
+    }
+
+    private String checkPerson(HashMap<String, JsonElement> params) {
+        String name;
+        if(params.containsKey("Person")) {
+            JsonElement person = params.get("Person");
+            if(person.isJsonObject()) {
+                JsonObject obj = person.getAsJsonObject();
+                if (obj.has("First") && obj.has("Last")) {
+                    name = obj.get("First").toString().replace("\"", "") + " " + obj.get("Last").toString().replace("\"", "");//name += ;
+                    Log.d("CLUTCH", name);
+                    Log.d("CLUTC", "POG");
+
+                    return "name";
+                } else if (obj.has("First")) {
+                    name = obj.get("First").toString().replace("\"", "");
+                    Log.d("HARD", name);
+                    return name;
+                } else {
+                    return "fail";
+                }
+            } else {
+                name = params.get("Person").toString().replace("\"", "");
+                Log.d("REG", name);
+                return name;
+            }
+        } else {
+            return "fail";
+        }
     }
 }

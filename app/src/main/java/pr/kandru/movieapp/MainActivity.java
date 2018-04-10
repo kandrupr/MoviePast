@@ -107,11 +107,11 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     @Override
     public void onResult(AIResponse response) {
         Result result = response.getResult();
-        //mParser = new DialogFlowParser(getApplicationContext(), result);
+        mParser = new DialogFlowParser(getApplicationContext(), result);
         Boolean cat = result.getParameters().containsKey("Title");
-        Log.e("INTENT ", cat.toString());
-        Log.e("INTENT NAME ", result.getMetadata().getIntentName().toString());
-
+        Log.d("INTENT ", cat.toString());
+        Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
+        mParser.getURL();
 
         /*
         final Metadata metadata =  result.getMetadata();

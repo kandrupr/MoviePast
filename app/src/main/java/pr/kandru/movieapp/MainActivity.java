@@ -108,48 +108,10 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     public void onResult(AIResponse response) {
         Result result = response.getResult();
         mParser = new DialogFlowParser(getApplicationContext(), result);
-        Boolean cat = result.getParameters().containsKey("Title");
-        Log.d("INTENT ", cat.toString());
-        Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
+        // Boolean cat = result.getParameters().containsKey("Title");
+        // Log.d("INTENT ", cat.toString());
+        // Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
         mParser.getURL();
-
-        /*
-        final Metadata metadata =  result.getMetadata();
-        String intent = metadata.getIntentName();
-        if(intent == "Fallback") {
-            Toast toast = Toast.makeText(getApplicationContext(), intent, Toast.LENGTH_LONG);
-            toast.show();
-        } else {
-            Toast toast = Toast.makeText(getApplicationContext(), intent, Toast.LENGTH_LONG);
-            toast.show();
-        }
-        */
-        // Log.d("INTENT ", result.getMetadata().getIntentName().toString());
-/*
-        if(mParser.getIntent() == "Fallback") {
-            Log.i("RESULT: ", "TOAST");
-            Toast toast = Toast.makeText(getApplicationContext(), "Didn't quite catch that. Try again!", Toast.LENGTH_LONG);
-            toast.show();
-        } else {
-
-            String parameterString = "";
-            if (result.getParameters() != null && !result.getParameters().isEmpty()) {
-                for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
-                    parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
-                }
-            }
-
-             Log.d("INTENT ", result.getMetadata().getIntentName().toString());
-             Log.d("RESULT ", result.getParameters().toString());
-             Log.d("RESULT ", Boolean.toString(mParser.getParams().isJsonNull()));
-        }
-        */
-        // Show results in TextView.
-        /*
-        Log.e("RESULT: ", "Query:" + result.getResolvedQuery() +
-                "\nAction: " + result.getAction() +
-                "\nParameters: " + parameterString);
-                */
 
     }
 

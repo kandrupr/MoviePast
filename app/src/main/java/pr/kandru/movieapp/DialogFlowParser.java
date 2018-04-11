@@ -38,14 +38,14 @@ public class DialogFlowParser {
         HashMap<String, JsonElement> params = json.getParameters();
         String result, name;
         JsonObject val = new JsonObject();
-        URLBuilder builder = new URLBuilder();
+        URLBuilder builder = new URLBuilder(c);
         HashMap<String, String> info = new HashMap<String, String>();
         switch(this.intent) {
             case "Descriptor":
                 if(params.containsKey("Descriptor") && params.containsKey("Type")) {
                     info.put("Descriptor", params.get("Descriptor").toString().replace("\"", "").toLowerCase());
                     info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
-                    result = builder.build(info, this.intent);
+                    result = builder.buildDescriptor(info);
                 } else {
                     result = "fail";
                 }
@@ -55,7 +55,7 @@ public class DialogFlowParser {
                     info.put("Descriptor", params.get("Descriptor").toString().replace("\"", "").toLowerCase());
                     info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
                     info.put("Year", params.get("Year").toString().replace("\"", ""));
-                    result = builder.build(info, this.intent);
+                    result = builder.buildDescriptorByYear(info);
                 } else {
                     result = "fail";
                 }

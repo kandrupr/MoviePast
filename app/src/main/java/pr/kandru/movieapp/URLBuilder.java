@@ -1,5 +1,8 @@
 package pr.kandru.movieapp;
 
+import android.content.Context;
+
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -8,7 +11,7 @@ import java.util.HashMap;
 
 public class URLBuilder {
     private final String tmdbUrl = "https://api.themoviedb.org/3/";
-    private final String apiKey = "?api_key=" + R.string.TMDBAPI;
+    private String apiKey;
     private final String ending = "&language=en-US&page=1";
     final HashMap<String, String> tvGenre = new HashMap<String, String>()
     {{
@@ -16,7 +19,6 @@ public class URLBuilder {
         put("Documentary","99"); put("Drama","18"); put("Family","10751"); put("Kids","10762"); put("Mystery","9648");
         put("News","10763"); put("Reality","10764"); put("Sci-Fi & Fantasy","10765"); put("Soap","10766"); put("Talk","10767");
         put("War & Politics","10768"); put("Western","37");
-
     }};
 
     final HashMap<String, String> movieGenre = new HashMap<String, String>()
@@ -25,41 +27,86 @@ public class URLBuilder {
         put("Documentary","99"); put("Drama","18"); put("Family","10751"); put("Fantasy","14"); put("History","36");
         put("Horror","27"); put("Music","10402"); put("Mystery","9648"); put("Romance","10749");put("Science Fiction","878");
         put("TV Movie","10770"); put("Thriller","53"); put("War","10752"); put("Western","37");
-
     }};
 
-    public URLBuilder() {}
+    private final Context c;
 
-    public String build(HashMap<String, String> params, String intent) {
+    public URLBuilder(Context c) {
+        this.c = c;
+        this.apiKey = "&api_key=" + c.getString(R.string.TMDBAPI);
+    }
+
+    public String buildDescriptor(HashMap<String, String> params) {
         String url = tmdbUrl;
-        switch(intent) {
-            case("Descriptor"):
-                if(params.get("Type").equals("tv") && params.get("Descriptor").equals("upcoming")) {
-                    url = "fail";
-                } else {
-                    url += params.get("Type") + "/" + params.get("Descriptor") + apiKey + ending;
-                }
-            case("DescriptorByYear"):
-                if(params.get("Type").equals("tv")) {
-                    String desc = getDiscoverDescriptor(params.get("Descriptor"));
-                } else {
-                    // MOVIE
-                }
-                break;
-            default:
-                url = "fail";
-                break;
+        if(params.get("Type").equals("tv") && params.get("Descriptor").equals("upcoming")) {
+            url = "invalid";
+        } else {
+            url += params.get("Type") + "/" + params.get("Descriptor") + apiKey + ending;
         }
         return url;
     }
 
-    private String getDiscoverDescriptor(String desc) {
-        if(desc.equals("upcoming")) {
-            return "";
-        } else if(desc.equals("popular")) {
-            return "";
+    public String buildDescriptorByYear(HashMap<String, String> params) {
+    // &region=US&sort_by=vote_average.desc&page=1&primary_release_year=2017&vote_count.gte=50&language=en-US
+        String url = tmdbUrl + "discover/";
+        String desc = params.get("Descriptor");
+        String year = params.get("Year");
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int day = Calendar.getInstance().get(Calendar.MONTH);
+
+        if(params.get("Type").equals("tv")) {
+            // TV
+            url += "tv/" + apiKey;
+            if(desc.equals("upcoming")) {
+                if(Integer.parseInt(year) == Calendar.getInstance().get(Calendar.YEAR)) {
+                    url += "&first_air_date.gte=" + year + "-1-1&first_air_date.lte=" + year + "-12-31&with_original_language=en" + ending;
+                } else {
+                    url = "invalid";
+                }
+            } else if(desc.equals("popular")) {
+                if(Integer.parseInt(year) >= Calendar.getInstance().get(Calendar.YEAR)){
+                    url += "&sort_by=popularity.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year +"-12-31&vote_count.gte=50&with_original_language=en" + ending;
+                } else {
+                    url = "invalid";
+                }
+            } else {
+                if(Integer.parseInt(year) >= Calendar.getInstance().get(Calendar.YEAR)){
+                    url += "&sort_by=vote_average.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year +"-12-31&vote_count.gte=50&with_original_language=en" + ending;
+                } else {
+                    url = "invalid";
+                }
+            }
         } else {
-            return "";
+            url += "movie/" + apiKey;
+            if(desc.equals("upcoming")) {
+                if(Integer.parseInt(year) < Calendar.getInstance().get(Calendar.YEAR)) {
+                    url = "invalid";
+                } else {
+                    // &primary_release_date.gte=2018-9-15&primary_release_date.lte=2018-10-15&language=en-US&region=US&page=1
+                    url += "&region=US&primary_release_date.gte=" + year + "-" + month + "-" + day + "primary_release_date.lte=" + year + "-12-31" + ending;
+                }
+            } else if(desc.equals("popular")) {
+                if(Integer.parseInt(year) > Calendar.getInstance().get(Calendar.YEAR)){
+                    url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year + ending;
+                } else {
+                    url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year + "&vote_count.gte=50" + ending;
+                }
+            } else {
+                if(Integer.parseInt(year) > Calendar.getInstance().get(Calendar.YEAR)){
+                    url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year + ending;
+                } else {
+                    url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year + "&vote_count.gte=50" + ending;
+                }
+            }
         }
+        return url;
+    }
+
+    public String build(HashMap<String, String> info, String intent) {
+        return "";
+    }
+
+    public String getApiKey() {
+        return apiKey;
     }
 }

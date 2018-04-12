@@ -2,6 +2,8 @@ package pr.kandru.movieapp;
 
 import android.content.Context;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -33,7 +35,7 @@ public class URLBuilder {
 
     public URLBuilder(Context c) {
         this.c = c;
-        this.apiKey = "&api_key=" + c.getString(R.string.TMDBAPI);
+        this.apiKey = "?api_key=" + c.getString(R.string.TMDBAPI);
     }
 
     public String buildDescriptor(HashMap<String, String> params) {
@@ -52,53 +54,86 @@ public class URLBuilder {
         String desc = params.get("Descriptor");
         String year = params.get("Year");
         int month = Calendar.getInstance().get(Calendar.MONTH);
-        int day = Calendar.getInstance().get(Calendar.MONTH);
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
         if(params.get("Type").equals("tv")) {
             // TV
-            url += "tv/" + apiKey;
+            url += "tv" + apiKey;
             if(desc.equals("upcoming")) {
-                if(Integer.parseInt(year) == Calendar.getInstance().get(Calendar.YEAR)) {
+                if(Integer.parseInt(year) == currentYear) {
                     url += "&first_air_date.gte=" + year + "-1-1&first_air_date.lte=" + year + "-12-31&with_original_language=en" + ending;
                 } else {
                     url = "invalid";
                 }
             } else if(desc.equals("popular")) {
-                if(Integer.parseInt(year) >= Calendar.getInstance().get(Calendar.YEAR)){
+                if(Integer.parseInt(year) <= currentYear){
                     url += "&sort_by=popularity.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year +"-12-31&vote_count.gte=50&with_original_language=en" + ending;
                 } else {
                     url = "invalid";
                 }
             } else {
-                if(Integer.parseInt(year) >= Calendar.getInstance().get(Calendar.YEAR)){
+                if(Integer.parseInt(year) <= currentYear){
                     url += "&sort_by=vote_average.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year +"-12-31&vote_count.gte=50&with_original_language=en" + ending;
                 } else {
                     url = "invalid";
                 }
             }
         } else {
-            url += "movie/" + apiKey;
+            url += "movie/"+ desc + apiKey;
             if(desc.equals("upcoming")) {
-                if(Integer.parseInt(year) < Calendar.getInstance().get(Calendar.YEAR)) {
+                if(Integer.parseInt(year) < currentYear) {
                     url = "invalid";
                 } else {
                     // &primary_release_date.gte=2018-9-15&primary_release_date.lte=2018-10-15&language=en-US&region=US&page=1
                     url += "&region=US&primary_release_date.gte=" + year + "-" + month + "-" + day + "primary_release_date.lte=" + year + "-12-31" + ending;
                 }
             } else if(desc.equals("popular")) {
-                if(Integer.parseInt(year) > Calendar.getInstance().get(Calendar.YEAR)){
+                if(Integer.parseInt(year) > currentYear){
                     url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year + ending;
                 } else {
                     url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year + "&vote_count.gte=50" + ending;
                 }
             } else {
-                if(Integer.parseInt(year) > Calendar.getInstance().get(Calendar.YEAR)){
+                if(Integer.parseInt(year) > currentYear){
                     url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year + ending;
                 } else {
                     url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year + "&vote_count.gte=50" + ending;
                 }
             }
         }
+        return url;
+    }
+
+    public String buildMovie(HashMap<String, String> info) {
+        String url = tmdbUrl + "search/";
+        //if(info.containsKey("Type")) {
+        try {
+            url += "movie" + apiKey + "&region=US&query=" + URLEncoder.encode(info.get("Title"), "UTF-8").replace("+", "%20") + ending;
+
+        } catch (UnsupportedEncodingException ignored) {
+            url += "movie" + apiKey + "&region=US&query=" + info.get("Title") + ending;
+        }
+        /*} else {
+            url += "multi" + apiKey + "&region=US&query=" + info.get("Title") + ending;
+        }*/
+        return url;
+    }
+
+    public String buildMovieGenre(HashMap<String, String> params) {
+        String url = tmdbUrl + "discover/movie" + apiKey + "&sort_by=revenue.desc&region=US&with_genres=" + movieGenre.get(params.get("MovieGenre"));
+        String year = params.get("Year");
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        // primary_release_year=2019&language=en-US&page=1
+        if(params.containsKey("Year")) {
+            if(Integer.parseInt(year) > currentYear) {
+                return "invalid";
+            } else {
+                url += "&primary_release_year=" + year;
+            }
+        }
+
+        url += ending;
         return url;
     }
 

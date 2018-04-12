@@ -64,11 +64,10 @@ public class DialogFlowParser {
                 if(params.containsKey("Title") && params.containsKey("Type")) {
                     info.put("Title", params.get("Title").toString().replace("\"", ""));
                     info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
-                    result = builder.build(info, this.intent);
+                    result = builder.buildMovie(info);
                 } else if(params.containsKey("Title")){
                     info.put("Title", params.get("Title").toString().replace("\"", ""));
-                    result = builder.build(info, this.intent);
-                    // BUILD URL MULTI?
+                    result = builder.buildMovie(info);
                 } else {
                     result = "fail";
                 }

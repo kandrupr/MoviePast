@@ -61,7 +61,7 @@ public class LoadingTextRequest extends AppCompatActivity {
         protected void onPostExecute(AIResponse aiResponse) {
             if (aiResponse != null) {
                 Log.e("TextConnection", aiResponse.toString());
-                Intent intent = new Intent(getBaseContext(), Results.class);
+                Intent intent = new Intent(getBaseContext(), ResultsActivity.class);
                 startActivity(intent);
                 finish();
             }

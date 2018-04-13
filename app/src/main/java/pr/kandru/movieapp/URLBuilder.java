@@ -122,19 +122,76 @@ public class URLBuilder {
 
     public String buildMovieGenre(HashMap<String, String> params) {
         String url = tmdbUrl + "discover/movie" + apiKey + "&sort_by=revenue.desc&region=US&with_genres=" + movieGenre.get(params.get("MovieGenre"));
-        String year = params.get("Year");
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         // primary_release_year=2019&language=en-US&page=1
         if(params.containsKey("Year")) {
+            String year = params.get("Year");
             if(Integer.parseInt(year) > currentYear) {
                 return "invalid";
             } else {
                 url += "&primary_release_year=" + year;
             }
         }
-
         url += ending;
         return url;
+    }
+
+    public String buildTVGenre(HashMap<String, String> params) {
+        String url = tmdbUrl + "discover/tv" + apiKey + "&sort_by=popularity.desc&&vote_count.gte=50&with_original_language=en&with_genres=" + tvGenre.get(params.get("TVGenre"));
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        if(params.containsKey("Year")) {
+            String year = params.get("Year");
+            if(Integer.parseInt(year) > currentYear) {
+                return "invalid";
+            } else {
+                url += "&air_date.gte="+ year +"-1-1&air_date.lte="+ year +"-12-31";
+            }
+        }
+        url += ending;
+        return url;
+    }
+
+    public String buildTV(HashMap<String, String> info) {
+        String url = tmdbUrl + "search/";
+        //if(info.containsKey("Type")) {
+        url += "tv" + apiKey + "&query=";
+        try {
+            url += URLEncoder.encode(info.get("Title"), "UTF-8").replace("+", "%20") + ending;
+        } catch (UnsupportedEncodingException ignored) {
+            url += info.get("Title") + ending;
+        }
+        /*} else {
+            url += "multi" + apiKey + "&region=US&query=" + info.get("Title") + ending;
+        }*/
+        return url;
+    }
+
+    public String buildFromTitle(HashMap<String, String> params) {
+        //
+        String url = tmdbUrl + "search/";
+        if(params.containsKey("Type")) {
+            if(params.get("Type").equals("tv")) {
+                url += "tv" + apiKey + "&query=";
+            } else {
+                url += "movie" + apiKey + "&region=US&query=";
+            }
+        } else {
+            url += "multi" + apiKey + "&region=US&query=";
+        }
+
+        try {
+            url += URLEncoder.encode(params.get("Title"), "UTF-8").replace("+", "%20");
+
+        } catch (UnsupportedEncodingException ignored) {
+            url += params.get("Title");
+        }
+        url += ending;
+        return url;
+    }
+
+    public String buildPerson(String name) {
+        return "";
     }
 
     public String build(HashMap<String, String> info, String intent) {

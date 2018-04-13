@@ -16,7 +16,7 @@ import org.json.JSONObject;
  * Created by pkkan on 3/28/2018.
  */
 
-public class Results extends AppCompatActivity {
+public class ResultsActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

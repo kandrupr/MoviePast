@@ -91,8 +91,7 @@ public class DialogFlowParser {
             case "Person":
                 name = checkPerson(params);
                 if(!name.equals("fail")) {
-                    info.put("Name", name);
-                    result = builder.build(info, this.intent);
+                    result = builder.buildPerson(name);
                 } else {
                     result = "fail";
                 }
@@ -116,11 +115,11 @@ public class DialogFlowParser {
                     info.put("Genre", params.get("TVGenre").toString().replace("\"", ""));
                     info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
                     info.put("Year", params.get("Year").toString().replace("\"", ""));
-                    result = builder.build(info, this.intent);
+                    result = builder.buildTVGenre(info);
                 } else if (params.containsKey("MovieGenre") && params.containsKey("Type")) {
                     info.put("Genre", params.get("TVGenre").toString().replace("\"", ""));
                     info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
-                    result = builder.build(info, this.intent);
+                    result = builder.buildTVGenre(info);
                 } else {
                     result = "fail";
                 }
@@ -129,10 +128,10 @@ public class DialogFlowParser {
                 if(params.containsKey("TVShow") && params.containsKey("Type")) {
                     info.put("Title", params.get("TVShow").toString().replace("\"", ""));
                     info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
-                    result = builder.build(info, this.intent);
+                    result = builder.buildTV(info);
                 } else if(params.containsKey("TVShow")){
                     info.put("Title", params.get("TVShow").toString().replace("\"", ""));
-                    result = builder.build(info, this.intent);
+                    result = builder.buildTV(info);
                     // BUILD URL MULTI?
                 } else {
                     result = "fail";
@@ -142,10 +141,10 @@ public class DialogFlowParser {
                 if(params.containsKey("Title") && params.containsKey("Type")){
                     info.put("Title", params.get("Title").toString().replace("\"", ""));
                     info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
-                    result = builder.build(info, this.intent);
+                    result = builder.buildFromTitle(info);
                 } else if(params.containsKey("Title")){
                     info.put("Title", params.get("Title").toString().replace("\"", ""));
-                    result = builder.build(info, this.intent);
+                    result = builder.buildFromTitle(info);
                     // BUILD URL MULTI
                 } else {
                     result = "fail";

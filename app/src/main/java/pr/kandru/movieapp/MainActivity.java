@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     //private TextView resultTextView;
     private AIService aiService;
     private DialogFlowParser mParser;
-    private String mState = "open";
+    //private String mState = "open";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,13 +98,13 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     }
 
     public void onStartListening(final View view) {
-        if(mState.equals("open")) {
+        //if(mState.equals("open")) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
             }
             aiService.startListening();
-        }
+        //}
     }
 
     @Override
@@ -114,23 +114,38 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         // Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
         String intent = result.getMetadata().getIntentName().toString();
         String value = mParser.getURL();
-        mState = "open";
+        //mState = "open";
         if(value.equals("fail")) {
             // TOAST FAIL
+            Toast toast = Toast.makeText(getApplicationContext(), "Couldn't put your request together, try the typing it in!", Toast.LENGTH_LONG);
+            toast.show();
         } else if(value.equals("invalid")) {
+            Toast toast = Toast.makeText(getApplicationContext(), "That's an odd request. Try something else!", Toast.LENGTH_LONG);
+            toast.show();
             // TOAST INVALID REQUEST
         } else {
+            Intent i = new Intent(getApplicationContext(), LoadingAPIRequest.class);
+            i.putExtra("URL", value);
             if(intent.equals("Movie") && intent.equals("MovieGenre")) {
-                // TYPE MOVIE;
+                i.putExtra("TYPE", "movie");
+                // Movie
             } else if(intent.equals("TVShows") && intent.equals(("TVShowGenre"))) {
-                // TYPE TV
+                i.putExtra("TYPE", "tv");
+                // TV
             } else if(intent.equals("Person")) {
-                // PERSON
+                i.putExtra("TYPE", "actor");
+                // Actor
             } else if(intent.equals("WithTitle")){
-                // GIVEN FORM OR MULTI
+                if(result.getParameters().containsKey("Type")){
+                    i.putExtra("TYPE", result.getParameters().get("Type").toString());
+                } else {
+                    i.putExtra("TYPE", "multi");
+                }
             } else {
+                i.putExtra("TYPE", result.getParameters().get("Type").toString());
                 // DESCRIPTOR & DESCRIPTOR BYYEAR & PERSON FORM
             }
+            startActivity(i);
         }
     }
 
@@ -174,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     public void onError(AIError error) {
         Toast toast = Toast.makeText(getApplicationContext(), "Didn't quite catch that. Try again!", Toast.LENGTH_LONG);
         toast.show();
-        mState = "open";
+        //mState = "open";
     }
 
     @Override
@@ -184,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     @Override
     public void onListeningStarted() {
-        mState = "listening";
+        //mState = "listening";
 /*
 fading animation
 final Animation in = new AlphaAnimation(0.0f, 1.0f);
@@ -202,11 +217,11 @@ as.addAnimation(in);
 
     @Override
     public void onListeningCanceled() {
-        mState = "open";
+        //mState = "open";
     }
 
     @Override
     public void onListeningFinished() {
-        mState = "finished";
+        //mState = "finished";
     }
 }

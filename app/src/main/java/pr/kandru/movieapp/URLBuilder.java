@@ -89,16 +89,18 @@ public class URLBuilder {
                     url += "&region=US&primary_release_date.gte=" + year + "-" + month + "-" + day + "primary_release_date.lte=" + year + "-12-31" + ending;
                 }
             } else if(desc.equals("popular")) {
+                url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year;
                 if(Integer.parseInt(year) > currentYear){
-                    url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year + ending;
+                     url += ending;
                 } else {
-                    url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year + "&vote_count.gte=50" + ending;
+                    url += "&vote_count.gte=50" + ending;
                 }
             } else {
+                url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year;
                 if(Integer.parseInt(year) > currentYear){
-                    url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year + ending;
+                    url += ending;
                 } else {
-                    url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year + "&vote_count.gte=50" + ending;
+                    url += "&vote_count.gte=50" + ending;
                 }
             }
         }

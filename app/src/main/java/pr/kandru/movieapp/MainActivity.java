@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     //private TextView resultTextView;
     private AIService aiService;
     private DialogFlowParser mParser;
+    private String mState = "open";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,22 +98,23 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     }
 
     public void onStartListening(final View view) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        if(mState.equals("open")) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+            }
+            aiService.startListening();
         }
-        aiService.startListening();
     }
 
     @Override
     public void onResult(AIResponse response) {
         Result result = response.getResult();
         mParser = new DialogFlowParser(getApplicationContext(), result);
-        // Boolean cat = result.getParameters().containsKey("Title");
-        // Log.d("INTENT ", cat.toString());
         // Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
         String intent = result.getMetadata().getIntentName().toString();
         String value = mParser.getURL();
+        mState = "open";
         if(value.equals("fail")) {
             // TOAST FAIL
         } else if(value.equals("invalid")) {
@@ -172,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     public void onError(AIError error) {
         Toast toast = Toast.makeText(getApplicationContext(), "Didn't quite catch that. Try again!", Toast.LENGTH_LONG);
         toast.show();
+        mState = "open";
     }
 
     @Override
@@ -181,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     @Override
     public void onListeningStarted() {
+        mState = "listening";
 /*
 fading animation
 final Animation in = new AlphaAnimation(0.0f, 1.0f);
@@ -198,11 +202,11 @@ as.addAnimation(in);
 
     @Override
     public void onListeningCanceled() {
-
+        mState = "open";
     }
 
     @Override
     public void onListeningFinished() {
-
+        mState = "finished";
     }
 }

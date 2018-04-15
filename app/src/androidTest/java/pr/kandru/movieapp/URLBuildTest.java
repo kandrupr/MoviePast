@@ -109,4 +109,18 @@ public class URLBuildTest {
         String result = builder.buildMovieGenre(info);
         assertEquals(result, "invalid");
     }
+
+    @Test
+    public void person_isValid() throws Exception {
+        URLBuilder builder = new URLBuilder(appContext);
+        String result = builder.buildFromPerson("Nicole Kidman");
+        assertEquals(result, "https://api.themoviedb.org/3/search/person?api_key=c67800592cc9f12da208901fb31247fd&region=US&query=Nicole%20Kidman&language=en-US&page=1");
+    }
+
+    @Test
+    public void personForm_isValid () throws Exception {
+        URLBuilder builder = new URLBuilder(appContext);
+        String result = builder.buildFromPerson("Jeff Davis");
+        assertEquals(result, "https://api.themoviedb.org/3/search/person?api_key=c67800592cc9f12da208901fb31247fd&region=US&query=Jeff%20Davis&language=en-US&page=1");
+    }
 }

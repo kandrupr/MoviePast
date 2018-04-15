@@ -73,7 +73,7 @@ public class URLBuildTest {
         info = new HashMap<>();
         info.put("Title", "Black Panther");
         URLBuilder builder = new URLBuilder(appContext);
-        String result = builder.buildMovie(info);
+        String result = builder.buildMovie("Black Panther");
         assertEquals(result, "https://api.themoviedb.org/3/search/movie?api_key=" + api + "&region=US&query=Black%20Panther&language=en-US&page=1");
     }
 

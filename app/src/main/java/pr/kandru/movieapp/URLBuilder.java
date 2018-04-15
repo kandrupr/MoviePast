@@ -1,7 +1,6 @@
 package pr.kandru.movieapp;
 
 import android.content.Context;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -56,7 +55,6 @@ public class URLBuilder {
         int month = Calendar.getInstance().get(Calendar.MONTH);
         int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
         if(params.get("Type").equals("tv")) {
             // TV
             url += "tv" + apiKey;
@@ -107,18 +105,14 @@ public class URLBuilder {
         return url;
     }
 
-    public String buildMovie(HashMap<String, String> info) {
+    public String buildMovie(String title) {
         String url = tmdbUrl + "search/";
-        //if(info.containsKey("Type")) {
         try {
-            url += "movie" + apiKey + "&region=US&query=" + URLEncoder.encode(info.get("Title"), "UTF-8").replace("+", "%20") + ending;
+            url += "movie" + apiKey + "&region=US&query=" + URLEncoder.encode(title, "UTF-8").replace("+", "%20") + ending;
 
         } catch (UnsupportedEncodingException ignored) {
-            url += "movie" + apiKey + "&region=US&query=" + info.get("Title") + ending;
+            url += "movie" + apiKey + "&region=US&query=" + title + ending;
         }
-        /*} else {
-            url += "multi" + apiKey + "&region=US&query=" + info.get("Title") + ending;
-        }*/
         return url;
     }
 
@@ -141,7 +135,6 @@ public class URLBuilder {
     public String buildTVGenre(HashMap<String, String> params) {
         String url = tmdbUrl + "discover/tv" + apiKey + "&sort_by=popularity.desc&&vote_count.gte=50&with_original_language=en&with_genres=" + tvGenre.get(params.get("TVGenre"));
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
         if(params.containsKey("Year")) {
             String year = params.get("Year");
             if(Integer.parseInt(year) > currentYear) {
@@ -154,23 +147,18 @@ public class URLBuilder {
         return url;
     }
 
-    public String buildTV(HashMap<String, String> info) {
+    public String buildTV(String title) {
         String url = tmdbUrl + "search/";
-        //if(info.containsKey("Type")) {
         url += "tv" + apiKey + "&query=";
         try {
-            url += URLEncoder.encode(info.get("Title"), "UTF-8").replace("+", "%20") + ending;
+            url += URLEncoder.encode(title, "UTF-8").replace("+", "%20") + ending;
         } catch (UnsupportedEncodingException ignored) {
-            url += info.get("Title") + ending;
+            url += title + ending;
         }
-        /*} else {
-            url += "multi" + apiKey + "&region=US&query=" + info.get("Title") + ending;
-        }*/
         return url;
     }
 
     public String buildFromTitle(HashMap<String, String> params) {
-        //
         String url = tmdbUrl + "search/";
         if(params.containsKey("Type")) {
             if(params.get("Type").equals("tv")) {
@@ -181,10 +169,8 @@ public class URLBuilder {
         } else {
             url += "multi" + apiKey + "&region=US&query=";
         }
-
         try {
             url += URLEncoder.encode(params.get("Title"), "UTF-8").replace("+", "%20");
-
         } catch (UnsupportedEncodingException ignored) {
             url += params.get("Title");
         }
@@ -193,7 +179,6 @@ public class URLBuilder {
     }
 
     public String buildFromPerson(String name) {
-        // &region=US&query=Nicole%20Kidman ENDING
         String url = tmdbUrl + "search/person" + apiKey + "&region=US&query=";
         try {
             url += URLEncoder.encode(name, "UTF-8").replace("+", "%20");
@@ -202,13 +187,5 @@ public class URLBuilder {
         }
         url += ending;
         return url;
-    }
-
-    public String build(HashMap<String, String> info, String intent) {
-        return "";
-    }
-
-    public String getApiKey() {
-        return apiKey;
     }
 }

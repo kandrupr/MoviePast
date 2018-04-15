@@ -111,10 +111,14 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     public void onResult(AIResponse response) {
         Result result = response.getResult();
         mParser = new DialogFlowParser(getApplicationContext(), result);
-        // Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
         String intent = result.getMetadata().getIntentName().toString();
         String value = mParser.getURL();
         //mState = "open";
+        Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
+        Log.d("INTENT INT ", result.getResolvedQuery());
+        Log.d("INTENT PARAMS ", result.getParameters().toString());
+
+
         if(value.equals("fail")) {
             // TOAST FAIL
             Toast toast = Toast.makeText(getApplicationContext(), "Couldn't put your request together, try the typing it in!", Toast.LENGTH_LONG);
@@ -126,10 +130,10 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         } else {
             Intent i = new Intent(getApplicationContext(), LoadingAPIRequest.class);
             i.putExtra("URL", value);
-            if(intent.equals("Movie") && intent.equals("MovieGenre")) {
+            if(intent.equals("Movie") || intent.equals("MovieGenre")) {
                 i.putExtra("TYPE", "movie");
                 // Movie
-            } else if(intent.equals("TVShows") && intent.equals(("TVShowGenre"))) {
+            } else if(intent.equals("TVShows") || intent.equals(("TVShowGenre"))) {
                 i.putExtra("TYPE", "tv");
                 // TV
             } else if(intent.equals("Person")) {
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
                 }
             } else {
                 i.putExtra("TYPE", result.getParameters().get("Type").toString());
-                // DESCRIPTOR & DESCRIPTOR BYYEAR & PERSON FORM
+                // DESCRIPTOR & DESCRIPTOR BY YEAR & PERSON FORM
             }
             startActivity(i);
         }

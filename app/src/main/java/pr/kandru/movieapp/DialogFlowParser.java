@@ -91,7 +91,7 @@ public class DialogFlowParser {
             case "Person":
                 name = checkPerson(params);
                 if(!name.equals("fail")) {
-                    result = builder.buildPerson(name);
+                    result = builder.buildFromPerson(name);
                 } else {
                     result = "fail";
                 }
@@ -102,7 +102,7 @@ public class DialogFlowParser {
                     if(params.containsKey("Type")) {
                         info.put("Name", name);
                         info.put("Type", params.get("Type").toString().replace("\"", ""));
-                        result = builder.build(info, this.intent);
+                        result = builder.buildFromPerson(name);
                     } else {
                         result = "fail";
                     }

@@ -111,8 +111,25 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         // Boolean cat = result.getParameters().containsKey("Title");
         // Log.d("INTENT ", cat.toString());
         // Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
-        mParser.getURL();
-
+        String intent = result.getMetadata().getIntentName().toString();
+        String value = mParser.getURL();
+        if(value.equals("fail")) {
+            // TOAST FAIL
+        } else if(value.equals("invalid")) {
+            // TOAST INVALID REQUEST
+        } else {
+            if(intent.equals("Movie") && intent.equals("MovieGenre")) {
+                // TYPE MOVIE;
+            } else if(intent.equals("TVShows") && intent.equals(("TVShowGenre"))) {
+                // TYPE TV
+            } else if(intent.equals("Person")) {
+                // PERSON
+            } else if(intent.equals("WithTitle")){
+                // GIVEN FORM OR MULTI
+            } else {
+                // DESCRIPTOR & DESCRIPTOR BYYEAR & PERSON FORM
+            }
+        }
     }
 
     @Override

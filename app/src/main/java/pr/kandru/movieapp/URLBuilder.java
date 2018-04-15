@@ -190,8 +190,16 @@ public class URLBuilder {
         return url;
     }
 
-    public String buildPerson(String name) {
-        return "";
+    public String buildFromPerson(String name) {
+        // &region=US&query=Nicole%20Kidman ENDING
+        String url = tmdbUrl + "search/person" + apiKey + "&region=US&query=";
+        try {
+            url += URLEncoder.encode(name, "UTF-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException ignored) {
+            url += name;
+        }
+        url += ending;
+        return url;
     }
 
     public String build(HashMap<String, String> info, String intent) {

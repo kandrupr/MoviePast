@@ -127,8 +127,8 @@ public class DialogFlowParser {
 
     private String checkPerson(HashMap<String, JsonElement> params) {
         String name;
-        if(params.containsKey("Person")) {
-            JsonElement person = params.get("Person");
+        if(params.containsKey("person")) {
+            JsonElement person = params.get("person");
             if(person.isJsonObject()) {
                 JsonObject obj = person.getAsJsonObject();
                 if (obj.has("First")) {
@@ -141,7 +141,7 @@ public class DialogFlowParser {
                     return "fail";
                 }
             } else {
-                name = params.get("Person").toString().replace("\"", "");
+                name = params.get("person").toString().replace("\"", "");
                 return name;
             }
         } else {

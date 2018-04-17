@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 /**
@@ -22,8 +23,10 @@ public class LoadingAPIRequest extends AppCompatActivity {
 
         TextView urlText = findViewById(R.id.testView);
         urlText.setText(url);
+        Log.d("URL", url);
 
         TextView typeText = findViewById(R.id.testView1);
         typeText.setText(type);
+        Log.d("URL 1", url);
     }
 }

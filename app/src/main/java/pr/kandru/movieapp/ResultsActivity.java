@@ -53,7 +53,7 @@ public class ResultsActivity extends AppCompatActivity {
         titles.add("TWO");
         titles.add("THREE");
         images.add("blank");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
+        images.add("https://image.tmdb.org/t/p/w500/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg");
         images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
         images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
         images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");

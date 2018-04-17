@@ -16,14 +16,22 @@
         android:text="@string/app_name" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/testView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/app_name" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/testView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/app_name" />
+
+    <ProgressBar
+        android:id="@+id/progress_loader"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 </LinearLayout>

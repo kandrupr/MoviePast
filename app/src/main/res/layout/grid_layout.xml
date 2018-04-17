@@ -10,8 +10,19 @@
         android:id="@+id/resultImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorCharcoal"
+        android:background="@color/colorPrimary"
         android:contentDescription="@string/resultImage"
         android:padding="5dp"
         app:srcCompat="@android:drawable/alert_dark_frame" />
+
+    <TextView
+        android:id="@+id/resultText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhite"
+        android:visibility="invisible"/>
 </RelativeLayout>

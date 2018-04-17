@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,13 @@ import java.util.ArrayList;
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
     private Context context;
     private ArrayList<String> images;
-    //private ArrayList<String> titles;
+    private ArrayList<String> titles;
     private int mHeight;
 
     public ResultAdapter(Context context, ArrayList<String> images, ArrayList<String> titles) {
         this.context = context;
         this.images = images;
-        //this.titles = titles;
+        this.titles = titles;
     }
 
     @Override
@@ -47,11 +48,13 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         if(images.get(position).equals("blank")) {
-            holder.image.setImageResource(R.drawable.help_white);
+            holder.image.setVisibility(View.INVISIBLE);
+            holder.text.setVisibility(View.VISIBLE);
+            holder.text.setText(titles.get(position));
+            holder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         } else {
             Picasso.with(context).load(images.get(position)).into(holder.image);
         }
-        //holder.text.setText(titles.get(position));
     }
 
     @Override
@@ -61,11 +64,12 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
 
     public static class Holder extends RecyclerView.ViewHolder {
         ImageView image;
-        //TextView text;
+        TextView text;
 
         public Holder (View view) {
             super(view);
             image = (ImageView) itemView.findViewById(R.id.resultImage);
+            text = (TextView) itemView.findViewById(R.id.resultText);
         }
     }
 }

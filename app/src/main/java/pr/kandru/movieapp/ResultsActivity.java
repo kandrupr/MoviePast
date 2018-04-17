@@ -43,7 +43,7 @@ public class ResultsActivity extends AppCompatActivity {
         ArrayList<String> images = new ArrayList<String>();
         ArrayList<String> titles = new ArrayList<String>();
 
-        titles.add("ONE");
+        titles.add("Star Wars Episode 3 - Revenge of the Sith");
         titles.add("TWO");
         titles.add("THREE");
         titles.add("ONE");

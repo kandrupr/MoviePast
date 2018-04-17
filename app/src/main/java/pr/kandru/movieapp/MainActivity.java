@@ -141,12 +141,12 @@ public class MainActivity extends AppCompatActivity implements AIListener{
                 // Actor
             } else if(intent.equals("WithTitle")){
                 if(result.getParameters().containsKey("Type")){
-                    i.putExtra("TYPE", result.getParameters().get("Type").toString());
+                    i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
                 } else {
                     i.putExtra("TYPE", "multi");
                 }
             } else {
-                i.putExtra("TYPE", result.getParameters().get("Type").toString());
+                i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
                 // DESCRIPTOR & DESCRIPTOR BY YEAR & PERSON FORM
             }
             startActivity(i);

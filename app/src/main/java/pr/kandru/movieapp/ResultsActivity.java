@@ -1,5 +1,6 @@
 package pr.kandru.movieapp;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by pkkan on 3/28/2018.
@@ -37,38 +39,16 @@ public class ResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_layout);
 
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+
+        ResultHolder results = (ResultHolder) bundle.getSerializable("RESULTS");
+
         resultsView = findViewById(R.id.resultView);
         layoutManager = new GridLayoutManager(ResultsActivity.this, 3);
         resultsView.setLayoutManager(layoutManager);
-        ArrayList<String> images = new ArrayList<String>();
-        ArrayList<String> titles = new ArrayList<String>();
-
-        titles.add("Star Wars Episode 3 - Revenge of the Sith");
-        titles.add("TWO");
-        titles.add("THREE");
-        titles.add("ONE");
-        titles.add("TWO");
-        titles.add("THREE");
-        titles.add("ONE");
-        titles.add("TWO");
-        titles.add("THREE");
-        images.add("blank");
-        images.add("https://image.tmdb.org/t/p/w500/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
-        images.add("https://cnl.psy.msu.edu/wp-content/uploads/2018/04/han_photo.jpg");
+        List<String> images = results.getImages();
+        List<String> titles = results.getNames();
 
         ResultAdapter adapter = new ResultAdapter(ResultsActivity.this, images, titles);
 

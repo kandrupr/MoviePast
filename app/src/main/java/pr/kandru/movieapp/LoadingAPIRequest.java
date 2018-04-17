@@ -11,7 +11,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,13 +56,13 @@ public class LoadingAPIRequest extends AppCompatActivity {
                         Log.d("RESPONSE", response.toString());
                         tv1.setText(response.toString());
                         if(intentName.equals("movie")){
-                            parseMovieData(response);
+                            parseData(response, Type.MOVIE);
                         } else if(intentName.equals("tv")) {
-
+                            parseData(response, Type.TV);
                         } else if(intentName.equals("actor")) {
-
+                            parseData(response, Type.ACTOR);
                         } else {
-
+                            //parseMulti(response);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -76,35 +75,80 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 });
     }
 
-    private void parseMovieData(JSONObject response) {
+    private void parseData(JSONObject response, Type type) {
         try {
-            //JSONArray jsonResults = response.getJSONArray("results");
-            JSONArray jsonResults = new JSONArray("[]");
-            JSONArray j= new JSONArray("[1,1,1,1]");
-
+            JSONArray jsonResults = response.getJSONArray("results");
 
             if(jsonResults.length() == 0){
-                Log.d("ARRAY TITLE", Integer.toString(jsonResults.length()));
-                Log.d("ARRAY TITLE", Integer.toString(j.length()));
-
+                // FINISH AND TOAST NO RESULTS
+            } else if(jsonResults.length() == 1) {
+                Result result;
+                JSONObject obj = (JSONObject) jsonResults.get(0);
+                if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
+                    result = checkData(obj, type);
+                    if(result != null){
+                        // NEW ACTIVITY WITH ITEM
+                    } else {
+                        // RETURN AND TOAST
+                    }
+                }
             } else {
+                Log.d("ARRAY", Integer.toString(jsonResults.length()));
+                ResultHolder results = new ResultHolder();
+                Result result;
                 for (int i = 0; i < jsonResults.length(); i++) {
                     JSONObject obj = (JSONObject) jsonResults.get(i);
-                    if (Integer.parseInt(obj.get("vote_count").toString()) > 4) {
-                        Log.d("ARRAY TITLE", obj.get("title").toString());
-                        Log.d("ARRAY ID", obj.get("id").toString());
-                        Log.d("ARRAY POSTER", obj.get("poster_path").toString());
+                    if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
+                        result = checkData(obj, type);
+                        if(result != null){
+                            results.add(result);
+                        }
                     }
-
-
-                    //obj.
-                    Log.d("ARRAY", obj.toString());
+                }
+                if(results.size() == 0){
+                    // FINISH AND TOAST
+                } else if(results.size() == 1) {
+                    // TYPE Activity
+                } else {
+                    // RESULTS ACTIVITY
+                    Intent intent = new Intent(this, ResultsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("RESULTS", results);
+                    intent.putExtras(bundle);
+                    finish();
+                    startActivity(intent);
                 }
             }
-            tv.setText(jsonResults.toString());
+            //tv.setText(jsonResults.toString());
         } catch (JSONException e) {
             e.printStackTrace();
-            tv.setText("FAILED");
+            //tv.setText("FAILED");
+            // TOAST AND FAIL
         }
+    }
+
+    private Result checkData(JSONObject obj, Type type) {
+        String name;
+        String id;
+        String poster;
+        try {
+            if(type.equals(Type.MOVIE)) {
+                name = obj.get("title").toString();
+            } else {
+                name = obj.get("name").toString();
+            }
+            id = obj.get("id").toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+           poster = obj.get("poster_path").toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            poster = "blank";
+        }
+
+        return new Result(type, name, id, poster);
     }
 }

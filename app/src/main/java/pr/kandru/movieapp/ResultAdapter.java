@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by pkkan on 4/9/2018.
@@ -21,10 +22,10 @@ import java.util.ArrayList;
 
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
     private Context context;
-    private ArrayList<String> images;
-    private ArrayList<String> titles;
+    private List<String> images;
+    private List<String> titles;
 
-    public ResultAdapter(Context context, ArrayList<String> images, ArrayList<String> titles) {
+    public ResultAdapter(Context context, List<String> images, List<String> titles) {
         this.context = context;
         this.images = images;
         this.titles = titles;

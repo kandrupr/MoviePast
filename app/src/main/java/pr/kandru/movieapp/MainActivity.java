@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        slideViewPager = (ViewPager) findViewById(R.id.slideLayout);
-        dotLayout = (LinearLayout) findViewById(R.id.dotsLayout);
+        slideViewPager = findViewById(R.id.slideLayout);
+        dotLayout = findViewById(R.id.dotsLayout);
         mSlider = new SliderAdapter(this);
         slideViewPager.setAdapter(mSlider);
         slideViewPager.setCurrentItem(1);
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             public void onPageScrollStateChanged(int state) {}
         });
 
-        listenButton = (ImageButton) findViewById(R.id.voiceButton);
+        listenButton = findViewById(R.id.voiceButton);
         //resultTextView = (TextView) findViewById(R.id.resultTextView);
         final AIConfiguration config = new AIConfiguration(getString(R.string.DialogFlowAPI),
                 AIConfiguration.SupportedLanguages.English,
@@ -112,10 +112,11 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         Result result = response.getResult();
         mParser = new DialogFlowParser(getApplicationContext(), result);
         String intent = result.getMetadata().getIntentName().toString();
+        String query = result.getResolvedQuery();
         String value = mParser.getURL();
         //mState = "open";
-        Log.d("INTENT NAME ", result.getMetadata().getIntentName().toString());
-        Log.d("INTENT INT ", result.getResolvedQuery());
+        Log.d("INTENT NAME ", intent);
+        Log.d("QUERY", query);
         Log.d("INTENT PARAMS ", result.getParameters().toString());
 
 
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             // TOAST INVALID REQUEST
         } else {
             Intent i = new Intent(getApplicationContext(), LoadingAPIRequest.class);
+            i.putExtra("QUERY",  query);
             i.putExtra("URL", value);
             if(intent.equals("Movie") || intent.equals("MovieGenre")) {
                 i.putExtra("TYPE", "movie");
@@ -139,8 +141,13 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             } else if(intent.equals("Person")) {
                 i.putExtra("TYPE", "actor");
                 // Actor
+            } else if(intent.equals("PersonForm")) {
+                i.putExtra("TYPE", "actorForm");
+                i.putExtra("FORM", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
+                // Actor
             } else if(intent.equals("WithTitle")){
                 if(result.getParameters().containsKey("Type")){
+                    Log.d("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
                     i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
                 } else {
                     i.putExtra("TYPE", "multi");

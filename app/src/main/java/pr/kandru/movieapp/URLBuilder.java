@@ -1,6 +1,8 @@
 package pr.kandru.movieapp;
 
 import android.content.Context;
+import android.util.Log;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -14,7 +16,7 @@ public class URLBuilder {
     private final String tmdbUrl = "https://api.themoviedb.org/3/";
     private String apiKey;
     private final String ending = "&language=en-US&page=1";
-    final HashMap<String, String> tvGenre = new HashMap<String, String>()
+    private final HashMap<String, String> tvGenre = new HashMap<String, String>()
     {{
         put("Action & Adventure","10759"); put("Animation","16"); put("Comedy","35"); put("Crime","80");
         put("Documentary","99"); put("Drama","18"); put("Family","10751"); put("Kids","10762"); put("Mystery","9648");
@@ -22,7 +24,7 @@ public class URLBuilder {
         put("War & Politics","10768"); put("Western","37");
     }};
 
-    final HashMap<String, String> movieGenre = new HashMap<String, String>()
+    private final HashMap<String, String> movieGenre = new HashMap<String, String>()
     {{
         put("Action","28"); put("Adventure","12");put("Animation","16"); put("Comedy","35"); put("Crime","80");
         put("Documentary","99"); put("Drama","18"); put("Family","10751"); put("Fantasy","14"); put("History","36");
@@ -78,13 +80,13 @@ public class URLBuilder {
                 }
             }
         } else {
-            url += "movie/"+ desc + apiKey;
+            url += "movie" + apiKey;
             if(desc.equals("upcoming")) {
                 if(Integer.parseInt(year) < currentYear) {
                     url = "invalid";
                 } else {
                     // &primary_release_date.gte=2018-9-15&primary_release_date.lte=2018-10-15&language=en-US&region=US&page=1
-                    url += "&region=US&primary_release_date.gte=" + year + "-" + month + "-" + day + "primary_release_date.lte=" + year + "-12-31" + ending;
+                    url += "&region=US&primary_release_date.gte=" + year + "-" + month + "-" + day + "&primary_release_date.lte=" + year + "-12-31" + ending;
                 }
             } else if(desc.equals("popular")) {
                 url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year;
@@ -117,7 +119,8 @@ public class URLBuilder {
     }
 
     public String buildMovieGenre(HashMap<String, String> params) {
-        String url = tmdbUrl + "discover/movie" + apiKey + "&sort_by=revenue.desc&region=US&with_genres=" + movieGenre.get(params.get("MovieGenre"));
+        String url = tmdbUrl + "discover/movie" + apiKey + "&sort_by=revenue.desc&region=US&with_genres=" + movieGenre.get(params.get("Genre"));
+
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         // primary_release_year=2019&language=en-US&page=1
         if(params.containsKey("Year")) {
@@ -133,7 +136,8 @@ public class URLBuilder {
     }
 
     public String buildTVGenre(HashMap<String, String> params) {
-        String url = tmdbUrl + "discover/tv" + apiKey + "&sort_by=popularity.desc&&vote_count.gte=50&with_original_language=en&with_genres=" + tvGenre.get(params.get("TVGenre"));
+        Log.d("TYPE TV GENRE", params.toString());
+        String url = tmdbUrl + "discover/tv" + apiKey + "&sort_by=popularity.desc&vote_count.gte=50&with_original_language=en&with_genres=" + tvGenre.get(params.get("Genre"));
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         if(params.containsKey("Year")) {
             String year = params.get("Year");
@@ -186,6 +190,17 @@ public class URLBuilder {
             url += name;
         }
         url += ending;
+        return url;
+    }
+
+    public String buildPersonFrom(String id, String form) {
+        String url = tmdbUrl + "person/" + id;
+        if(form.equals("movie")) {
+            url += "/movie_credits";
+        } else {
+            url += "/tv_credits";
+        }
+        url += apiKey + "&language=en-US";
         return url;
     }
 }

@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -32,6 +34,7 @@ import java.util.List;
 public class ResultsActivity extends AppCompatActivity {
     RecyclerView resultsView;
     GridLayoutManager layoutManager;
+    String query;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,8 +44,13 @@ public class ResultsActivity extends AppCompatActivity {
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
+        query = intent.getStringExtra("QUERY");
+        TextView queryText = findViewById(R.id.requestText);
+        queryText.setText(query.toUpperCase());
 
         ResultHolder results = (ResultHolder) bundle.getSerializable("RESULTS");
+        Log.d("TITLES", results.getNames().toString());
+
 
         resultsView = findViewById(R.id.resultView);
         layoutManager = new GridLayoutManager(ResultsActivity.this, 3);
@@ -53,5 +61,12 @@ public class ResultsActivity extends AppCompatActivity {
         ResultAdapter adapter = new ResultAdapter(ResultsActivity.this, images, titles);
 
         resultsView.setAdapter(adapter);
+    }
+
+    public void onHomeButton(View v) {
+        Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
+        startActivity(i);
     }
 }

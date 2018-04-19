@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/requestText"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="12" />
+        android:layout_weight="12"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/homeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/home_button"
+            android:foregroundGravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:onClick="onHomeButton"
+            app:srcCompat="@drawable/home_white" />
+
+        <TextView
+            android:id="@+id/requestText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/homeButton"
+            android:fontFamily="@font/archivo_narrow_bold"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/resultView"

@@ -1,6 +1,8 @@
 package pr.kandru.movieapp;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class DialogFlowParser {
         String result, name;
         JsonObject val = new JsonObject();
         URLBuilder builder = new URLBuilder(c);
-        HashMap<String, String> info = new HashMap<String, String>();
+        HashMap<String, String> info = new HashMap<>();
         switch(this.intent) {
             case "Descriptor":
                 if(params.containsKey("Descriptor") && params.containsKey("Type")) {
@@ -56,10 +58,10 @@ public class DialogFlowParser {
                 }
                 break;
             case "MovieGenre":
-                if(params.containsKey("MovieGenre") && params.containsKey("Type")) {
-                    info.put("Genre", params.get("MovieGenre").toString().replace("\"", ""));
-                    if(params.containsKey("Year")) {
-                        info.put("Year", params.get("Year").toString().replace("\"", ""));
+                if(params.containsKey("moviegenre")) {
+                    info.put("Genre", params.get("moviegenre").toString().replace("\"", ""));
+                    if(params.containsKey("year")) {
+                        info.put("Year", params.get("year").toString().replace("\"", ""));
                     }
                     result = builder.buildMovieGenre(info);
                 } else {
@@ -71,14 +73,18 @@ public class DialogFlowParser {
                 result = personURL(name, builder);
                 break;
             case "PersonForm":
-                name = checkPerson(params);
-                result = personURL(name, builder);
+                if(params.containsKey("Type")) {
+                    name = checkPerson(params);
+                    result = personURL(name, builder);
+                } else {
+                    result = "fail";
+                }
                 break;
             case "TVShowGenre":
-                if(params.containsKey("TVGenre") && params.containsKey("Type")) {
-                    info.put("Genre", params.get("TVGenre").toString().replace("\"", ""));
-                    if(params.containsKey("Year")) {
-                        info.put("Year", params.get("Year").toString().replace("\"", ""));
+                if(params.containsKey("tvgenre") && params.containsKey("type")) {
+                    info.put("Genre", params.get("tvgenre").toString().replace("\"", ""));
+                    if(params.containsKey("year")) {
+                        info.put("Year", params.get("year").toString().replace("\"", ""));
                     }
                     result = builder.buildTVGenre(info);
                 } else {

@@ -7,19 +7,23 @@ import java.io.Serializable;
  */
 
 public class Result implements Serializable {
-    private Type type;
+    private RequestType type;
     private String name;
     private String id;
     private String poster;
 
-    public Result(Type type, String name, String id, String poster) {
+    public Result(RequestType type, String name, String id, String poster) {
         this.type = type;
         this.name = name;
         this.id = id;
-        this.poster = "https://image.tmdb.org/t/p/w500" + poster;
+        if(poster.equals("blank")) {
+            this.poster = poster;
+        } else {
+            this.poster = "https://image.tmdb.org/t/p/w500" + poster;
+        }
     }
 
-    public Type getType() {
+    public RequestType getType() {
         return type;
     }
 

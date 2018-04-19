@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public class ResultHolder implements Serializable {
-    List<Result> results;
+    private List<Result> results;
     public ResultHolder() {
         this.results = new ArrayList<>();
     }
@@ -29,7 +29,7 @@ public class ResultHolder implements Serializable {
     public List<String> getNames() {
         List<String> names = new ArrayList<>();
         for(Result r: results) {
-            names.add(r.getPoster());
+            names.add(r.getName());
         }
         return names;
     }

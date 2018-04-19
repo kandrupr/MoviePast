@@ -3,6 +3,7 @@ package pr.kandru.movieapp;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,6 +56,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                         @Override
                         public void onSuccess() {
                             if (holder.progress != null) {
+                                holder.text.setVisibility(View.GONE);
                                 holder.progress.setVisibility(View.GONE);
                                 holder.image.setVisibility(View.VISIBLE);
                             }

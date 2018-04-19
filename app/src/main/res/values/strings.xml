@@ -5,4 +5,5 @@
     <string name="search_button">Search</string>
     <string name="help_button">Help</string>
     <string name="resultImage">Image of results</string>
+    <string name="home_button">Home</string>
 </resources>

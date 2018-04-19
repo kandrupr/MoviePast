@@ -33,23 +33,23 @@ public class URLBuildTest {
     public void creation_isCorrect() throws Exception {
         URLBuilder builder = new URLBuilder(appContext);
     }
-
+/*
     @Test
     public void descriptorTop_isCorrect() throws Exception {
         HashMap<String, String> info = new HashMap<>();
         info.put("Descriptor", "Top_Rated".toLowerCase());
-        info.put("Type", "TV".replace("\"", "").toLowerCase());
+        info.put("RequestType", "TV".replace("\"", "").toLowerCase());
         URLBuilder builder = new URLBuilder(appContext);
         String result = builder.build(info, "Descriptor");
         assertEquals("?api_key=" + api, "?api_key=" + appContext.getString(R.string.TMDBAPI));
-    }
+    }*/
 
     @Test
     public void descriptorByYear_isInvalid() throws Exception {
         HashMap<String, String> info = new HashMap<>();
         info.put("Descriptor", "Top_Rated".toLowerCase());
         info.put("Year", "2019");
-        info.put("Type", "TV".replace("\"", "").toLowerCase());
+        info.put("RequestType", "TV".replace("\"", "").toLowerCase());
         URLBuilder builder = new URLBuilder(appContext);
         String result = builder.buildDescriptorByYear(info);
         assertEquals(result, "invalid");
@@ -61,7 +61,7 @@ public class URLBuildTest {
         info = new HashMap<>();
         info.put("Descriptor", "Top_Rated".toLowerCase());
         info.put("Year", "2018");
-        info.put("Type", "TV".replace("\"", "").toLowerCase());
+        info.put("RequestType", "TV".replace("\"", "").toLowerCase());
         URLBuilder builder = new URLBuilder(appContext);
         String result = builder.buildDescriptorByYear(info);
         assertEquals(result, "https://api.themoviedb.org/3/discover/tv?api_key=" + api + "&sort_by=vote_average.desc&air_date.gte=2018-1-1&air_date.lte=2018-12-31&vote_count.gte=50&with_original_language=en&language=en-US&page=1");
@@ -104,7 +104,7 @@ public class URLBuildTest {
         info = new HashMap<>();
         info.put("MovieGenre", "Science Fiction");
         info.put("Year", "2019");
-        info.put("Type", "TV".replace("\"", "").toLowerCase());
+        info.put("RequestType", "TV".replace("\"", "").toLowerCase());
         URLBuilder builder = new URLBuilder(appContext);
         String result = builder.buildMovieGenre(info);
         assertEquals(result, "invalid");

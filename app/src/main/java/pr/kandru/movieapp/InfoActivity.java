@@ -2,7 +2,7 @@ package pr.kandru.movieapp;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.icu.text.IDNA;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,9 +16,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 /**
@@ -27,7 +24,10 @@ import java.util.List;
 
 public class InfoActivity extends AppCompatActivity {
     RecyclerView bottomView;
-    GridLayoutManager layoutManager;
+    RecyclerView topView;
+    GridLayoutManager layoutManagerBot;
+    GridLayoutManager layoutManagerTop;
+
     RequestType form;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,13 +65,23 @@ public class InfoActivity extends AppCompatActivity {
         setPoster(actor.getPoster(), actor.getName());
 
         bottomView = findViewById(R.id.carouselBottom);
-        layoutManager = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
-        bottomView.setLayoutManager(layoutManager);
+        layoutManagerBot = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
+        bottomView.setLayoutManager(layoutManagerBot);
         List<String> images = actor.getImages();
+        ImageAdapter bottomAdapter = new ImageAdapter(InfoActivity.this, images);
 
-        ImageAdapter adapter = new ImageAdapter(InfoActivity.this, images);
 
-        bottomView.setAdapter(adapter);
+        topView = findViewById(R.id.carouselTop);
+        layoutManagerTop = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
+        topView.setLayoutManager(layoutManagerTop);
+        ResultHolder holder = actor.getHolder();
+        List<String> filmImages = holder.getImages();
+        List<String> filmTitles = holder.getNames();
+        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, filmImages, filmTitles);
+
+        topView.setAdapter(topAdapter);
+        bottomView.setAdapter(bottomAdapter);
+
     }
 
     private void setPoster(String poster, final String name) {

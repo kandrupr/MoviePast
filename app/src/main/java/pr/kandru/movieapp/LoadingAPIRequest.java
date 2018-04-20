@@ -25,6 +25,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
     private String intentName;
     private String query;
     private String form;
+    private BuildResult buildResult = new BuildResult();
     TextView tv;
     TextView tv1;
     @Override
@@ -133,12 +134,15 @@ public class LoadingAPIRequest extends AppCompatActivity {
             } else if(jsonResults.length() == 1) {
                 Result result;
                 JSONObject obj = (JSONObject) jsonResults.get(0);
-                Log.d("OKAY", obj.toString());
                 if(type.equals(RequestType.ACTOR)) {
                     if (Float.parseFloat(obj.get("popularity").toString()) >= 1.0) {
-                        result = checkData(obj, type);
+                        result = buildResult.checkData(obj, type);
                         if (result != null) {
-                            Intent intent = new Intent(this, InfoActivity.class);
+                            Log.d("TYPE", result.getType().toString());
+                            Intent intent = new Intent(this, LoadingInfo.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("RESULT", result);
+                            intent.putExtras(bundle);
                             finish();
                             startActivity(intent);
                         } else {
@@ -147,7 +151,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     }
                 } else {
                     if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
-                        result = checkData(obj, type);
+                        result = buildResult.checkData(obj, type);
                         if (result != null) {
                             // NEW ACTIVITY WITH ITEM
                         } else {
@@ -160,17 +164,17 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 ResultHolder results = new ResultHolder();
                 Result result;
                 for (int i = 0; i < jsonResults.length(); i++) {
-                    JSONObject obj = (JSONObject) jsonResults.get(i);
+                    JSONObject obj = jsonResults.getJSONObject(i);
                     if(type.equals(RequestType.ACTOR)){
                         if (Float.parseFloat(obj.get("popularity").toString()) >= 1.0) {
-                            result = checkData(obj, type);
+                            result = buildResult.checkData(obj, type);
                             if (result != null) {
                                 results.add(result);
                             }
                         }
                     } else {
                         if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
-                            result = checkData(obj, type);
+                            result = buildResult.checkData(obj, type);
                             if (result != null) {
                                 results.add(result);
                             }
@@ -181,9 +185,6 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     // FINISH AND TOAST
                 } else if(results.size() == 1) {
                     // TYPE Activity
-                    Intent intent = new Intent(this, InfoActivity.class);
-                    finish();
-                    startActivity(intent);
                 } else {
                     // RESULTS ACTIVITY
                     Intent intent = new Intent(this, ResultsActivity.class);
@@ -213,8 +214,8 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 ResultHolder results = new ResultHolder();
                 Result result;
                 for (int i = 0; i < jsonResults.length(); i++) {
-                    JSONObject obj = (JSONObject) jsonResults.get(i);
-                    result = checkData(obj, type);
+                    JSONObject obj = jsonResults.getJSONObject(i);
+                    result = buildResult.checkData(obj, type);
                     if(result != null){
                         results.add(result);
                     }
@@ -249,8 +250,8 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 ResultHolder results = new ResultHolder();
                 Result result;
                 for (int i = 0; i < jsonResults.length(); i++) {
-                    JSONObject obj = (JSONObject) jsonResults.get(i);
-                    result = checkMultiData(obj);
+                    JSONObject obj = jsonResults.getJSONObject(i);
+                    result = buildResult.checkMultiData(obj);
                     if(result != null){
                         results.add(result);
                     }
@@ -284,83 +285,5 @@ public class LoadingAPIRequest extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Nullable
-    private Result checkData(JSONObject obj, RequestType type) {
-        String name;
-        String id;
-        String poster;
-        try {
-            if(type.equals(RequestType.MOVIE)) {
-                name = obj.get("title").toString();
-            } else {
-                name = obj.get("name").toString();
-            }
-            id = obj.get("id").toString();
-            if(name.equals("null") || id.equals("null")) { return null; }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            if(type.equals(RequestType.ACTOR)){
-                poster = obj.get("profile_path").toString();
-                Log.d("PROFILE PATH",poster);
-            } else {
-                poster = obj.get("poster_path").toString();
-            }
-            if(poster.equals("null")){ return null; }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            // poster = "blank";
-            return null;
-        }
-
-        return new Result(type, name, id, poster);
-    }
-
-    @Nullable
-    private Result checkMultiData(JSONObject obj) {
-        String name, id, poster, media;
-        RequestType type;
-
-        try {
-            media = obj.get("media_type").toString();
-            switch(media) {
-                case "movie":
-                    if(Integer.parseInt(obj.get("vote_count").toString()) <= 2){ return null;}
-                    name = obj.get("title").toString();
-                    type = RequestType.MOVIE;
-                    break;
-                case "tv":
-                    if(Integer.parseInt(obj.get("vote_count").toString()) <= 2){ return null;}
-                    name = obj.get("name").toString();
-                    type = RequestType.TV;
-                    break;
-                case "person":
-                    if(Float.parseFloat(obj.get("popularity").toString()) <= 1.0){ return null; }
-                    name = obj.get("name").toString();
-                    type = RequestType.ACTOR;
-                    break;
-                default:
-                    return null;
-            }
-            id = obj.get("id").toString();
-            if(name.equals("null") || id.equals("null")) { return null;}
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            poster = obj.get("poster_path").toString();
-            if(poster.equals("null")){ return null; }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            // poster = "blank";
-            return null;
-        }
-
-        return new Result(type, name, id, poster);
     }
 }

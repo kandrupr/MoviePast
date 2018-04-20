@@ -203,4 +203,9 @@ public class URLBuilder {
         url += apiKey + "&language=en-US";
         return url;
     }
+
+    public String buildActorInfo(String id) {
+        String url = tmdbUrl + "person/" + id + apiKey + "&language=en-US&append_to_response=images%2Ccombined_credits";
+        return url;
+    }
 }

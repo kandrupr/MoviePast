@@ -98,7 +98,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@id/guideCenterSplit"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/resultText"
@@ -146,12 +147,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/overviewText"
+                android:id="@+id/bioText"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:maxLines="50"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:scrollbars="vertical"
-                android:text="Jessica Chastain (born March 24, 1977) is an American theater, film and television actress. She played guest roles in several television shows before making her feature film debut with the 2008 independent film Jolene.\n\nIn 2011, Chastain gained wide public recognition for her starring roles in seven film releases; for her performance in The Help she received Best Supporting Actress nominations at the Academy Award, Golden Globe, BAFTA, and Screen Actors Guild Award ceremonies. In 2012, Time magazine featured her as one of the '100 Most Influential People in the World'. Chastain's performance in the 2012 military thriller Zero Dark Thirty and the 2013 horror film Mama led film critic Richard Roeper to describe her as 'one of the finest actors of her generation'. For the former, she won a Golden Globe Award for Best Actress (Drama) and received a nomination for the Academy Award for Best Actress. Jessica Chastain (born March 24, 1977) is an American theater, film and television actress. She played guest roles in several television shows before making her feature film debut with the 2008 independent film Jolene.\n\nIn 2011, Chastain gained wide public recognition for her starring roles in seven film releases; for her performance in The Help she received Best Supporting Actress nominations at the Academy Award, Golden Globe, BAFTA, and Screen Actors Guild Award ceremonies. In 2012, Time magazine featured her as one of the '100 Most Influential People in the World'. Chastain's performance in the 2012 military thriller Zero Dark Thirty and the 2013 horror film Mama led film critic Richard Roeper to describe her as 'one of the finest actors of her generation'. For the former, she won a Golden Globe Award for Best Actress (Drama) and received a nomination for the Academy Award for Best Actress."
                 android:textColor="@color/colorWhite"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"

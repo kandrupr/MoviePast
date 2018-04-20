@@ -147,6 +147,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                             startActivity(intent);
                         } else {
                             // RETURN AND TOAST
+                            Log.d("TYPE ACTOR SORTED", "NOT FAMOUS");
                         }
                     }
                 } else {
@@ -166,7 +167,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 for (int i = 0; i < jsonResults.length(); i++) {
                     JSONObject obj = jsonResults.getJSONObject(i);
                     if(type.equals(RequestType.ACTOR)){
-                        if (Float.parseFloat(obj.get("popularity").toString()) >= 1.0) {
+                        if (Float.parseFloat(obj.get("popularity").toString()) >= 0.5) {
                             result = buildResult.checkData(obj, type);
                             if (result != null) {
                                 results.add(result);
@@ -183,6 +184,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 }
                 if(results.size() == 0){
                     // FINISH AND TOAST
+                    Log.d("TYPE ACTOR SORTED", "NOT FAMOUS");
                 } else if(results.size() == 1) {
                     // TYPE Activity
                 } else {

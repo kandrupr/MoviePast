@@ -36,7 +36,9 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.80"/>
 
-    <RelativeLayout
+
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
@@ -44,6 +46,13 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideSplit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.40"/>
 
         <ImageButton
             android:id="@+id/homeButton"
@@ -53,22 +62,27 @@
             android:contentDescription="@string/home_button"
             android:foregroundGravity="center"
             android:onClick="onHomeButton"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/home_white" />
 
         <TextView
             android:id="@+id/requestText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toEndOf="@id/homeButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/guideSplit"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:fontFamily="@font/archivo_narrow_bold"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
@@ -168,17 +182,17 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@id/guideCarouselTextTop"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideTop"
-        android:text="@string/filmography"
         android:fontFamily="@font/archivo_narrow_bold"
         android:gravity="center_vertical"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
+        android:text="@string/filmography"
         android:textColor="@color/colorWhite"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/guideCarouselTextTop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideTop" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/carouselTop"
@@ -195,17 +209,17 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@id/guideCarouselTextBottom"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideCarouselTop"
-        android:text="@string/images"
         android:fontFamily="@font/archivo_narrow_bold"
         android:gravity="center_vertical"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
+        android:text="@string/images"
         android:textColor="@color/colorWhite"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/guideCarouselTextBottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideCarouselTop" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/carouselBottom"

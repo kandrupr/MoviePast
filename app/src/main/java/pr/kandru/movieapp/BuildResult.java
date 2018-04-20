@@ -96,7 +96,7 @@ public class BuildResult {
     }
 
     private boolean removeTalkShows(String character, String genres) {
-        if(character.equals("Himself") || character.equals("Herself")) {
+        if(character.equals("Himself") || character.equals("Herself") || character.isEmpty()) {
             if(genres.contains("10767") || genres.contains("10763")) {
                 return true;
             }

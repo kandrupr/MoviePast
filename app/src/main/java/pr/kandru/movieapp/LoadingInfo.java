@@ -2,10 +2,7 @@ package pr.kandru.movieapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.IDNA;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
@@ -14,13 +11,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -112,13 +110,50 @@ public class LoadingInfo extends AppCompatActivity {
 
         try {
             JSONArray arr = response.getJSONObject("combined_credits").getJSONArray("cast");
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject obj = arr.getJSONObject(i);
-                Result result = buildResult.checkMultiData(obj);
-                if(result != null) {
-                    holder.add(result);
+            int size = arr.length();
+            if(size > 0) {
+                List<JSONObject> myJsonArrayAsList = new ArrayList<JSONObject>();
+                for (int i = 0; i < arr.length(); i++)
+                    myJsonArrayAsList.add(arr.getJSONObject(i));
+
+                /*for (JSONObject i : myJsonArrayAsList) {
+                    Log.d("VOTE BEFORE", Double.toString(i.getDouble("popularity")));
+                }*/
+                Collections.sort(myJsonArrayAsList, new Comparator<JSONObject>() {
+                    @Override
+                    public int compare(JSONObject jsonObjectA, JSONObject jsonObjectB) {
+                        int compare = 0;
+                        try {
+                            float keyA = (float) jsonObjectA.getDouble("popularity");
+                            float keyB = (float) jsonObjectB.getDouble("popularity");
+                            compare = (int) (keyB - keyA);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return compare;
+                    }
+                });
+
+                arr = new JSONArray();
+                if (size > 20) {
+                    size = 20;
+                }
+                for (int i = 0; i < size; i++)
+                    arr.put(myJsonArrayAsList.get(i));
+
+                for (int i = 0; i < size; i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+                    Result result = buildResult.checkMultiData(obj);
+                    if (result != null) {
+                        //Log.d("POPULAR NAME", result.getName());
+                        holder.add(result);
+                    }
+                    if(holder.size() == 10){
+                        break;
+                    }
                 }
             }
+            // SIZE AND SORT?
         } catch (JSONException e) {
             e.printStackTrace();
             // NO FILM THATS OKAY
@@ -128,8 +163,8 @@ public class LoadingInfo extends AppCompatActivity {
             biography = response.get("biography").toString();
         } catch (JSONException e) {
             e.printStackTrace();
-            // NO FILM THATS OKAY
-            biography = "blank";
+            // NO BIO THATS OKAY
+            biography = "No Information Available";
         }
         return new Actor(name, biography, poster, images, holder);
     }

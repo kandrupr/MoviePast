@@ -2,8 +2,11 @@ package pr.kandru.movieapp;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
 import android.view.View;
@@ -16,11 +19,15 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.util.List;
+
 /**
  * Created by pkkan on 4/19/2018.
  */
 
 public class InfoActivity extends AppCompatActivity {
+    RecyclerView bottomView;
+    GridLayoutManager layoutManager;
     RequestType form;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +63,15 @@ public class InfoActivity extends AppCompatActivity {
         title.setText(actor.getName());
         bio.setText(actor.getBio());
         setPoster(actor.getPoster(), actor.getName());
+
+        bottomView = findViewById(R.id.carouselBottom);
+        layoutManager = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
+        bottomView.setLayoutManager(layoutManager);
+        List<String> images = actor.getImages();
+
+        ImageAdapter adapter = new ImageAdapter(InfoActivity.this, images);
+
+        bottomView.setAdapter(adapter);
     }
 
     private void setPoster(String poster, final String name) {

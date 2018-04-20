@@ -15,7 +15,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
@@ -38,6 +41,7 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
     public void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.info_page_layout);
         title = findViewById(R.id.titleText);
         bio = findViewById(R.id.bioText);
@@ -137,7 +141,6 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         bottomView.setAdapter(bottomAdapter);
 
         topAdapter.setOnClick(this);
-
     }
 
     private void setPoster(String poster, final String name) {
@@ -153,6 +156,8 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         } else {
             Picasso.with(this)
                     .load(poster)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
                     .into(image,  new Callback() {
                         @Override
                         public void onSuccess() {

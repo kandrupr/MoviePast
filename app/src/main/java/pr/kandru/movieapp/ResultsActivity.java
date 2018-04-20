@@ -37,8 +37,6 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
         queryText.setText(query.toUpperCase());
 
         results = (ResultHolder) bundle.getSerializable("RESULTS");
-        //Log.d("TITLES", results.getNames().toString());
-
         resultsView = findViewById(R.id.resultView);
         layoutManager = new GridLayoutManager(ResultsActivity.this, 3);
         resultsView.setLayoutManager(layoutManager);

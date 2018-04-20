@@ -18,22 +18,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.gson.JsonElement;
-
-import java.util.Map;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import ai.api.AIListener;
 import ai.api.android.AIConfiguration;
 import ai.api.android.AIService;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
-import ai.api.model.Metadata;
 import ai.api.model.Result;
 
 public class MainActivity extends AppCompatActivity implements AIListener{
     private ViewPager slideViewPager;
     private LinearLayout dotLayout;
     private ImageView[] dots;
+    private RefWatcher refWatcher;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
@@ -120,41 +119,43 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         Log.d("INTENT PARAMS ", result.getParameters().toString());
 
 
-        if(value.equals("fail")) {
-            // TOAST FAIL
+        if(value.equals("fail")) {  // TOAST FAIL
             Toast toast = Toast.makeText(getApplicationContext(), "Couldn't put your request together, try the typing it in!", Toast.LENGTH_LONG);
             toast.show();
-        } else if(value.equals("invalid")) {
+        } else if(value.equals("invalid")) { // TOAST INVALID REQUEST
             Toast toast = Toast.makeText(getApplicationContext(), "That's an odd request. Try something else!", Toast.LENGTH_LONG);
             toast.show();
-            // TOAST INVALID REQUEST
         } else {
             Intent i = new Intent(getApplicationContext(), LoadingAPIRequest.class);
             i.putExtra("QUERY",  query);
             i.putExtra("URL", value);
-            if(intent.equals("Movie") || intent.equals("MovieGenre")) {
-                i.putExtra("TYPE", "movie");
-                // Movie
-            } else if(intent.equals("TVShows") || intent.equals(("TVShowGenre"))) {
-                i.putExtra("TYPE", "tv");
-                // TV
-            } else if(intent.equals("Person")) {
-                i.putExtra("TYPE", "actor");
-                // Actor
-            } else if(intent.equals("PersonForm")) {
-                i.putExtra("TYPE", "actorForm");
-                i.putExtra("FORM", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
-                // Actor
-            } else if(intent.equals("WithTitle")){
-                if(result.getParameters().containsKey("Type")){
-                    Log.d("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
+            switch(intent) {
+                case "Movie":   // Movie
+                case "MovieGenre":
+                    i.putExtra("TYPE", "movie");
+                    break;
+                case "TVShows": // TV
+                case "TVShowGenre":
+                    i.putExtra("TYPE", "tv");
+                    break;
+                case "Person":  // Actor
+                    i.putExtra("TYPE", "actor");
+                    break;
+                case "PersonForm":  // Actor
+                    i.putExtra("TYPE", "actorForm");
+                    i.putExtra("FORM", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
+                    break;
+                case "WithTitle":   // Movie, TVShow, or ALL
+                    if(result.getParameters().containsKey("Type")){
+                        Log.d("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
+                        i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
+                    } else {
+                        i.putExtra("TYPE", "multi");
+                    }
+                    break;
+                default:    // DESCRIPTOR & DESCRIPTOR BY YEAR
                     i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
-                } else {
-                    i.putExtra("TYPE", "multi");
-                }
-            } else {
-                i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
-                // DESCRIPTOR & DESCRIPTOR BY YEAR & PERSON FORM
+                    break;
             }
             startActivity(i);
         }

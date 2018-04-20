@@ -2,6 +2,7 @@ package pr.kandru.movieapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,18 +29,18 @@ import java.util.List;
 
 public class LoadingInfo extends AppCompatActivity {
     final String image_url = "https://image.tmdb.org/t/p/w500";
-    private URLBuilder builder;
     private RequestType type;
     private String name;
     private String id;
     private String poster;
-    BuildResult buildResult = new BuildResult();
+    private BuildResult buildResult = new BuildResult();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_layout);
-        builder = new URLBuilder(this);
+        URLBuilder builder = URLBuilder.getInstance(getApplicationContext());
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         Result result = (Result) bundle.getSerializable("RESULT");
@@ -69,7 +70,7 @@ public class LoadingInfo extends AppCompatActivity {
 
     private void getInfo(String url) {
         JsonObjectRequest jsonObjectRequest = createObject(url, this);
-        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        Singleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     private JsonObjectRequest createObject(String url, final Context c) {
@@ -78,7 +79,6 @@ public class LoadingInfo extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("RESPONSE", response.toString());
-
                         switch(type) {
                             case ACTOR:
                                 Actor actor = parseActorObject(response);
@@ -107,7 +107,6 @@ public class LoadingInfo extends AppCompatActivity {
                 });
     }
 
-
     String findField(JSONObject obj, String field, String error) {
         String val;
         try {
@@ -127,18 +126,12 @@ public class LoadingInfo extends AppCompatActivity {
         try {
             JSONArray jsonCast = response.getJSONObject(first).getJSONArray(second);
             int size = jsonCast.length();
-            if(size > 10) {
-                size = 10;
-            }
+            if(size > 10) { size = 10; }
             for (int i = 0; i < size; i++) {
                 JSONObject obj = jsonCast.getJSONObject(i);
                 Result result = buildResult.checkData(obj, type);
-                if (result != null) {
-                    results.add(result);
-                }
-                if(results.size() == 10){
-                    break;
-                }
+                if (result != null) { results.add(result); }
+                if(results.size() == 10){ break; }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -238,9 +231,7 @@ public class LoadingInfo extends AppCompatActivity {
                     if (result != null) {
                         holder.add(result);
                     }
-                    if(holder.size() == 10){
-                        break;
-                    }
+                    if(holder.size() == 10){ break; }
                 }
             }
         } catch (JSONException e) {
@@ -287,12 +278,9 @@ public class LoadingInfo extends AppCompatActivity {
             mpaa = "No rating available";
             // NO IMAGES THATS OKAY
         }
-        //Log.d("MOVIE MPAA", mpaa);
 
         cast = findCarouselInfo(response, "credits", "cast", RequestType.ACTOR);
         similar = findCarouselInfo(response, "similar", "results", type);
-
-
 
         return new Movie(name, poster, rating, mpaa, runtime, releaseDate, overview, genres, cast, similar);
     }

@@ -26,8 +26,7 @@ public class DialogFlowParser {
     public String getURL() {
         HashMap<String, JsonElement> params = json.getParameters();
         String result, name;
-        JsonObject val = new JsonObject();
-        URLBuilder builder = new URLBuilder(c);
+        URLBuilder builder = URLBuilder.getInstance(c);
         HashMap<String, String> info = new HashMap<>();
         switch(this.intent) {
             case "Descriptor":

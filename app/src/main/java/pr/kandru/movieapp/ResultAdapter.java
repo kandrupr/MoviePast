@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
@@ -55,6 +57,8 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
         } else {
             Picasso.with(context)
                     .load(resultHolder.getImages().get(position))
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
                     .into(holder.image,  new Callback() {
                         @Override
                         public void onSuccess() {

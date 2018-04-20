@@ -13,6 +13,8 @@ import java.util.HashMap;
  */
 
 public class URLBuilder {
+    // static variable single_instance of type Singleton
+    private static URLBuilder single_instance = null;
     private final String tmdbUrl = "https://api.themoviedb.org/3/";
     private String apiKey;
     private final String ending = "&language=en-US&page=1";
@@ -34,9 +36,17 @@ public class URLBuilder {
 
     private final Context c;
 
-    public URLBuilder(Context c) {
+    private URLBuilder(Context c) {
         this.c = c;
         this.apiKey = "?api_key=" + c.getString(R.string.TMDBAPI);
+    }
+
+    // static method to create instance of Singleton class
+    public static synchronized URLBuilder getInstance(Context c) {
+        if (single_instance == null)
+            single_instance = new URLBuilder(c.getApplicationContext());
+
+        return single_instance;
     }
 
     public String buildDescriptor(HashMap<String, String> params) {
@@ -205,17 +215,13 @@ public class URLBuilder {
     }
 
     public String buildActorInfo(String id) {
-        String url = tmdbUrl + "person/" + id + apiKey + "&language=en-US&append_to_response=images%2Ccombined_credits";
-        return url;
+        return tmdbUrl + "person/" + id + apiKey + "&language=en-US&append_to_response=images%2Ccombined_credits";
     }
 
     public String buildMovieInfo(String id) {
-        String url = tmdbUrl + "movie/" + id + apiKey + "&language=en-US&append_to_response=release_dates%2Ccredits%2Csimilar";
-        return url;
+        return tmdbUrl + "movie/" + id + apiKey + "&language=en-US&append_to_response=release_dates%2Ccredits%2Csimilar";
     }
     public String buildTVInfo(String id) {
-        String url = tmdbUrl + "tv/" + id + apiKey + "&language=en-US&append_to_response=content_ratings%2Ccredits%2Csimilar";
-        return url;
+        return tmdbUrl + "tv/" + id + apiKey + "&language=en-US&append_to_response=content_ratings%2Ccredits%2Csimilar";
     }
-
 }

@@ -25,11 +25,7 @@ public class BuildResult {
             }
             id = obj.get("id").toString();
             if(name.equals("null") || id.equals("null")) { return null; }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
+
             if(type.equals(RequestType.ACTOR)){
                 poster = obj.get("profile_path").toString();
             } else {
@@ -38,10 +34,8 @@ public class BuildResult {
             if(poster.equals("null")){ return null; }
         } catch (JSONException e) {
             e.printStackTrace();
-            // poster = "blank";
             return null;
         }
-
         return new Result(type, name, id, poster);
     }
 
@@ -75,19 +69,12 @@ public class BuildResult {
             }
             id = obj.get("id").toString();
             if(name.equals("null") || id.equals("null")) { return null;}
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
             poster = obj.get("poster_path").toString();
             if(poster.equals("null")){ return null; }
         } catch (JSONException e) {
             e.printStackTrace();
-            // poster = "blank";
             return null;
         }
-
         return new Result(type, name, id, poster);
     }
 

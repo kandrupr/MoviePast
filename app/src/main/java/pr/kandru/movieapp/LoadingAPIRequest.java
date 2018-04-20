@@ -2,6 +2,7 @@ package pr.kandru.movieapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
@@ -43,9 +45,8 @@ public class LoadingAPIRequest extends AppCompatActivity {
 
         Log.d("TYPE URL", url);
         Log.d("TYPE INTENT", intentName);
-
-        JsonObjectRequest jsonObjectRequest = createObject(url, this);
-        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        JsonObjectRequest jsonObjectRequest = createObject(url, getApplicationContext());
+        Singleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     private JsonObjectRequest createObject(String url, final Context c) {
@@ -54,28 +55,24 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("RESPONSE", response.toString());
+                        Log.d("RESPONSE INTENT", intentName);
                         switch (intentName) {
-                            case "movie":
-                            parseData(response, RequestType.MOVIE);
-                            break;
-                            // COMPLETE
-                        case "tv":
-                            parseData(response, RequestType.TV);
-                            break;
-                            // COMPLETE
-                        case "actor":
-                            parseData(response, RequestType.ACTOR);
-                            break;
-                        case "actorForm":
-                            String id = getActorID(response);
-                            getActorForm(c,id);
-                            break;
-                            // COMPLETE
-                        default:
-                            Log.d("MULTI STATEMENT", "OKAY");
-                            parseMulti(response);
-                            break;
-                            // COMPLETE
+                            case "movie": // COMPLETE
+                                parseData(response, RequestType.MOVIE);
+                                break;
+                            case "tv": // COMPLETE
+                                parseData(response, RequestType.TV);
+                                break;
+                            case "actor": // COMPLETE
+                                parseData(response, RequestType.ACTOR);
+                                break;
+                            case "actorForm": // COMPLETE
+                                String id = getActorID(response);
+                                getActorForm(c,id);
+                                break;
+                            default:
+                                parseMulti(response); // COMPLETE
+                                break;
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -113,71 +110,39 @@ public class LoadingAPIRequest extends AppCompatActivity {
     }
 
     private void getActorForm(Context c, String id) {
-        URLBuilder builder = new URLBuilder(c);
+        URLBuilder builder = URLBuilder.getInstance(c);
         String url = builder.buildPersonFrom(id, form);
         JsonObjectRequest jsonObjectRequest = actorFormObject(url, this);
-        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        Singleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     private void parseData(JSONObject response, RequestType type) {
         try {
             JSONArray jsonResults = response.getJSONArray("results");
-            if(jsonResults.length() == 0){
+            int size = jsonResults.length();
+            if(size == 0){
                 // FINISH AND TOAST NO RESULTS
-            } else if(jsonResults.length() == 1) {
-                Result result;
+            } else if(size == 1) {
+                Result result = null;
                 JSONObject obj = (JSONObject) jsonResults.get(0);
                 if(type.equals(RequestType.ACTOR)) {
-                    if (Float.parseFloat(obj.get("popularity").toString()) >= 1.0) {
-                        result = buildResult.checkData(obj, type);
-                        if (result != null) {
-                            Intent intent = new Intent(this, LoadingInfo.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("RESULT", result);
-                            intent.putExtras(bundle);
-                            finish();
-                            startActivity(intent);
-                        } else {
-                            // RETURN AND TOAST
-                        }
-                    }
+                    if (Float.parseFloat(obj.get("popularity").toString()) >= 1.0) { result = buildResult.checkData(obj, type); }
                 } else {
-                    if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
-                        result = buildResult.checkData(obj, type);
-                        if (result != null) {
-                            // NEW ACTIVITY WITH
-                            Intent intent = new Intent(this, LoadingInfo.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("RESULT", result);
-                            intent.putExtras(bundle);
-                            finish();
-                            startActivity(intent);
-                        } else {
-                            // RETURN AND TOAST
-                        }
-                    }
+                    if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) { result = buildResult.checkData(obj, type); }
+                }
+                if (result != null) {
+                    // NEW ACTIVITY WITH
+                    Intent intent = new Intent(this, LoadingInfo.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("RESULT", result);
+                    intent.putExtras(bundle);
+                    finish();
+                    startActivity(intent);
+                } else {
+                    // RETURN AND TOAST
                 }
             } else {
-                ResultHolder results = new ResultHolder();
-                Result result;
-                for (int i = 0; i < jsonResults.length(); i++) {
-                    JSONObject obj = jsonResults.getJSONObject(i);
-                    if(type.equals(RequestType.ACTOR)){
-                        if (Float.parseFloat(obj.get("popularity").toString()) >= 0.5) {
-                            result = buildResult.checkData(obj, type);
-                            if (result != null) {
-                                results.add(result);
-                            }
-                        }
-                    } else {
-                        if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
-                            result = buildResult.checkData(obj, type);
-                            if (result != null) {
-                                results.add(result);
-                            }
-                        }
-                    }
-                }
+                ResultHolder results = searchResults(jsonResults, type);
                 if(results.size() == 0){
                     // FINISH AND TOAST
                 } else if(results.size() == 1) {
@@ -216,9 +181,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 for (int i = 0; i < jsonResults.length(); i++) {
                     JSONObject obj = jsonResults.getJSONObject(i);
                     result = buildResult.checkData(obj, type);
-                    if(result != null){
-                        results.add(result);
-                    }
+                    if(result != null){ results.add(result); }
                 }
                 if(results.size() == 0) {
                     // END ACTIVITY AND TOAST
@@ -251,9 +214,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 for (int i = 0; i < jsonResults.length(); i++) {
                     JSONObject obj = jsonResults.getJSONObject(i);
                     result = buildResult.checkMultiData(obj);
-                    if(result != null){
-                        results.add(result);
-                    }
+                    if(result != null){ results.add(result); }
                 }
                 if(results.size() == 0) {
                     // TOAST AND FAIL
@@ -284,5 +245,32 @@ public class LoadingAPIRequest extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private ResultHolder searchResults(JSONArray arr, RequestType type) {
+        ResultHolder results = new ResultHolder();
+        Result result = null;
+        try {
+            if(type.equals(RequestType.ACTOR)){
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+                    if (Float.parseFloat(obj.get("popularity").toString()) >= 0.5) {
+                        result = buildResult.checkData(obj, type);
+                        if (result != null) { results.add(result); }
+                    }
+                }
+            } else {
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+                    if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
+                        result = buildResult.checkData(obj, type);
+                        if (result != null) { results.add(result); }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return results;
     }
 }

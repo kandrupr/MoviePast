@@ -128,7 +128,6 @@ public class LoadingAPIRequest extends AppCompatActivity {
     private void parseData(JSONObject response, RequestType type) {
         try {
             JSONArray jsonResults = response.getJSONArray("results");
-
             if(jsonResults.length() == 0){
                 // FINISH AND TOAST NO RESULTS
             } else if(jsonResults.length() == 1) {
@@ -154,7 +153,14 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
                         result = buildResult.checkData(obj, type);
                         if (result != null) {
-                            // NEW ACTIVITY WITH ITEM
+                            // NEW ACTIVITY WITH
+                            Log.d("TYPE", result.getType().toString());
+                            Intent intent = new Intent(this, LoadingInfo.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("RESULT", result);
+                            intent.putExtras(bundle);
+                            finish();
+                            startActivity(intent);
                         } else {
                             // RETURN AND TOAST
                         }
@@ -187,6 +193,13 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     Log.d("TYPE ACTOR SORTED", "NOT FAMOUS");
                 } else if(results.size() == 1) {
                     // TYPE Activity
+                    Log.d("TYPE", results.get(0).getType().toString());
+                    Intent intent = new Intent(this, LoadingInfo.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("RESULT", results.get(0));
+                    intent.putExtras(bundle);
+                    finish();
+                    startActivity(intent);
                 } else {
                     // RESULTS ACTIVITY
                     Intent intent = new Intent(this, ResultsActivity.class);

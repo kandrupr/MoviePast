@@ -55,7 +55,7 @@
             app:layout_constraintGuide_percent="0.40"/>
 
         <ImageButton
-            android:id="@+id/homeButton"
+            android:id="@+id/info_homeButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
@@ -69,19 +69,19 @@
             app:srcCompat="@drawable/home_white" />
 
         <TextView
-            android:id="@+id/requestText"
+            android:id="@+id/titleText"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@id/guideSplit"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:fontFamily="@font/archivo_narrow_bold"
             android:gravity="center_vertical"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
             android:textColor="@color/colorWhite"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/guideSplit"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -101,7 +101,7 @@
             app:layout_constraintGuide_percent="0.40"/>
 
         <ImageView
-            android:id="@+id/posterView"
+            android:id="@+id/info_posterView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             style="@style/posterPadding"
@@ -116,7 +116,7 @@
             android:scaleType="centerCrop"/>
 
         <TextView
-            android:id="@+id/resultText"
+            android:id="@+id/info_resultText"
             android:layout_width="0dp"
             android:layout_height="0dp"
             style="@style/posterPadding"
@@ -131,7 +131,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <ProgressBar
-            android:id="@+id/progressLoader"
+            android:id="@+id/info_progressLoader"
             style="android:attr/progressBarStyleLarge"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -195,7 +195,7 @@
         app:layout_constraintTop_toTopOf="@id/guideTop" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/carouselTop"
+        android:id="@+id/topCarousel"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
@@ -222,7 +222,7 @@
         app:layout_constraintTop_toTopOf="@id/guideCarouselTop" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/carouselBottom"
+        android:id="@+id/bottomCarousel"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"

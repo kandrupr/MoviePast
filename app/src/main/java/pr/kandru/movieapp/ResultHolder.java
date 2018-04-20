@@ -37,4 +37,8 @@ public class ResultHolder implements Serializable {
     public int size() {
         return results.size();
     }
+
+    public Result get(int index){
+        return results.get(index);
+    }
 }

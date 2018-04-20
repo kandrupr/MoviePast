@@ -208,4 +208,14 @@ public class URLBuilder {
         String url = tmdbUrl + "person/" + id + apiKey + "&language=en-US&append_to_response=images%2Ccombined_credits";
         return url;
     }
+
+    public String buildMovieInfo(String id) {
+        String url = tmdbUrl + "movie/" + id + apiKey + "&language=en-US&append_to_response=release_dates%2Ccredits%2Csimilar";
+        return url;
+    }
+    public String buildTVInfo(String id) {
+        String url = tmdbUrl + "tv/" + id + apiKey + "&language=en-US&append_to_response=content_ratings%2Ccredits%2Csimilar";
+        return url;
+    }
+
 }

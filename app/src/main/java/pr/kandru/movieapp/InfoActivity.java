@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by pkkan on 4/19/2018.
  */
 
-public class InfoActivity extends AppCompatActivity {
+public class InfoActivity extends AppCompatActivity implements FilmographyAdapter.onItemClicked{
     RecyclerView topView;
     RecyclerView bottomView;
     GridLayoutManager layoutManagerBot;
@@ -66,62 +67,58 @@ public class InfoActivity extends AppCompatActivity {
                 break;
         }
 
-        TextView tv = findViewById(R.id.bioText);
-        tv.setMovementMethod(new ScrollingMovementMethod());
-        tv.setScrollbarFadingEnabled(false);
+        bio.setMovementMethod(new ScrollingMovementMethod());
+        bio.setScrollbarFadingEnabled(false);
     }
 
     private void displayTVShow(TVShow tv) {
-        topText.setText("Cast");
-        bottomText.setText("Similar Television Shows");
+        bottomText.setText(R.string.similarTV);
         title.setText(tv.getTitle());
-        //bio.setText(actor.getBio());
+        bio.setText(tv.getOverview());
         setPoster(tv.getPoster(), tv.getTitle());
 
         layoutManagerTop = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         topView.setLayoutManager(layoutManagerTop);
         ResultHolder cast = tv.getCast();
-        List<String> castImages = cast.getImages();
-        List<String> castTitles = cast.getNames();
-        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, castImages, castTitles);
+        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, cast);
 
         layoutManagerBot = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         bottomView.setLayoutManager(layoutManagerBot);
         ResultHolder similar = tv.getSimilar();
-        List<String> filmImages = similar.getImages();
-        List<String> filmTitles = similar.getNames();
-        FilmographyAdapter bottomAdapter = new FilmographyAdapter(InfoActivity.this, filmImages, filmTitles);
+        FilmographyAdapter bottomAdapter = new FilmographyAdapter(InfoActivity.this, similar);
 
         topView.setAdapter(topAdapter);
         bottomView.setAdapter(bottomAdapter);
+
+        topAdapter.setOnClick(this);
+        bottomAdapter.setOnClick(this);
     }
 
     private void displayMovie(Movie movie) {
-        topText.setText("Cast");
-        bottomText.setText("Similar Movies");
         title.setText(movie.getTitle());
-        //bio.setText(actor.getBio());
+        bio.setText(movie.getOverview());
         setPoster(movie.getPoster(), movie.getTitle());
 
         layoutManagerTop = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         topView.setLayoutManager(layoutManagerTop);
         ResultHolder cast = movie.getCast();
-        List<String> castImages = cast.getImages();
-        List<String> castTitles = cast.getNames();
-        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, castImages, castTitles);
+        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, cast);
 
         layoutManagerBot = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         bottomView.setLayoutManager(layoutManagerBot);
         ResultHolder similar = movie.getSimilar();
-        List<String> filmImages = similar.getImages();
-        List<String> filmTitles = similar.getNames();
-        FilmographyAdapter bottomAdapter = new FilmographyAdapter(InfoActivity.this, filmImages, filmTitles);
+        FilmographyAdapter bottomAdapter = new FilmographyAdapter(InfoActivity.this, similar);
 
         topView.setAdapter(topAdapter);
         bottomView.setAdapter(bottomAdapter);
+
+        topAdapter.setOnClick(this);
+        bottomAdapter.setOnClick(this);
     }
 
     private void displayActor(Actor actor) {
+        topText.setText(R.string.filmography);
+        bottomText.setText(R.string.images);
         title.setText(actor.getName());
         bio.setText(actor.getBio());
         setPoster(actor.getPoster(), actor.getName());
@@ -129,9 +126,7 @@ public class InfoActivity extends AppCompatActivity {
         layoutManagerTop = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         topView.setLayoutManager(layoutManagerTop);
         ResultHolder holder = actor.getHolder();
-        List<String> filmImages = holder.getImages();
-        List<String> filmTitles = holder.getNames();
-        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, filmImages, filmTitles);
+        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, holder);
 
         layoutManagerBot = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         bottomView.setLayoutManager(layoutManagerBot);
@@ -140,6 +135,9 @@ public class InfoActivity extends AppCompatActivity {
 
         topView.setAdapter(topAdapter);
         bottomView.setAdapter(bottomAdapter);
+
+        topAdapter.setOnClick(this);
+
     }
 
     private void setPoster(String poster, final String name) {
@@ -184,5 +182,14 @@ public class InfoActivity extends AppCompatActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
         startActivity(i);
+    }
+
+    @Override
+    public void onItemClick(Result result) {
+        Intent intent = new Intent(this, LoadingInfo.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("RESULT", result);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

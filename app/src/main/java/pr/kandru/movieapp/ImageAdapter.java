@@ -1,7 +1,6 @@
 package pr.kandru.movieapp;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -11,10 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 /**
@@ -37,9 +34,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
         GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) layout.getLayoutParams();
         lp.width = parent.getMeasuredWidth() / 3;
         layout.setLayoutParams(lp);
-        ImageAdapter.Holder holder = new ImageAdapter.Holder(layout);
-        return holder;
-        //return null;
+        return new ImageAdapter.Holder(layout);
     }
 
     @Override
@@ -48,7 +43,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
             holder.progress.setVisibility(View.GONE);
             holder.image.setVisibility(View.GONE);
             holder.text.setVisibility(View.VISIBLE);
-            holder.text.setText("Error");
+            holder.text.setText(R.string.error);
             holder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         } else {
             Picasso.with(context)
@@ -69,7 +64,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
                                 holder.progress.setVisibility(View.GONE);
                                 holder.image.setVisibility(View.GONE);
                                 holder.text.setVisibility(View.VISIBLE);
-                                holder.text.setText("Error");
+                                holder.text.setText(R.string.error);
                                 holder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
                             }
                         }
@@ -89,9 +84,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
 
         public Holder (View view) {
             super(view);
-            image = (ImageView) itemView.findViewById(R.id.resultImage);
-            text = (TextView) itemView.findViewById(R.id.resultText);
-            progress = (ProgressBar) itemView.findViewById(R.id.progressLoader);
+            image = itemView.findViewById(R.id.resultImage);
+            text = itemView.findViewById(R.id.resultText);
+            progress = itemView.findViewById(R.id.progressLoader);
         }
     }
 }

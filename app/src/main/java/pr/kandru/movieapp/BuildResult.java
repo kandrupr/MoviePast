@@ -1,9 +1,6 @@
 package pr.kandru.movieapp;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +32,6 @@ public class BuildResult {
         try {
             if(type.equals(RequestType.ACTOR)){
                 poster = obj.get("profile_path").toString();
-                Log.d("PROFILE PATH",poster);
             } else {
                 poster = obj.get("poster_path").toString();
             }

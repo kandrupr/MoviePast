@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -33,18 +34,15 @@ public class LoadingInfo extends AppCompatActivity {
     private String id;
     private String poster;
     BuildResult buildResult = new BuildResult();
-    TextView tv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_layout);
-        tv = findViewById(R.id.testView);
-        //setContentView(R.layout.loading_layout);
+        setContentView(R.layout.loading_layout);
         builder = new URLBuilder(this);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         Result result = (Result) bundle.getSerializable("RESULT");
-        Log.d("RESULT INFO ACTIVITY", result.toString());
         name = result.getName();
         type = result.getType();
         id = result.getId();
@@ -103,8 +101,8 @@ public class LoadingInfo extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        Log.d("FAILED", "FAILED");
+                        finish();
+                        Toast.makeText(c, "Network Error", Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -128,7 +126,6 @@ public class LoadingInfo extends AppCompatActivity {
         ResultHolder results = new ResultHolder();
         try {
             JSONArray jsonCast = response.getJSONObject(first).getJSONArray(second);
-            Log.d("JSON CAST", jsonCast.toString());
             int size = jsonCast.length();
             if(size > 10) {
                 size = 10;
@@ -137,7 +134,6 @@ public class LoadingInfo extends AppCompatActivity {
                 JSONObject obj = jsonCast.getJSONObject(i);
                 Result result = buildResult.checkData(obj, type);
                 if (result != null) {
-                    //Log.d("POPULAR NAME", result.getName());
                     results.add(result);
                 }
                 if(results.size() == 10){
@@ -195,10 +191,12 @@ public class LoadingInfo extends AppCompatActivity {
             JSONArray arr = response.getJSONObject("images").getJSONArray("profiles");
             int size = arr.length();
             if(size > 10) { size = 10; }
+            String path;
             for (int i = 0; i < size; i++) {
                 JSONObject index = arr.getJSONObject(i);
-                if(!index.equals("null")) {
-                    images.add(image_url + index.get("file_path").toString());
+                path = index.get("file_path").toString();
+                if(!path.equals("null") || !path.isEmpty()) {
+                    images.add(image_url + path);
                 }
             }
         } catch (JSONException e) {
@@ -210,7 +208,7 @@ public class LoadingInfo extends AppCompatActivity {
             JSONArray arr = response.getJSONObject("combined_credits").getJSONArray("cast");
             int size = arr.length();
             if(size > 0) {
-                List<JSONObject> myJsonArrayAsList = new ArrayList<JSONObject>();
+                List<JSONObject> myJsonArrayAsList = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++)
                     myJsonArrayAsList.add(arr.getJSONObject(i));
 
@@ -221,7 +219,7 @@ public class LoadingInfo extends AppCompatActivity {
                         try {
                             float keyA = (float) jsonObjectA.getDouble("popularity");
                             float keyB = (float) jsonObjectB.getDouble("popularity");
-                            compare = (int) (keyB - keyA);
+                            compare = Float.compare(keyB, keyA);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -255,24 +253,23 @@ public class LoadingInfo extends AppCompatActivity {
     private Movie parseMovieObject(JSONObject response) {
         ResultHolder cast;
         ResultHolder similar;
-        String rating , runtime, releaseDate, overview;
-        String genres = "";
+        String rating , runtime, releaseDate, overview ,genres;
         String mpaa = "";
 
         genres = findGenres(response);
-        Log.d("MOVIE GENRES", genres);
+        //Log.d("MOVIE GENRES", genres);
 
         overview = findField(response, "overview", "No overview available");
-        Log.d("MOVIE OVERVIEW", overview);
+        //Log.d("MOVIE OVERVIEW", overview);
 
         releaseDate = findField(response, "release_date", "No release date available");
-        Log.d("MOVIE RELEASE", releaseDate);
+        //Log.d("MOVIE RELEASE", releaseDate);
 
         runtime = findField(response, "runtime", "No runtime available");
-        Log.d("MOVIE RUNTIME", runtime);
+        //Log.d("MOVIE RUNTIME", runtime);
 
         rating = findField(response, "vote_average", "0/10");
-        Log.d("MOVIE RATING", rating);
+        //Log.d("MOVIE RATING", rating);
 
         try {
             JSONArray mpaaRatings = response.getJSONObject("release_dates").getJSONArray("results");
@@ -290,7 +287,7 @@ public class LoadingInfo extends AppCompatActivity {
             mpaa = "No rating available";
             // NO IMAGES THATS OKAY
         }
-        Log.d("MOVIE MPAA", mpaa);
+        //Log.d("MOVIE MPAA", mpaa);
 
         cast = findCarouselInfo(response, "credits", "cast", RequestType.ACTOR);
         similar = findCarouselInfo(response, "similar", "results", type);
@@ -313,31 +310,31 @@ public class LoadingInfo extends AppCompatActivity {
             e.printStackTrace();
             runTime = "Run time is not available";
         }
-        Log.d("TV RUN", runTime);
+        //Log.d("TV RUN", runTime);
 
         firstDate = findField(response, "first_air_date", "First airing not available");
-        Log.d("TV FIRST AIR", firstDate);
+        //Log.d("TV FIRST AIR", firstDate);
 
         genres = findGenres(response);
-        Log.d("TV GENREs", genres);
+        //Log.d("TV GENREs", genres);
 
         network = findFirstArrayElement(response, "networks", "name", "No TV Network available");
-        Log.d("TV NETWORK", network);
+        //Log.d("TV NETWORK", network);
 
         origin = findFirstArrayElement(response, "networks", "origin_country", "Don't have origin country");
-        Log.d("TV ORIGIN", origin);
+        //Log.d("TV ORIGIN", origin);
 
         numEpisodes = findField(response, "number_of_episodes", "Number of seasons unavailable");
-        Log.d("TV EPISODES", numEpisodes);
+        //Log.d("TV EPISODES", numEpisodes);
 
         numSeason = findField(response, "number_of_seasons", "Number of seasons unavailable");
-        Log.d("TV SEASONs", numSeason);
+        //Log.d("TV SEASONs", numSeason);
 
         overview = findField(response, "overview", "No overview available");
-        Log.d("TV OVERVIEW", overview);
+        //Log.d("TV OVERVIEW", overview);
 
         status = findField(response, "status", "Don't have current status");
-        Log.d("TV STATUS", status);
+        //Log.d("TV STATUS", status);
 
         try {
             JSONObject cRatings = response.getJSONObject("content_ratings");
@@ -346,7 +343,7 @@ public class LoadingInfo extends AppCompatActivity {
             e.printStackTrace();
             contentRatings = "No Content Rating available";
         }
-        Log.d("TV CONTENT", contentRatings);
+        //Log.d("TV CONTENT", contentRatings);
 
         cast = findCarouselInfo(response, "credits", "cast", RequestType.ACTOR);
         similar = findCarouselInfo(response, "similar", "results", type);

@@ -8,4 +8,8 @@
     <string name="home_button">Home</string>
     <string name="filmography">Filmography</string>
     <string name="images">Images</string>
+    <string name="similarMovies">Similar Movies</string>
+    <string name="similarTV">Similar Television Shows</string>
+    <string name="cast">Cast</string>
+    <string name="error">Error</string>
 </resources>

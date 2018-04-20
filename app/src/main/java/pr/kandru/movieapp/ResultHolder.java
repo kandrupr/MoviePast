@@ -34,6 +34,14 @@ public class ResultHolder implements Serializable {
         return names;
     }
 
+    public List<String> getIDs() {
+        List<String> ids = new ArrayList<>();
+        for(Result r: results) {
+            ids.add(r.getId());
+        }
+        return ids;
+    }
+
     public int size() {
         return results.size();
     }

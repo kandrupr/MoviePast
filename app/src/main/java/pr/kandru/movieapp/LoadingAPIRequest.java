@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -26,12 +26,11 @@ public class LoadingAPIRequest extends AppCompatActivity {
     private String query;
     private String form;
     private BuildResult buildResult = new BuildResult();
-    TextView tv;
-    TextView tv1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_layout);
+        setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
 
         String url = intent.getStringExtra("URL");
@@ -42,16 +41,8 @@ public class LoadingAPIRequest extends AppCompatActivity {
             Log.d("FORM", form);
         }
 
-        TextView urlText = findViewById(R.id.testView);
-        urlText.setText(url);
         Log.d("TYPE URL", url);
-
-        TextView typeText = findViewById(R.id.testView1);
-        typeText.setText(intentName);
         Log.d("TYPE INTENT", intentName);
-
-        tv = findViewById(R.id.testView2);
-        tv1 = findViewById(R.id.testView3);
 
         JsonObjectRequest jsonObjectRequest = createObject(url, this);
         Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
@@ -63,24 +54,27 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("RESPONSE", response.toString());
-                        tv1.setText(response.toString());
-                        Log.d("TYPE NAME", intentName);
-                        if(intentName.equals("movie")){
+                        switch (intentName) {
+                            case "movie":
                             parseData(response, RequestType.MOVIE);
+                            break;
                             // COMPLETE
-                        } else if(intentName.equals("tv")) {
+                        case "tv":
                             parseData(response, RequestType.TV);
+                            break;
                             // COMPLETE
-                        } else if(intentName.equals("actor")) {
+                        case "actor":
                             parseData(response, RequestType.ACTOR);
-                        } else if(intentName.equals("actorForm")){
+                            break;
+                        case "actorForm":
                             String id = getActorID(response);
                             getActorForm(c,id);
-                            // Send another request
+                            break;
                             // COMPLETE
-                        } else {
+                        default:
                             Log.d("MULTI STATEMENT", "OKAY");
                             parseMulti(response);
+                            break;
                             // COMPLETE
                         }
                     }
@@ -88,23 +82,23 @@ public class LoadingAPIRequest extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        Log.d("FAILED", "FAILED");
+                        finish();
+                        Toast.makeText(c, "Network Error", Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    private JsonObjectRequest actorFormObject(String url) {
+    private JsonObjectRequest actorFormObject(String url, final Context c) {
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("RESPONSE", response.toString());
                         if(form.equals("movie")) {
-                            Log.d("ACTOR FORM", response.toString());
+                            // Log.d("ACTOR FORM", response.toString());
                             parseActorCredits(response, RequestType.MOVIE);
                         } else {
-                            Log.d("ACTOR FORM", response.toString());
+                            // Log.d("ACTOR FORM", response.toString());
                             parseActorCredits(response, RequestType.TV);
                         }
                     }
@@ -112,8 +106,8 @@ public class LoadingAPIRequest extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-
+                        finish();
+                        Toast.makeText(c, "Network Error", Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -121,7 +115,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
     private void getActorForm(Context c, String id) {
         URLBuilder builder = new URLBuilder(c);
         String url = builder.buildPersonFrom(id, form);
-        JsonObjectRequest jsonObjectRequest = actorFormObject(url);
+        JsonObjectRequest jsonObjectRequest = actorFormObject(url, this);
         Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
     }
 
@@ -137,7 +131,6 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     if (Float.parseFloat(obj.get("popularity").toString()) >= 1.0) {
                         result = buildResult.checkData(obj, type);
                         if (result != null) {
-                            Log.d("TYPE", result.getType().toString());
                             Intent intent = new Intent(this, LoadingInfo.class);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("RESULT", result);
@@ -146,7 +139,6 @@ public class LoadingAPIRequest extends AppCompatActivity {
                             startActivity(intent);
                         } else {
                             // RETURN AND TOAST
-                            Log.d("TYPE ACTOR SORTED", "NOT FAMOUS");
                         }
                     }
                 } else {
@@ -154,7 +146,6 @@ public class LoadingAPIRequest extends AppCompatActivity {
                         result = buildResult.checkData(obj, type);
                         if (result != null) {
                             // NEW ACTIVITY WITH
-                            Log.d("TYPE", result.getType().toString());
                             Intent intent = new Intent(this, LoadingInfo.class);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("RESULT", result);
@@ -167,7 +158,6 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     }
                 }
             } else {
-                Log.d("ARRAY", Integer.toString(jsonResults.length()));
                 ResultHolder results = new ResultHolder();
                 Result result;
                 for (int i = 0; i < jsonResults.length(); i++) {
@@ -190,10 +180,8 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 }
                 if(results.size() == 0){
                     // FINISH AND TOAST
-                    Log.d("TYPE ACTOR SORTED", "NOT FAMOUS");
                 } else if(results.size() == 1) {
                     // TYPE Activity
-                    Log.d("TYPE", results.get(0).getType().toString());
                     Intent intent = new Intent(this, LoadingInfo.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("RESULT", results.get(0));
@@ -211,10 +199,8 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
-            //tv.setText(jsonResults.toString());
         } catch (JSONException e) {
             e.printStackTrace();
-            //tv.setText("FAILED");
             // TOAST AND FAIL
         }
     }
@@ -225,7 +211,6 @@ public class LoadingAPIRequest extends AppCompatActivity {
             if(jsonResults.length() == 0){
                 // FINISH AND TOAST NO RESULTS
             } else {
-                Log.d("ARRAY", Integer.toString(jsonResults.length()));
                 ResultHolder results = new ResultHolder();
                 Result result;
                 for (int i = 0; i < jsonResults.length(); i++) {
@@ -261,7 +246,6 @@ public class LoadingAPIRequest extends AppCompatActivity {
             if(jsonResults.length() == 0){
                 // FINISH AND TOAST NO RESULTS
             } else {
-                Log.d("ARRAY", Integer.toString(jsonResults.length()));
                 ResultHolder results = new ResultHolder();
                 Result result;
                 for (int i = 0; i < jsonResults.length(); i++) {

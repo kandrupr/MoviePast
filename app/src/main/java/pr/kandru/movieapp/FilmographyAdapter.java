@@ -13,8 +13,8 @@ import java.util.List;
  */
 
 public class FilmographyAdapter extends ResultAdapter {
-    public FilmographyAdapter(Context context, List<String> images, List<String> titles) {
-        super(context, images, titles);
+    public FilmographyAdapter(Context context, ResultHolder results) {
+        super(context, results);
     }
 
     @Override
@@ -24,7 +24,6 @@ public class FilmographyAdapter extends ResultAdapter {
         lp.width = parent.getMeasuredWidth() / 3;
         layout.setLayoutParams(lp);
 
-        Holder holder = new Holder(layout);
-        return holder;
+        return new Holder(layout);
     }
 }

@@ -21,13 +21,16 @@ import java.util.List;
 
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
     private Context context;
-    private List<String> images;
-    private List<String> titles;
+    private onItemClicked onClick;
+    private ResultHolder resultHolder;
 
-    public ResultAdapter(Context context, List<String> images, List<String> titles) {
+    public interface onItemClicked {
+        void onItemClick(Result result);
+    }
+
+    public ResultAdapter(Context context, ResultHolder results) {
+        this.resultHolder = results;
         this.context = context;
-        this.images = images;
-        this.titles = titles;
     }
 
     @Override
@@ -37,21 +40,21 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
         lp.height = parent.getMeasuredHeight() / 3;
         layout.setLayoutParams(lp);
 
-        Holder holder = new Holder(layout);
-        return holder;
+        return new Holder(layout);
     }
 
     @Override
-    public void onBindViewHolder(final Holder holder, final int position) {
-        if(images.get(position).equals("blank")) {
+    public void onBindViewHolder(final Holder holder, int position) {
+        final int pos = position;
+        if(resultHolder.getImages().get(position).equals("blank")) {
             holder.progress.setVisibility(View.GONE);
             holder.image.setVisibility(View.GONE);
             holder.text.setVisibility(View.VISIBLE);
-            holder.text.setText(titles.get(position));
+            holder.text.setText(resultHolder.getNames().get(position));
             holder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         } else {
             Picasso.with(context)
-                    .load(images.get(position))
+                    .load(resultHolder.getImages().get(position))
                     .into(holder.image,  new Callback() {
                         @Override
                         public void onSuccess() {
@@ -59,6 +62,12 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                                 holder.text.setVisibility(View.GONE);
                                 holder.progress.setVisibility(View.GONE);
                                 holder.image.setVisibility(View.VISIBLE);
+                                holder.image.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        onClick.onItemClick(resultHolder.get(pos));
+                                    }
+                                });
                             }
                         }
 
@@ -68,8 +77,14 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                                 holder.progress.setVisibility(View.GONE);
                                 holder.image.setVisibility(View.GONE);
                                 holder.text.setVisibility(View.VISIBLE);
-                                holder.text.setText(titles.get(position));
+                                holder.text.setText(resultHolder.getNames().get(pos));
                                 holder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+                                holder.text.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        onClick.onItemClick(resultHolder.get(pos));
+                                    }
+                                });
                             }
                         }
                     });
@@ -78,7 +93,11 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
 
     @Override
     public int getItemCount() {
-        return images.size();
+        return resultHolder.size();
+    }
+
+    public void setOnClick(onItemClicked onClick) {
+        this.onClick=onClick;
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
@@ -88,9 +107,9 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
 
         public Holder (View view) {
             super(view);
-            image = (ImageView) itemView.findViewById(R.id.resultImage);
-            text = (TextView) itemView.findViewById(R.id.resultText);
-            progress = (ProgressBar) itemView.findViewById(R.id.progressLoader);
+            image = itemView.findViewById(R.id.resultImage);
+            text = itemView.findViewById(R.id.resultText);
+            progress = itemView.findViewById(R.id.progressLoader);
         }
     }
 }

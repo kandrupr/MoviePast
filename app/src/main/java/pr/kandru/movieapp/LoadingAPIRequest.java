@@ -88,7 +88,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error
-
+                        Log.d("FAILED", "FAILED");
                     }
                 });
     }
@@ -133,12 +133,26 @@ public class LoadingAPIRequest extends AppCompatActivity {
             } else if(jsonResults.length() == 1) {
                 Result result;
                 JSONObject obj = (JSONObject) jsonResults.get(0);
-                if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
-                    result = checkData(obj, type);
-                    if(result != null){
-                        // NEW ACTIVITY WITH ITEM
-                    } else {
-                        // RETURN AND TOAST
+                Log.d("OKAY", obj.toString());
+                if(type.equals(RequestType.ACTOR)) {
+                    if (Float.parseFloat(obj.get("popularity").toString()) >= 1.0) {
+                        result = checkData(obj, type);
+                        if (result != null) {
+                            Intent intent = new Intent(this, InfoActivity.class);
+                            finish();
+                            startActivity(intent);
+                        } else {
+                            // RETURN AND TOAST
+                        }
+                    }
+                } else {
+                    if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) {
+                        result = checkData(obj, type);
+                        if (result != null) {
+                            // NEW ACTIVITY WITH ITEM
+                        } else {
+                            // RETURN AND TOAST
+                        }
                     }
                 }
             } else {
@@ -167,6 +181,9 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     // FINISH AND TOAST
                 } else if(results.size() == 1) {
                     // TYPE Activity
+                    Intent intent = new Intent(this, InfoActivity.class);
+                    finish();
+                    startActivity(intent);
                 } else {
                     // RESULTS ACTIVITY
                     Intent intent = new Intent(this, ResultsActivity.class);
@@ -257,6 +274,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
         }
     }
 
+    @Nullable
     private String getActorID(JSONObject response) {
         try {
             JSONArray jsonResults = response.getJSONArray("results");
@@ -268,6 +286,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
         }
     }
 
+    @Nullable
     private Result checkData(JSONObject obj, RequestType type) {
         String name;
         String id;
@@ -301,6 +320,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
         return new Result(type, name, id, poster);
     }
 
+    @Nullable
     private Result checkMultiData(JSONObject obj) {
         String name, id, poster, media;
         RequestType type;

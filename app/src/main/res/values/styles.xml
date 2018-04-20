@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="posterPadding">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingStart">5dp</item>
+    </style>
 </resources>

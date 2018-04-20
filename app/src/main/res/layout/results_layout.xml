@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.constraint.Guideline
+        android:id="@+id/guideTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="12"
-        android:background="@color/colorPrimary">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/guideTop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/homeButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:contentDescription="@string/home_button"
             android:foregroundGravity="center"
+            android:onClick="onHomeButton"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:onClick="onHomeButton"
             app:srcCompat="@drawable/home_white" />
 
         <TextView
@@ -31,16 +41,20 @@
             android:layout_toEndOf="@id/homeButton"
             android:fontFamily="@font/archivo_narrow_bold"
             android:gravity="center"
-            android:paddingStart="20dp"
             android:paddingEnd="10dp"
+            android:paddingStart="10dp"
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/resultView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/colorPrimary"></android.support.v7.widget.RecyclerView>
-</LinearLayout>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideTop"
+        app:layout_constraintBottom_toBottomOf="parent" ></android.support.v7.widget.RecyclerView>
+
+</android.support.constraint.ConstraintLayout>

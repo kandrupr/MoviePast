@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideTaskBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+    <android.support.constraint.Guideline
+        android:id="@+id/guideTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.50" />
+    <android.support.constraint.Guideline
+        android:id="@+id/guideCarouselTextTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55"/>
+    <android.support.constraint.Guideline
+        android:id="@+id/guideCarouselTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75"/>
+    <android.support.constraint.Guideline
+        android:id="@+id/guideCarouselTextBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.80"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/guideTaskBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/homeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/home_button"
+            android:foregroundGravity="center"
+            android:onClick="onHomeButton"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            app:srcCompat="@drawable/home_white" />
+
+        <TextView
+            android:id="@+id/requestText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/homeButton"
+            android:fontFamily="@font/archivo_narrow_bold"
+            android:gravity="center"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/guideTop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideTaskBar">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideCenterSplit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.40"/>
+
+        <ImageView
+            android:id="@+id/posterView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            style="@style/posterPadding"
+            android:paddingTop="5dp"
+            android:contentDescription="@string/resultImage"
+            android:visibility="invisible"
+            app:srcCompat="@android:drawable/alert_dark_frame"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/guideCenterSplit"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/resultText"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            style="@style/posterPadding"
+            android:paddingTop="5dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/guideCenterSplit"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ProgressBar
+            android:id="@+id/progressLoader"
+            style="android:attr/progressBarStyleLarge"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorPrimary"
+            android:paddingBottom="5dp"
+            android:paddingEnd="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingStart="5dp"
+            android:paddingTop="0dp"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            android:indeterminateDrawable="@drawable/progress"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/guideCenterSplit"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/guideCenterSplit"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/overviewText"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:maxLines="50"
+                android:scrollbars="vertical"
+                android:text="Jessica Chastain (born March 24, 1977) is an American theater, film and television actress. She played guest roles in several television shows before making her feature film debut with the 2008 independent film Jolene.\n\nIn 2011, Chastain gained wide public recognition for her starring roles in seven film releases; for her performance in The Help she received Best Supporting Actress nominations at the Academy Award, Golden Globe, BAFTA, and Screen Actors Guild Award ceremonies. In 2012, Time magazine featured her as one of the '100 Most Influential People in the World'. Chastain's performance in the 2012 military thriller Zero Dark Thirty and the 2013 horror film Mama led film critic Richard Roeper to describe her as 'one of the finest actors of her generation'. For the former, she won a Golden Globe Award for Best Actress (Drama) and received a nomination for the Academy Award for Best Actress. Jessica Chastain (born March 24, 1977) is an American theater, film and television actress. She played guest roles in several television shows before making her feature film debut with the 2008 independent film Jolene.\n\nIn 2011, Chastain gained wide public recognition for her starring roles in seven film releases; for her performance in The Help she received Best Supporting Actress nominations at the Academy Award, Golden Globe, BAFTA, and Screen Actors Guild Award ceremonies. In 2012, Time magazine featured her as one of the '100 Most Influential People in the World'. Chastain's performance in the 2012 military thriller Zero Dark Thirty and the 2013 horror film Mama led film critic Richard Roeper to describe her as 'one of the finest actors of her generation'. For the former, she won a Golden Globe Award for Best Actress (Drama) and received a nomination for the Academy Award for Best Actress."
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/topText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/guideCarouselTextTop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideTop"
+        android:text="@string/filmography"
+        android:fontFamily="@font/archivo_narrow_bold"
+        android:gravity="center_vertical"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/carouselTop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/guideCarouselTop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideCarouselTextTop"></android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/bottomText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/guideCarouselTextBottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideCarouselTop"
+        android:text="@string/images"
+        android:fontFamily="@font/archivo_narrow_bold"
+        android:gravity="center_vertical"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/carouselBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideCarouselTextBottom"></android.support.v7.widget.RecyclerView>
+</android.support.constraint.ConstraintLayout>

@@ -6,21 +6,11 @@ import java.io.Serializable;
  * Created by pkkan on 4/20/2018.
  */
 
-public class TVShow implements Serializable {
-    String title;
-    String poster;
-    String runTime;
-    String firstDate;
-    String genres;
-    String network;
-    String origin;
-    String numEpisodes;
-    String numSeason;
-    String overview;
-    String status;
-    String contentRatings;
-    ResultHolder cast;
-    ResultHolder similar;
+public class TVShow extends InfoOverview implements Serializable {
+    private String title, poster, runTime, firstDate, genres, network;
+    private String origin, numEpisodes, numSeason, overview, status, contentRatings;
+    private ResultHolder cast;
+    private ResultHolder similar;
 
     public TVShow(String title, String poster, String runTime, String firstDate, String genres, String network, String origin, String numEpisodes, String numSeason, String overview, String status, String contentRatings, ResultHolder cast, ResultHolder similar) {
         this.title = title;
@@ -67,9 +57,7 @@ public class TVShow implements Serializable {
         return origin;
     }
 
-    public String getNumEpisodes() {
-        return numEpisodes;
-    }
+    public String getNumEpisodes() { return numEpisodes; }
 
     public String getNumSeason() {
         return numSeason;

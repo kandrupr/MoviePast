@@ -14,31 +14,28 @@ import android.widget.TextView;
  */
 
 public class SliderAdapter extends PagerAdapter {
-    Context context;
-    LayoutInflater layoutInflater;
+    private Context context;
     private int mCount = 0;
-    final Handler h=new Handler();
-    Runnable updateTask = null;
+    private final Handler h=new Handler();
+    private Runnable updateTask;
 
-
-    public String[] headers = {
+    private String[] headers = {
             "Profile",
             "Tap to Start",
             "Find",
             "About"
     };
 
-    public String[] searchText = {
+    private String[] searchText = {
             "your favorite Movies",
             "your favorite TV Shows",
             "your favorite actors and actresses"
     };
 
-
     public SliderAdapter(Context context) {
         this.context = context;
+        updateTask = null;
     }
-
 
     @Override
     public int getCount() {
@@ -52,31 +49,29 @@ public class SliderAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         TextView header;
         View view;
-        switch(position) {
-            case 0:
-                view = layoutInflater.inflate(R.layout.slide_main, container, false);
-                header = (TextView) view.findViewById(R.id.textCommand);
-                break;
-            case 1:
-                view = layoutInflater.inflate(R.layout.slide_main, container, false);
-                header = (TextView) view.findViewById(R.id.textCommand);
-                break;
-            case 2:
-                view = layoutInflater.inflate(R.layout.slide_find, container, false);
-                header = (TextView) view.findViewById(R.id.searchHeader);
-                header.setText(headers[position]);
-                break;
-            case 3:
-                view = layoutInflater.inflate(R.layout.slide_main, container, false);
-                header = (TextView) view.findViewById(R.id.textCommand);
-                break;
-            default:
-                view = layoutInflater.inflate(R.layout.slide_main, container, false);
-                header = (TextView) view.findViewById(R.id.textCommand);
-                break;
+        if (position == 0) {
+            view = layoutInflater.inflate(R.layout.slide_main, container, false);
+            // header = (TextView) view.findViewById(R.id.textCommand);
+        } else if (position == 1) {
+            view = layoutInflater.inflate(R.layout.slide_main, container, false);
+            header = view.findViewById(R.id.textCommand);
+
+        } else if (position == 2) {
+            view = layoutInflater.inflate(R.layout.slide_find, container, false);
+            header = view.findViewById(R.id.searchHeader);
+            header.setText(headers[position]);
+
+        } else if (position == 3) {
+            view = layoutInflater.inflate(R.layout.slide_main, container, false);
+            header = view.findViewById(R.id.textCommand);
+
+        } else {
+            view = layoutInflater.inflate(R.layout.slide_main, container, false);
+            header = view.findViewById(R.id.textCommand);
+
         }
         //header.setText(headers[position]);
         container.addView(view);
@@ -98,15 +93,15 @@ public class SliderAdapter extends PagerAdapter {
             }
         };
         h.postDelayed(updateTask,2000);
-
     }
 
     private void changeText(){
         final TextView info = ((MainActivity) context).findViewById(R.id.searchInfo);
-        info.setText(searchText[mCount%3]);
-        mCount++;
-
-        info.startAnimation(AnimationUtils.loadAnimation(context,android.R.anim.slide_in_left));
+        if (info != null) {
+            info.setText(searchText[mCount % 3]);
+            mCount++;
+            info.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left));
+        }
     }
 
     public void endHandler() {

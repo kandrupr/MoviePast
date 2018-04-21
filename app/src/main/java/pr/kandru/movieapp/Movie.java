@@ -6,17 +6,11 @@ import java.io.Serializable;
  * Created by pkkan on 4/20/2018.
  */
 
-public class Movie implements Serializable {
-    String title;
-    String poster;
-    String rating;
-    String mpaa;
-    String runtime;
-    String releaseDate;
-    String overview;
-    String genres;
-    ResultHolder cast;
-    ResultHolder similar;
+public class Movie extends InfoOverview implements Serializable {
+    private String title, poster, rating, mpaa, runtime, releaseDate;
+    private String overview, genres;
+    private ResultHolder cast;
+    private ResultHolder similar;
 
     public Movie(String title, String poster, String rating, String mpaa, String runtime, String releaseDate, String overview, String genres, ResultHolder cast, ResultHolder similar) {
         this.title = title;

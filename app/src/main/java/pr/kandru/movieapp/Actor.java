@@ -1,17 +1,14 @@
 package pr.kandru.movieapp;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by pkkan on 4/19/2018.
  */
 
-public class Actor implements Serializable{
-    private String name;
-    private String biography;
-    private String poster;
+public class Actor extends InfoOverview implements Serializable{
+    private String name, biography, poster;
     private List<String> images;
     private ResultHolder holder;
 

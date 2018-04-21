@@ -1,5 +1,6 @@
 package pr.kandru.movieapp;
 
+import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 
@@ -13,9 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -26,17 +25,14 @@ import java.util.List;
  * Created by pkkan on 4/19/2018.
  */
 
-public class InfoActivity extends AppCompatActivity implements FilmographyAdapter.onItemClicked{
-    RecyclerView topView;
-    RecyclerView bottomView;
-    GridLayoutManager layoutManagerBot;
-    GridLayoutManager layoutManagerTop;
-    TextView title;
-    TextView bio;
-    TextView topText;
-    TextView bottomText;
-
-    RequestType form;
+public class InfoActivity extends AppCompatActivity implements FilmographyAdapter.onItemClicked {
+    private RecyclerView topView, bottomView;
+    private GridLayoutManager layoutManagerBot, layoutManagerTop;
+    private TextView title, bio, topText, bottomText;
+    private FilmographyAdapter topAdapter, bottomAdapter;
+    private ImageAdapter bottomImageAdapter;
+    private InfoOverview data;
+    private RequestType form;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -53,26 +49,44 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         form = (RequestType) intent.getSerializableExtra("FORM");
+        data = (InfoOverview) bundle.getSerializable("DATA");
+
+        bio.setMovementMethod(new ScrollingMovementMethod());
+        bio.setScrollbarFadingEnabled(false);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         switch(form) {
             case ACTOR:
-                Actor actor = (Actor) bundle.getSerializable("DATA");
-                displayActor(actor);
+                displayActor((Actor) data);
                 break;
             case MOVIE:
-                Movie movie = (Movie) bundle.getSerializable("DATA");
-                displayMovie(movie);
+                displayMovie((Movie) data);
                 break;
             case TV:
-                TVShow tv = (TVShow) bundle.getSerializable("DATA");
-                displayTVShow(tv);
+                displayTVShow((TVShow) data);
                 break;
             default:
                 //FAIL AND TOAST
                 break;
         }
+    }
 
-        bio.setMovementMethod(new ScrollingMovementMethod());
-        bio.setScrollbarFadingEnabled(false);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        topView.setAdapter(null);
+        bottomView.setAdapter(null);
+        topAdapter = null;
+        bottomAdapter = null;
+        bottomImageAdapter = null;
     }
 
     private void displayTVShow(TVShow tv) {
@@ -84,12 +98,12 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         layoutManagerTop = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         topView.setLayoutManager(layoutManagerTop);
         ResultHolder cast = tv.getCast();
-        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, cast);
+        topAdapter = new FilmographyAdapter(InfoActivity.this, cast);
 
         layoutManagerBot = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         bottomView.setLayoutManager(layoutManagerBot);
         ResultHolder similar = tv.getSimilar();
-        FilmographyAdapter bottomAdapter = new FilmographyAdapter(InfoActivity.this, similar);
+        bottomAdapter = new FilmographyAdapter(InfoActivity.this, similar);
 
         topView.setAdapter(topAdapter);
         bottomView.setAdapter(bottomAdapter);
@@ -106,12 +120,12 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         layoutManagerTop = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         topView.setLayoutManager(layoutManagerTop);
         ResultHolder cast = movie.getCast();
-        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, cast);
+        topAdapter = new FilmographyAdapter(InfoActivity.this, cast);
 
         layoutManagerBot = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         bottomView.setLayoutManager(layoutManagerBot);
         ResultHolder similar = movie.getSimilar();
-        FilmographyAdapter bottomAdapter = new FilmographyAdapter(InfoActivity.this, similar);
+        bottomAdapter = new FilmographyAdapter(InfoActivity.this, similar);
 
         topView.setAdapter(topAdapter);
         bottomView.setAdapter(bottomAdapter);
@@ -130,15 +144,15 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         layoutManagerTop = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         topView.setLayoutManager(layoutManagerTop);
         ResultHolder holder = actor.getHolder();
-        FilmographyAdapter topAdapter = new FilmographyAdapter(InfoActivity.this, holder);
+        topAdapter = new FilmographyAdapter(InfoActivity.this, holder);
 
         layoutManagerBot = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         bottomView.setLayoutManager(layoutManagerBot);
         List<String> images = actor.getImages();
-        ImageAdapter bottomAdapter = new ImageAdapter(InfoActivity.this, images);
+        bottomImageAdapter = new ImageAdapter(InfoActivity.this, images);
 
         topView.setAdapter(topAdapter);
-        bottomView.setAdapter(bottomAdapter);
+        bottomView.setAdapter(bottomImageAdapter);
 
         topAdapter.setOnClick(this);
     }
@@ -196,5 +210,54 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         bundle.putSerializable("RESULT", result);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void onTrimMemory(int level){
+
+        // Determine which lifecycle or system event was raised.
+        switch (level) {
+            case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
+                /*
+                   Release any UI objects that currently hold memory.
+
+                   The user interface has moved to the background.
+                */
+                break;
+            case ComponentCallbacks2.TRIM_MEMORY_RUNNING_MODERATE:
+            case ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW:
+            case ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL:
+                /*
+                   Release any memory that your app doesn't need to run.
+
+                   The device is running low on memory while the app is running.
+                   The event raised indicates the severity of the memory-related event.
+                   If the event is TRIM_MEMORY_RUNNING_CRITICAL, then the system will
+                   begin killing background processes.
+                */
+                break;
+
+            case ComponentCallbacks2.TRIM_MEMORY_BACKGROUND:
+            case ComponentCallbacks2.TRIM_MEMORY_MODERATE:
+            case ComponentCallbacks2.TRIM_MEMORY_COMPLETE:
+                /*
+                   Release as much memory as the process can.
+
+                   The app is on the LRU list and the system is running low on memory.
+                   The event raised indicates where the app sits within the LRU list.
+                   If the event is TRIM_MEMORY_COMPLETE, the process will be one of
+                   the first to be terminated.
+                */
+                break;
+            default:
+                /*
+                  Release any non-critical data structures.
+
+                  The app received an unrecognized memory level value
+                  from the system. Treat this as a generic low-memory message.
+                */
+                break;
+        }
+
     }
 }

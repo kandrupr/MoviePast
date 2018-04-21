@@ -17,10 +17,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
-
 import ai.api.AIListener;
 import ai.api.android.AIConfiguration;
 import ai.api.android.AIService;
@@ -32,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     private ViewPager slideViewPager;
     private LinearLayout dotLayout;
     private ImageView[] dots;
-    private RefWatcher refWatcher;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
@@ -40,10 +35,10 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     private SliderAdapter mSlider;
     private ImageButton listenButton;
-    //private TextView resultTextView;
     private AIService aiService;
     private DialogFlowParser mParser;
     //private String mState = "open";
+    ViewPager.OnPageChangeListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +50,27 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         mSlider = new SliderAdapter(this);
         slideViewPager.setAdapter(mSlider);
         slideViewPager.setCurrentItem(1);
-        slideViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        listenButton = findViewById(R.id.voiceButton);
+        //resultTextView = (TextView) findViewById(R.id.resultTextView);
+        createDots(1);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final AIConfiguration config = new AIConfiguration(getString(R.string.DialogFlowAPI),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        aiService = AIService.getService(this, config);
+        aiService.setListener(this);
+
+        listener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
@@ -68,21 +83,17 @@ public class MainActivity extends AppCompatActivity implements AIListener{
                 }
                 createDots(position);
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {}
-        });
+        };
+        slideViewPager.addOnPageChangeListener(listener);
+    }
 
-        listenButton = findViewById(R.id.voiceButton);
-        //resultTextView = (TextView) findViewById(R.id.resultTextView);
-        final AIConfiguration config = new AIConfiguration(getString(R.string.DialogFlowAPI),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        aiService = AIService.getService(this, config);
-        aiService.setListener(this);
-
-        createDots(1);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        aiService = null;
+        slideViewPager.removeOnPageChangeListener(listener);
     }
 
     public void scrollToProfile(View v) { slideViewPager.setCurrentItem(0); }
@@ -110,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     public void onResult(AIResponse response) {
         Result result = response.getResult();
         mParser = new DialogFlowParser(getApplicationContext(), result);
-        String intent = result.getMetadata().getIntentName().toString();
+        String intent = result.getMetadata().getIntentName();
         String query = result.getResolvedQuery();
         String value = mParser.getURL();
         //mState = "open";

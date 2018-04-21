@@ -20,25 +20,22 @@ public class ResultHolder implements Serializable {
 
     public List<String> getImages() {
         List<String> images = new ArrayList<>();
-        for(Result r: results) {
+        for(Result r: results)
             images.add(r.getPoster());
-        }
         return images;
     }
 
     public List<String> getNames() {
         List<String> names = new ArrayList<>();
-        for(Result r: results) {
+        for(Result r: results)
             names.add(r.getName());
-        }
         return names;
     }
 
     public List<String> getIDs() {
         List<String> ids = new ArrayList<>();
-        for(Result r: results) {
+        for(Result r: results)
             ids.add(r.getId());
-        }
         return ids;
     }
 

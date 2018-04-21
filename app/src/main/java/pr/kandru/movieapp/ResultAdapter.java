@@ -15,7 +15,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import java.util.List;
 
 /**
  * Created by pkkan on 4/9/2018.

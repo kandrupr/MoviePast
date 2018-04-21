@@ -2,7 +2,6 @@ package pr.kandru.movieapp;
 
 import android.content.Context;
 import android.util.Log;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -70,48 +69,56 @@ public class URLBuilder {
         if(params.get("Type").equals("tv")) {
             // TV
             url += "tv" + apiKey;
-            if(desc.equals("upcoming")) {
-                if(Integer.parseInt(year) == currentYear) {
-                    url += "&first_air_date.gte=" + year + "-1-1&first_air_date.lte=" + year + "-12-31&with_original_language=en" + ending;
-                } else {
-                    url = "invalid";
-                }
-            } else if(desc.equals("popular")) {
-                if(Integer.parseInt(year) <= currentYear){
-                    url += "&sort_by=popularity.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year +"-12-31&vote_count.gte=50&with_original_language=en" + ending;
-                } else {
-                    url = "invalid";
-                }
-            } else {
-                if(Integer.parseInt(year) <= currentYear){
-                    url += "&sort_by=vote_average.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year +"-12-31&vote_count.gte=50&with_original_language=en" + ending;
-                } else {
-                    url = "invalid";
-                }
+            switch (desc) {
+                case "upcoming":
+                    if (Integer.parseInt(year) == currentYear) {
+                        url += "&first_air_date.gte=" + year + "-1-1&first_air_date.lte=" + year + "-12-31&with_original_language=en" + ending;
+                    } else {
+                        url = "invalid";
+                    }
+                    break;
+                case "popular":
+                    if (Integer.parseInt(year) <= currentYear) {
+                        url += "&sort_by=popularity.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year + "-12-31&vote_count.gte=50&with_original_language=en" + ending;
+                    } else {
+                        url = "invalid";
+                    }
+                    break;
+                default:
+                    if (Integer.parseInt(year) <= currentYear) {
+                        url += "&sort_by=vote_average.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year + "-12-31&vote_count.gte=50&with_original_language=en" + ending;
+                    } else {
+                        url = "invalid";
+                    }
+                    break;
             }
         } else {
             url += "movie" + apiKey;
-            if(desc.equals("upcoming")) {
-                if(Integer.parseInt(year) < currentYear) {
-                    url = "invalid";
-                } else {
-                    // &primary_release_date.gte=2018-9-15&primary_release_date.lte=2018-10-15&language=en-US&region=US&page=1
-                    url += "&region=US&primary_release_date.gte=" + year + "-" + month + "-" + day + "&primary_release_date.lte=" + year + "-12-31" + ending;
-                }
-            } else if(desc.equals("popular")) {
-                url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year;
-                if(Integer.parseInt(year) > currentYear){
-                     url += ending;
-                } else {
-                    url += "&vote_count.gte=50" + ending;
-                }
-            } else {
-                url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year;
-                if(Integer.parseInt(year) > currentYear){
-                    url += ending;
-                } else {
-                    url += "&vote_count.gte=50" + ending;
-                }
+            switch (desc) {
+                case "upcoming":
+                    if (Integer.parseInt(year) < currentYear) {
+                        url = "invalid";
+                    } else {
+                        // &primary_release_date.gte=2018-9-15&primary_release_date.lte=2018-10-15&language=en-US&region=US&page=1
+                        url += "&region=US&primary_release_date.gte=" + year + "-" + month + "-" + day + "&primary_release_date.lte=" + year + "-12-31" + ending;
+                    }
+                    break;
+                case "popular":
+                    url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year;
+                    if (Integer.parseInt(year) > currentYear) {
+                        url += ending;
+                    } else {
+                        url += "&vote_count.gte=50" + ending;
+                    }
+                    break;
+                default:
+                    url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year;
+                    if (Integer.parseInt(year) > currentYear) {
+                        url += ending;
+                    } else {
+                        url += "&vote_count.gte=50" + ending;
+                    }
+                    break;
             }
         }
         return url;

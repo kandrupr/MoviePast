@@ -19,10 +19,11 @@ import java.util.List;
  */
 
 public class ResultsActivity extends AppCompatActivity implements ResultAdapter.onItemClicked {
-    RecyclerView resultsView;
-    GridLayoutManager layoutManager;
-    String query;
-    ResultHolder results;
+    private RecyclerView resultsView;
+    private GridLayoutManager layoutManager;
+    private String query;
+    private ResultHolder results;
+    private ResultAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,12 +41,26 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
         resultsView = findViewById(R.id.resultView);
         layoutManager = new GridLayoutManager(ResultsActivity.this, 3);
         resultsView.setLayoutManager(layoutManager);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
-        ResultAdapter adapter = new ResultAdapter(ResultsActivity.this, results);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter = new ResultAdapter(ResultsActivity.this, results);
         resultsView.setAdapter(adapter);
-
         adapter.setOnClick(this); // Bind the listener
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        resultsView.setAdapter(null);
+        adapter = null;
     }
 
     @Override
@@ -58,9 +73,9 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
     }
 
     public void onHomeButton(View v) {
-        Intent i = new Intent(this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
-        startActivity(i);
+        startActivity(intent);
     }
 }

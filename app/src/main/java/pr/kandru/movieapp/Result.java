@@ -8,9 +8,7 @@ import java.io.Serializable;
 
 public class Result implements Serializable {
     private RequestType type;
-    private String name;
-    private String id;
-    private String poster;
+    private String name, id, poster;
 
     public Result(RequestType type, String name, String id, String poster) {
         this.type = type;

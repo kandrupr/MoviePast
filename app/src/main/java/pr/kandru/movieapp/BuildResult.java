@@ -9,8 +9,7 @@ import org.json.JSONObject;
  */
 
 public class BuildResult {
-    public BuildResult() {
-    }
+    public BuildResult() {}
 
     @Nullable
     public Result checkData(JSONObject obj, RequestType type) {

@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -28,11 +27,9 @@ import java.util.List;
  */
 
 public class LoadingInfo extends AppCompatActivity {
-    final String image_url = "https://image.tmdb.org/t/p/w92";
+    private final String image_url = "https://image.tmdb.org/t/p/w92";
     private RequestType type;
-    private String name;
-    private String id;
-    private String poster;
+    private String name, id, poster;
     private BuildResult buildResult = new BuildResult();
 
     @Override

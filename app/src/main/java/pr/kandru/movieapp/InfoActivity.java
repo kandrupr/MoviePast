@@ -155,9 +155,9 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
             text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         } else {
             Picasso.with(this)
-                    .load(poster)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .load(poster.replace("92", "185"))
+                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
                     .into(image,  new Callback() {
                         @Override
                         public void onSuccess() {

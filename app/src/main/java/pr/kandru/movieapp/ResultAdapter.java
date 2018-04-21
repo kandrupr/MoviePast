@@ -57,8 +57,8 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
         } else {
             Picasso.with(context)
                     .load(resultHolder.getImages().get(position))
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
                     .into(holder.image,  new Callback() {
                         @Override
                         public void onSuccess() {

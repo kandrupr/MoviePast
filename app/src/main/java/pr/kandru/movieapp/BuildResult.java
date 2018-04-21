@@ -49,6 +49,7 @@ public class BuildResult {
                 case "movie":
                     if(Integer.parseInt(obj.get("vote_count").toString()) <= 2){ return null;}
                     name = obj.get("title").toString();
+                    poster = obj.get("poster_path").toString();
                     type = RequestType.MOVIE;
                     break;
                 case "tv":
@@ -56,6 +57,7 @@ public class BuildResult {
                     if(removeTalkShows(obj.get("character").toString(), obj.get("genre_ids").toString())){
                         return null;
                     }
+                    poster = obj.get("poster_path").toString();
                     name = obj.get("name").toString();
                     type = RequestType.TV;
                     break;
@@ -63,13 +65,13 @@ public class BuildResult {
                     if(Float.parseFloat(obj.get("popularity").toString()) <= 1.0){ return null; }
                     name = obj.get("name").toString();
                     type = RequestType.ACTOR;
+                    poster = obj.get("profile_path").toString();
                     break;
                 default:
                     return null;
             }
             id = obj.get("id").toString();
             if(name.equals("null") || id.equals("null")) { return null;}
-            poster = obj.get("poster_path").toString();
             if(poster.equals("null")){ return null; }
         } catch (JSONException e) {
             e.printStackTrace();

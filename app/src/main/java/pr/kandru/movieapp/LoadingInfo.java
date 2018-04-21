@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class LoadingInfo extends AppCompatActivity {
-    final String image_url = "https://image.tmdb.org/t/p/w500";
+    final String image_url = "https://image.tmdb.org/t/p/w92";
     private RequestType type;
     private String name;
     private String id;
@@ -126,12 +126,11 @@ public class LoadingInfo extends AppCompatActivity {
         try {
             JSONArray jsonCast = response.getJSONObject(first).getJSONArray(second);
             int size = jsonCast.length();
-            if(size > 10) { size = 10; }
+            if(size > 7) { size = 7; }
             for (int i = 0; i < size; i++) {
                 JSONObject obj = jsonCast.getJSONObject(i);
                 Result result = buildResult.checkData(obj, type);
                 if (result != null) { results.add(result); }
-                if(results.size() == 10){ break; }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -183,7 +182,7 @@ public class LoadingInfo extends AppCompatActivity {
         try {
             JSONArray arr = response.getJSONObject("images").getJSONArray("profiles");
             int size = arr.length();
-            if(size > 10) { size = 10; }
+            if(size > 7) { size = 7; }
             String path;
             for (int i = 0; i < size; i++) {
                 JSONObject index = arr.getJSONObject(i);
@@ -231,7 +230,7 @@ public class LoadingInfo extends AppCompatActivity {
                     if (result != null) {
                         holder.add(result);
                     }
-                    if(holder.size() == 10){ break; }
+                    if(holder.size() == 7){ break; }
                 }
             }
         } catch (JSONException e) {

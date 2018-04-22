@@ -184,6 +184,8 @@ public class URLBuilder {
         if(params.containsKey("Type")) {
             if(params.get("Type").equals("tv")) {
                 url += "tv" + apiKey + "&query=";
+            } else if(params.get("Type").equals("actor")){
+                url += "person" + apiKey + "&region=US&query=";
             } else {
                 url += "movie" + apiKey + "&region=US&query=";
             }

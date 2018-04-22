@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import ai.api.AIListener;
 import ai.api.android.AIConfiguration;
@@ -47,11 +49,11 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         setContentView(R.layout.activity_main);
         slideViewPager = findViewById(R.id.slideLayout);
         dotLayout = findViewById(R.id.dotsLayout);
+
         mSlider = new SliderAdapter(this);
         slideViewPager.setAdapter(mSlider);
         slideViewPager.setCurrentItem(1);
         listenButton = findViewById(R.id.voiceButton);
-        //resultTextView = (TextView) findViewById(R.id.resultTextView);
         createDots(1);
     }
 
@@ -76,11 +78,12 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
             @Override
             public void onPageSelected(int position) {
+                /*
                 if(slideViewPager.getCurrentItem() == 2) {
                     mSlider.createHandler();
                 } else {
                     mSlider.endHandler();
-                }
+                }*/
                 createDots(position);
             }
             @Override
@@ -100,11 +103,6 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     public void scrollToSearch(View v) {
         slideViewPager.setCurrentItem(2);
-    }
-
-    public void onSearchClick(View v) {
-        Intent i = new Intent(getApplicationContext(), SearchActivity.class);
-        startActivity(i);
     }
 
     public void onStartListening(final View view) {
@@ -197,9 +195,9 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             dots[i] = new ImageView(this);
 
             if(i == pos) {
-                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.active_dots));
+                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.active_dots_drawable));
             } else {
-                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_dots));
+                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_dots_drawable));
             }
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -246,5 +244,18 @@ as.addAnimation(in);
     @Override
     public void onListeningFinished() {
         //mState = "finished";
+    }
+
+    public void onClickMedia(View v){
+        String type = ((TextView)v).getText().toString();
+        SearchEditText inputText = mSlider.setTextSearch(type);
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if(imm != null) {
+            imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    public void onClearInput(View v){
+        mSlider.clearInput();
     }
 }

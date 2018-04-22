@@ -16,4 +16,24 @@
         <item name="android:paddingRight">5dp</item>
         <item name="android:paddingStart">5dp</item>
     </style>
+
+    <style name="searchButtons">
+        <item name="android:fontFamily">@font/archivo_narrow_bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorDarkYellow</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@drawable/rounded_background</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+    </style>
+
+    <style name="editTextThemes" parent="@android:style/TextAppearance.Holo.Widget.EditText">
+        <item name="colorControlNormal">@color/colorWhite</item>
+        <item name="colorControlActivated">@color/colorWhite</item>
+        <item name="colorControlHighlight">@color/colorWhite</item>
+        <item name="android:textColor">@color/colorDarkYellow</item>
+        <item name="android:textColorHint">@color/colorWhite</item>
+    </style>
 </resources>

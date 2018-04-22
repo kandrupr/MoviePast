@@ -17,7 +17,7 @@ public class Result implements Serializable {
         if(poster.equals("blank")) {
             this.poster = poster;
         } else {
-            this.poster = "https://image.tmdb.org/t/p/w92" + poster;
+            this.poster = "https://image.tmdb.org/t/p/w154" + poster;
         }
     }
 

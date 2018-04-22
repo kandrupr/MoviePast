@@ -1,29 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <EditText
-        android:id="@+id/textInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_button"
-        android:inputType="text"
-        android:textColor="@color/colorWhite" />
-
-    <Button
-        android:id="@+id/buttonSearch"
+    <android.support.constraint.Guideline
+        android:id="@+id/guideTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textInput"
-        android:onClick="onSearch" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.10" />
 
     <TextView
-        android:id="@+id/textOutput"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/textSearch"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="@font/archivo_narrow_bold"
+        android:gravity="center_vertical"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp"
+        android:text="@string/select"
         android:textColor="@color/colorWhite"
-        android:layout_below="@id/buttonSearch"/>
+        android:textSize="26sp"
+        app:layout_constraintBottom_toBottomOf="@id/guideTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/search_bar_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/guideTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".25" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".85" />
+
+        <pr.kandru.movieapp.SearchEditText
+            android:id="@+id/textInput"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fontFamily="@font/archivo_narrow_bold"
+            android:gravity="center_vertical"
+            android:hint="@string/search_input"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textSize="20sp"
+            style="@style/editTextThemes"
+            app:backgroundTint="@color/colorDarkYellow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/guideType"
+            app:layout_constraintRight_toRightOf="@id/guideClose"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textType"
+            style="@style/searchButtons"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:textColor="@color/colorDarkYellow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/guideType"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/cancelImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTintMode="@color/colorDarkYellow"
+            android:contentDescription="@string/cancel"
+            android:padding="15dp"
+            android:visibility="invisible"
+            android:onClick="onClearInput"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/guideClose"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/cancel_drawable" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/search_button_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/search_bar_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideTopH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".35"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideSplitH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".45"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideBottomH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".55"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideSplitLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".20"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideSplitMidLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".35"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideSplitV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".5"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideSplitMidRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".65"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideSplitRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".80"/>
+
+        <TextView
+            android:id="@+id/movieText"
+            style="@style/searchButtons"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:onClick="onClickMedia"
+            android:text="@string/movie"
+            app:layout_constraintBottom_toBottomOf="@id/guideSplitH"
+            app:layout_constraintLeft_toLeftOf="@id/guideSplitLeft"
+            app:layout_constraintRight_toRightOf="@id/guideSplitV"
+            app:layout_constraintTop_toTopOf="@id/guideTopH" />
+
+        <TextView
+            android:id="@+id/tvText"
+            style="@style/searchButtons"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:onClick="onClickMedia"
+            android:text="@string/television"
+            app:layout_constraintBottom_toBottomOf="@id/guideSplitH"
+            app:layout_constraintLeft_toLeftOf="@id/guideSplitV"
+            app:layout_constraintRight_toRightOf="@id/guideSplitRight"
+            app:layout_constraintTop_toTopOf="@id/guideTopH" />
+
+        <TextView
+            android:id="@+id/actorText"
+            style="@style/searchButtons"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:onClick="onClickMedia"
+            android:text="@string/actor"
+            app:layout_constraintBottom_toBottomOf="@id/guideBottomH"
+            app:layout_constraintLeft_toLeftOf="@id/guideSplitMidLeft"
+            app:layout_constraintRight_toRightOf="@id/guideSplitMidRight"
+            app:layout_constraintTop_toTopOf="@id/guideSplitH" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

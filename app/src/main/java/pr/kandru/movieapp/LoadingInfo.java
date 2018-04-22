@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 public class LoadingInfo extends AppCompatActivity {
-    private final String image_url = "https://image.tmdb.org/t/p/w92";
+    private final String image_url = "https://image.tmdb.org/t/p/w154";
     private RequestType type;
     private String name, id, poster;
     private BuildResult buildResult = new BuildResult();

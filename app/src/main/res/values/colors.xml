@@ -7,4 +7,6 @@
     <color name="colorCharcoal">#36454F</color>
     <color name="activeDots">#FFD700</color>
     <color name="inactiveDots">#83878b</color>
+    <color name="colorGold">#ffd700</color>
+    <color name="colorDarkYellow">#b29600</color>
 </resources>

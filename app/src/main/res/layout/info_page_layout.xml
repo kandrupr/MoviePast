@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.40"/>
+            app:layout_constraintGuide_percent="0.45"/>
 
         <ImageButton
             android:id="@+id/info_homeButton"
@@ -97,22 +97,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.40"/>
+            app:layout_constraintGuide_percent="0.45"/>
 
         <ImageView
             android:id="@+id/info_posterView"
+            style="@style/posterPadding"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            style="@style/posterPadding"
-            android:paddingTop="5dp"
             android:contentDescription="@string/resultImage"
+            android:paddingTop="5dp"
+            android:scaleType="centerCrop"
             android:visibility="invisible"
-            app:srcCompat="@android:drawable/alert_dark_frame"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@id/guideCenterSplit"
             app:layout_constraintTop_toTopOf="parent"
-            android:scaleType="centerCrop"/>
+            app:srcCompat="@android:drawable/alert_dark_frame" />
 
         <TextView
             android:id="@+id/info_resultText"
@@ -134,20 +134,20 @@
             style="android:attr/progressBarStyleLarge"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_gravity="center"
             android:background="@color/colorPrimary"
+            android:indeterminateDrawable="@drawable/progress"
             android:paddingBottom="5dp"
             android:paddingEnd="5dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:paddingStart="5dp"
             android:paddingTop="0dp"
-            android:layout_gravity="center"
             android:visibility="visible"
-            android:indeterminateDrawable="@drawable/progress"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@id/guideCenterSplit"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"

@@ -2,12 +2,15 @@ package pr.kandru.movieapp;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 
 /**
  * Created by pkkan on 3/26/2018.
@@ -18,6 +21,9 @@ public class SliderAdapter extends PagerAdapter {
     private int mCount = 0;
     private final Handler h=new Handler();
     private Runnable updateTask;
+    private ConstraintLayout searchBar, searchButtons;
+    private TextView searchText;
+    private SearchEditText inputText;
 
     private String[] headers = {
             "Profile",
@@ -25,12 +31,12 @@ public class SliderAdapter extends PagerAdapter {
             "Find",
             "About"
     };
-
+/*
     private String[] searchText = {
             "your favorite Movies",
             "your favorite TV Shows",
             "your favorite actors and actresses"
-    };
+    };*/
 
     public SliderAdapter(Context context) {
         this.context = context;
@@ -60,10 +66,16 @@ public class SliderAdapter extends PagerAdapter {
             header = view.findViewById(R.id.textCommand);
 
         } else if (position == 2) {
-            view = layoutInflater.inflate(R.layout.slide_find, container, false);
-            header = view.findViewById(R.id.searchHeader);
-            header.setText(headers[position]);
-
+            view = layoutInflater.inflate(R.layout.slide_search, container, false);
+            if(searchText == null) {
+                searchBar = view.findViewById(R.id.search_bar_layout);
+                searchButtons = view.findViewById(R.id.search_button_layout);
+                searchText = view.findViewById(R.id.textSearch);
+                inputText = view.findViewById(R.id.textInput);
+                inputText.setSiblings(view);
+            }
+            //header = view.findViewById(R.id.searchHeader);
+            //header.setText(headers[position]);
         } else if (position == 3) {
             view = layoutInflater.inflate(R.layout.slide_main, container, false);
             header = view.findViewById(R.id.textCommand);
@@ -82,7 +94,7 @@ public class SliderAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
     }
-
+/*
     public void createHandler() {
         changeText();
         updateTask = new Runnable() {
@@ -94,6 +106,7 @@ public class SliderAdapter extends PagerAdapter {
         };
         h.postDelayed(updateTask,2000);
     }
+
 
     private void changeText(){
         final TextView info = ((MainActivity) context).findViewById(R.id.searchInfo);
@@ -109,9 +122,21 @@ public class SliderAdapter extends PagerAdapter {
             h.removeCallbacks(updateTask);
             updateTask = null;
         }
-    }
+    }*/
 
     public String[] getHeaders() {
         return headers;
+    }
+
+    public SearchEditText setTextSearch(String type){
+        searchButtons.setVisibility(INVISIBLE);
+        searchText.setVisibility(INVISIBLE);
+        ((TextView)searchBar.findViewById(R.id.textType)).setText(type);
+        searchBar.setVisibility(VISIBLE);
+        return inputText;
+    }
+
+    public void clearInput() {
+        ((TextView)searchBar.findViewById(R.id.textInput)).setText("");
     }
 }

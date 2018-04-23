@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by pkkan on 4/20/2018.
  */
 
-public class Movie extends InfoOverview implements Serializable {
+public class Movie extends InfoOverview {
     private String title, poster, rating, mpaa, runtime, releaseDate;
     private String overview, genres;
     private ResultHolder cast;

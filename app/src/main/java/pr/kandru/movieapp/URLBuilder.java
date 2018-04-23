@@ -44,120 +44,92 @@ public class URLBuilder {
     public static synchronized URLBuilder getInstance(Context c) {
         if (single_instance == null)
             single_instance = new URLBuilder(c.getApplicationContext());
-
         return single_instance;
     }
 
-    public String buildDescriptor(HashMap<String, String> params) {
+    public String buildDescriptor(String desc, String type) {
         String url = tmdbUrl;
-        if(params.get("Type").equals("tv") && params.get("Descriptor").equals("upcoming")) {
-            url = "invalid";
-        } else {
-            url += params.get("Type") + "/" + params.get("Descriptor") + apiKey + ending;
-        }
+        if(type.equals("tv") && desc.equals("upcoming"))
+            return "invalid";
+        else
+            url += type + "/" + desc + apiKey + ending;
+
         return url;
     }
 
-    public String buildDescriptorByYear(HashMap<String, String> params) {
-    // &region=US&sort_by=vote_average.desc&page=1&primary_release_year=2017&vote_count.gte=50&language=en-US
+    public String buildDescriptorByYear(String desc, String type, String year) {
         String url = tmdbUrl + "discover/";
-        String desc = params.get("Descriptor");
-        String year = params.get("Year");
         int month = Calendar.getInstance().get(Calendar.MONTH);
         int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        if(params.get("Type").equals("tv")) {
+        if(type.equals("tv")) {
             // TV
             url += "tv" + apiKey;
-            switch (desc) {
-                case "upcoming":
-                    if (Integer.parseInt(year) == currentYear) {
-                        url += "&first_air_date.gte=" + year + "-1-1&first_air_date.lte=" + year + "-12-31&with_original_language=en" + ending;
-                    } else {
-                        url = "invalid";
-                    }
-                    break;
-                case "popular":
-                    if (Integer.parseInt(year) <= currentYear) {
+            if(desc.equals("upcoming")) {
+                if (Integer.parseInt(year) == currentYear)
+                    url += "&first_air_date.gte=" + year + "-1-1&first_air_date.lte=" + year + "-12-31&with_original_language=en" + ending;
+                else
+                    return "invalid";
+            } else {
+                if (Integer.parseInt(year) <= currentYear) {
+                    if(desc.equals("popular"))
                         url += "&sort_by=popularity.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year + "-12-31&vote_count.gte=50&with_original_language=en" + ending;
-                    } else {
-                        url = "invalid";
-                    }
-                    break;
-                default:
-                    if (Integer.parseInt(year) <= currentYear) {
-                        url += "&sort_by=vote_average.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year + "-12-31&vote_count.gte=50&with_original_language=en" + ending;
-                    } else {
-                        url = "invalid";
-                    }
-                    break;
+                    else
+                        url += "&sort_by=vote_average.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year + "-12-31&vote_count.gte=50&with_original_language=en" + ending;;
+                } else
+                    return "invalid";
             }
         } else {
-            url += "movie" + apiKey;
-            switch (desc) {
-                case "upcoming":
-                    if (Integer.parseInt(year) < currentYear) {
-                        url = "invalid";
-                    } else {
-                        // &primary_release_date.gte=2018-9-15&primary_release_date.lte=2018-10-15&language=en-US&region=US&page=1
-                        url += "&region=US&primary_release_date.gte=" + year + "-" + month + "-" + day + "&primary_release_date.lte=" + year + "-12-31" + ending;
-                    }
-                    break;
-                case "popular":
-                    url += "&region=US&sort_by=popularity.desc&page=1&primary_release_year=" + year;
-                    if (Integer.parseInt(year) > currentYear) {
-                        url += ending;
-                    } else {
-                        url += "&vote_count.gte=50" + ending;
-                    }
-                    break;
-                default:
-                    url += "&region=US&sort_by=vote_average.desc&page=1&primary_release_year=" + year;
-                    if (Integer.parseInt(year) > currentYear) {
-                        url += ending;
-                    } else {
-                        url += "&vote_count.gte=50" + ending;
-                    }
-                    break;
+            // MOVIE
+            url += "movie" + apiKey + "&region=US";
+            if(desc.equals("upcoming")) {
+                if (Integer.parseInt(year) < currentYear)
+                    return "invalid";
+                else
+                    url += "&primary_release_date.gte=" + year + "-" + month + "-" + day + "&primary_release_date.lte=" + year + "-12-31" + ending;
+            } else {
+                if(desc.equals("popular"))
+                    url += "&sort_by=popularity.desc&page=1&primary_release_year=" + year;
+                else
+                    url += "&sort_by=vote_average.desc&page=1&primary_release_year=" + year;
+                if (Integer.parseInt(year) > currentYear)
+                    url += ending;
+                else
+                    url += "&vote_count.gte=50" + ending;
             }
         }
         return url;
     }
 
     public String buildMovie(String title) {
-        String url = tmdbUrl + "search/";
+        String url = tmdbUrl + "search/movie" + apiKey + "&region=US&query=";
         try {
-            url += "movie" + apiKey + "&region=US&query=" + URLEncoder.encode(title, "UTF-8").replace("+", "%20") + ending;
-
+            url += URLEncoder.encode(title, "UTF-8").replace("+", "%20") + ending;
         } catch (UnsupportedEncodingException ignored) {
-            url += "movie" + apiKey + "&region=US&query=" + title + ending;
+            url += title + ending;
         }
         return url;
     }
 
-    public String buildMovieGenre(HashMap<String, String> params) {
-        String url = tmdbUrl + "discover/movie" + apiKey + "&sort_by=revenue.desc&region=US&with_genres=" + movieGenre.get(params.get("Genre"));
-
+    public String buildMovieGenre(String [] fields) {
+        String url = tmdbUrl + "discover/movie" + apiKey + "&sort_by=revenue.desc&region=US&with_genres=" + movieGenre.get(fields[0]);
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        // primary_release_year=2019&language=en-US&page=1
-        if(params.containsKey("Year")) {
-            String year = params.get("Year");
-            if(Integer.parseInt(year) > currentYear) {
+        if(fields.length == 2) {
+            String year = fields[1];
+            if(Integer.parseInt(year) > currentYear)
                 return "invalid";
-            } else {
+            else
                 url += "&primary_release_year=" + year;
-            }
         }
         url += ending;
         return url;
     }
 
-    public String buildTVGenre(HashMap<String, String> params) {
-        Log.d("TYPE TV GENRE", params.toString());
-        String url = tmdbUrl + "discover/tv" + apiKey + "&sort_by=popularity.desc&vote_count.gte=50&with_original_language=en&with_genres=" + tvGenre.get(params.get("Genre"));
+    public String buildTVGenre(String [] fields) {
+        String url = tmdbUrl + "discover/tv" + apiKey + "&sort_by=popularity.desc&vote_count.gte=50&with_original_language=en&with_genres=" + tvGenre.get(fields[0]);
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        if(params.containsKey("Year")) {
-            String year = params.get("Year");
+        if(fields.length == 2) {
+            String year = fields[1];
             if(Integer.parseInt(year) > currentYear) {
                 return "invalid";
             } else {
@@ -169,8 +141,7 @@ public class URLBuilder {
     }
 
     public String buildTV(String title) {
-        String url = tmdbUrl + "search/";
-        url += "tv" + apiKey + "&query=";
+        String url = tmdbUrl + "search/tv" + apiKey + "&query=";
         try {
             url += URLEncoder.encode(title, "UTF-8").replace("+", "%20") + ending;
         } catch (UnsupportedEncodingException ignored) {
@@ -179,23 +150,23 @@ public class URLBuilder {
         return url;
     }
 
-    public String buildFromTitle(HashMap<String, String> params) {
+    public String buildFromTitle(String[] fields) {
         String url = tmdbUrl + "search/";
-        if(params.containsKey("Type")) {
-            if(params.get("Type").equals("tv")) {
+        if(fields.length == 2) {
+            if(fields[1].equals("tv"))
                 url += "tv" + apiKey + "&query=";
-            } else if(params.get("Type").equals("actor")){
-                url += "person" + apiKey + "&region=US&query=";
-            } else {
+            else if(fields[1].equals("movie"))
                 url += "movie" + apiKey + "&region=US&query=";
-            }
-        } else {
+            else
+                url += "person" + apiKey + "&region=US&query=";
+
+        } else
             url += "multi" + apiKey + "&region=US&query=";
-        }
+
         try {
-            url += URLEncoder.encode(params.get("Title"), "UTF-8").replace("+", "%20");
+            url += URLEncoder.encode(fields[0], "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException ignored) {
-            url += params.get("Title");
+            url += fields[0];
         }
         url += ending;
         return url;
@@ -212,13 +183,12 @@ public class URLBuilder {
         return url;
     }
 
-    public String buildPersonFrom(String id, String form) {
+    public String buildPersonForm(String id, String form) {
         String url = tmdbUrl + "person/" + id;
-        if(form.equals("movie")) {
+        if(form.equals("movie"))
             url += "/movie_credits";
-        } else {
+        else
             url += "/tv_credits";
-        }
         url += apiKey + "&language=en-US";
         return url;
     }
@@ -230,6 +200,7 @@ public class URLBuilder {
     public String buildMovieInfo(String id) {
         return tmdbUrl + "movie/" + id + apiKey + "&language=en-US&append_to_response=release_dates%2Ccredits%2Csimilar";
     }
+
     public String buildTVInfo(String id) {
         return tmdbUrl + "tv/" + id + apiKey + "&language=en-US&append_to_response=content_ratings%2Ccredits%2Csimilar";
     }

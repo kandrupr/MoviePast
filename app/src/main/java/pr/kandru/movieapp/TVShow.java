@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by pkkan on 4/20/2018.
  */
 
-public class TVShow extends InfoOverview implements Serializable {
+public class TVShow extends InfoOverview {
     private String title, poster, runTime, firstDate, genres, network;
     private String origin, numEpisodes, numSeason, overview, status, contentRatings;
     private ResultHolder cast;

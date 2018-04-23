@@ -36,4 +36,12 @@
         <item name="android:textColor">@color/colorDarkYellow</item>
         <item name="android:textColorHint">@color/colorWhite</item>
     </style>
+
+    <style name="menu" parent="Widget.AppCompat.PopupMenu">
+        <!-- Change Overflow Menu ListView Item Height & Property -->
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+
+    </style>
 </resources>

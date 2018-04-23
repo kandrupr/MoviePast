@@ -13,23 +13,21 @@ public class BuildResult {
 
     @Nullable
     public Result checkData(JSONObject obj, RequestType type) {
-        String name;
-        String id;
-        String poster;
+        String name, id, poster;
         try {
-            if(type.equals(RequestType.MOVIE)) {
+            if(type.equals(RequestType.MOVIE))
                 name = obj.get("title").toString();
-            } else {
+            else
                 name = obj.get("name").toString();
-            }
+
             id = obj.get("id").toString();
             if(name.equals("null") || id.equals("null")) { return null; }
 
-            if(type.equals(RequestType.ACTOR)){
+            if(type.equals(RequestType.ACTOR))
                 poster = obj.get("profile_path").toString();
-            } else {
+            else
                 poster = obj.get("poster_path").toString();
-            }
+
             if(poster.equals("null")){ return null; }
         } catch (JSONException e) {
             e.printStackTrace();

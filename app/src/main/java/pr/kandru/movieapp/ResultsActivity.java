@@ -7,18 +7,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuInflater;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.List;
 
 /**
  * Created by pkkan on 3/28/2018.
  */
 
-public class ResultsActivity extends AppCompatActivity implements ResultAdapter.onItemClicked {
+public class ResultsActivity extends AppCompatActivity implements ResultAdapter.onItemClicked, ResultAdapter.onItemPressed {
     private RecyclerView resultsView;
     private GridLayoutManager layoutManager;
     private String query;
@@ -53,7 +53,8 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
         super.onResume();
         adapter = new ResultAdapter(ResultsActivity.this, results);
         resultsView.setAdapter(adapter);
-        adapter.setOnClick(this); // Bind the listener
+        adapter.setOnClick(this);
+        adapter.setOnPress(this);// Bind the listener
     }
 
     @Override
@@ -77,5 +78,12 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
         startActivity(intent);
+    }
+
+    @Override
+    public void onItemPressed(Result result) {
+        Toast toast = Toast.makeText(getApplicationContext(), result.getName(), Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL,0,0);
+        toast.show();
     }
 }

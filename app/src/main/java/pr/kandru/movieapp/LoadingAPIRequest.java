@@ -40,11 +40,9 @@ public class LoadingAPIRequest extends AppCompatActivity {
         query = intent.getStringExtra("QUERY");
         if(intentName.equals("actorForm")) {
             form = intent.getStringExtra("FORM");
-            Log.d("FORM", form);
         }
-
-        Log.d("TYPE URL", url);
-        Log.d("TYPE INTENT", intentName);
+        // Log.d("TYPE URL", url);
+        // Log.d("TYPE INTENT", intentName);
         JsonObjectRequest jsonObjectRequest = createObject(url, getApplicationContext());
         Singleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
@@ -111,7 +109,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
 
     private void getActorForm(Context c, String id) {
         URLBuilder builder = URLBuilder.getInstance(c);
-        String url = builder.buildPersonFrom(id, form);
+        String url = builder.buildPersonForm(id, form);
         JsonObjectRequest jsonObjectRequest = actorFormObject(url, this);
         Singleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
@@ -132,12 +130,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                 }
                 if (result != null) {
                     // NEW ACTIVITY WITH
-                    Intent intent = new Intent(this, LoadingInfo.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("RESULT", result);
-                    intent.putExtras(bundle);
-                    finish();
-                    startActivity(intent);
+                    singleResult(result);
                 } else {
                     // RETURN AND TOAST
                 }
@@ -147,21 +140,10 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     // FINISH AND TOAST
                 } else if(results.size() == 1) {
                     // TYPE Activity
-                    Intent intent = new Intent(this, LoadingInfo.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("RESULT", results.get(0));
-                    intent.putExtras(bundle);
-                    finish();
-                    startActivity(intent);
+                    singleResult(results.get(0));
                 } else {
                     // RESULTS ACTIVITY
-                    Intent intent = new Intent(this, ResultsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("RESULTS", results);
-                    intent.putExtras(bundle);
-                    intent.putExtra("QUERY", query);
-                    finish();
-                    startActivity(intent);
+                    multipleResults(results, query);
                 }
             }
         } catch (JSONException e) {
@@ -187,15 +169,8 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     // END ACTIVITY AND TOAST
                 } else {
                     // RESULTS ACTIVITY
-                    Intent intent = new Intent(this, ResultsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("RESULTS", results);
-                    intent.putExtras(bundle);
-                    intent.putExtra("QUERY", query);
-                    finish();
-                    startActivity(intent);
+                    multipleResults(results, query);
                 }
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -220,13 +195,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     // TOAST AND FAIL
                 } else {
                     // RESULTS ACTIVITY
-                    Intent intent = new Intent(this, ResultsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("RESULTS", results);
-                    intent.putExtras(bundle);
-                    intent.putExtra("QUERY", query);
-                    finish();
-                    startActivity(intent);
+                    multipleResults(results, query);
                 }
             }
         } catch (JSONException e) {
@@ -249,7 +218,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
 
     private ResultHolder searchResults(JSONArray arr, RequestType type) {
         ResultHolder results = new ResultHolder();
-        Result result = null;
+        Result result;
         try {
             if(type.equals(RequestType.ACTOR)){
                 for (int i = 0; i < arr.length(); i++) {
@@ -272,5 +241,24 @@ public class LoadingAPIRequest extends AppCompatActivity {
             e.printStackTrace();
         }
         return results;
+    }
+
+    private void singleResult(Result result) {
+        Intent intent = new Intent(this, LoadingInfo.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("RESULT", result);
+        intent.putExtras(bundle);
+        finish();
+        startActivity(intent);
+    }
+
+    private void multipleResults(ResultHolder results, String query) {
+        Intent intent = new Intent(this, ResultsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("RESULTS", results);
+        intent.putExtras(bundle);
+        intent.putExtra("QUERY", query);
+        finish();
+        startActivity(intent);
     }
 }

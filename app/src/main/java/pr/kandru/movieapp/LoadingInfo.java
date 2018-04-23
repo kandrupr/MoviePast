@@ -79,15 +79,15 @@ public class LoadingInfo extends AppCompatActivity {
                         switch(type) {
                             case ACTOR:
                                 Actor actor = parseActorObject(response);
-                                showActor(actor);
+                                showMedia(actor, RequestType.ACTOR);
                                 break;
                             case MOVIE:
                                 Movie movie = parseMovieObject(response);
-                                showMovie(movie);
+                                showMedia(movie, RequestType.MOVIE);
                                 break;
                             case TV:
                                 TVShow tv = parseTVObject(response);
-                                showTVShow(tv);
+                                showMedia(tv, RequestType.TV);
                                 break;
                             default:
                                 // FAIL AND TOAST;
@@ -123,7 +123,7 @@ public class LoadingInfo extends AppCompatActivity {
         try {
             JSONArray jsonCast = response.getJSONObject(first).getJSONArray(second);
             int size = jsonCast.length();
-            if(size > 7) { size = 7; }
+            if(size > 10) { size = 10; }
             for (int i = 0; i < size; i++) {
                 JSONObject obj = jsonCast.getJSONObject(i);
                 Result result = buildResult.checkData(obj, type);
@@ -179,7 +179,7 @@ public class LoadingInfo extends AppCompatActivity {
         try {
             JSONArray arr = response.getJSONObject("images").getJSONArray("profiles");
             int size = arr.length();
-            if(size > 7) { size = 7; }
+            if(size > 10) { size = 10; }
             String path;
             for (int i = 0; i < size; i++) {
                 JSONObject index = arr.getJSONObject(i);
@@ -227,7 +227,7 @@ public class LoadingInfo extends AppCompatActivity {
                     if (result != null) {
                         holder.add(result);
                     }
-                    if(holder.size() == 7){ break; }
+                    if(holder.size() == 10){ break; }
                 }
             }
         } catch (JSONException e) {
@@ -335,32 +335,12 @@ public class LoadingInfo extends AppCompatActivity {
         return new TVShow(name, poster, runTime, firstDate, genres, network, origin, numEpisodes, numSeason, overview, status, contentRatings, cast, similar);
     }
 
-    private void showActor(Actor actor) {
+    private void showMedia(InfoOverview info, RequestType type) {
         Intent intent = new Intent(this, InfoActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("DATA", actor);
+        bundle.putSerializable("DATA", info);
         intent.putExtras(bundle);
-        intent.putExtra("FORM", RequestType.ACTOR);
-        finish();
-        startActivity(intent);
-    }
-
-    private void showMovie(Movie movie) {
-        Intent intent = new Intent(this, InfoActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("DATA", movie);
-        intent.putExtras(bundle);
-        intent.putExtra("FORM", RequestType.MOVIE);
-        finish();
-        startActivity(intent);
-    }
-
-    private void showTVShow(TVShow tv) {
-        Intent intent = new Intent(this, InfoActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("DATA", tv);
-        intent.putExtras(bundle);
-        intent.putExtra("FORM", RequestType.TV);
+        intent.putExtra("FORM", type);
         finish();
         startActivity(intent);
     }

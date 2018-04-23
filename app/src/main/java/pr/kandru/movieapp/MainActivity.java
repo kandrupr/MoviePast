@@ -155,12 +155,10 @@ public class MainActivity extends AppCompatActivity implements AIListener{
                     i.putExtra("FORM", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
                     break;
                 case "WithTitle":   // Movie, TVShow, or ALL
-                    if(result.getParameters().containsKey("Type")){
-                        Log.d("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
+                    if(result.getParameters().containsKey("Type"))
                         i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
-                    } else {
+                    else
                         i.putExtra("TYPE", "multi");
-                    }
                     break;
                 default:    // DESCRIPTOR & DESCRIPTOR BY YEAR
                     i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());

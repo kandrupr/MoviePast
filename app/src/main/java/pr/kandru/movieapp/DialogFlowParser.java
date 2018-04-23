@@ -27,45 +27,38 @@ public class DialogFlowParser {
         HashMap<String, JsonElement> params = json.getParameters();
         String result, name;
         URLBuilder builder = URLBuilder.getInstance(c);
-        HashMap<String, String> info = new HashMap<>();
+        String fields;
         switch(this.intent) {
             case "Descriptor":
                 if(params.containsKey("Descriptor") && params.containsKey("Type")) {
-                    info.put("Descriptor", params.get("Descriptor").toString().replace("\"", "").toLowerCase());
-                    info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
-                    result = builder.buildDescriptor(info);
-                } else {
-                    result = "fail";
-                }
+                    result = builder.buildDescriptor(params.get("Descriptor").toString().replace("\"", "").toLowerCase(),
+                            params.get("Type").toString().replace("\"", "").toLowerCase());
+                } else
+                    return "fail";
                 break;
             case "DescriptorByYear":
                 if(params.containsKey("Descriptor") && params.containsKey("Type") && params.containsKey("Year")) {
-                    info.put("Descriptor", params.get("Descriptor").toString().replace("\"", "").toLowerCase());
-                    info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
-                    info.put("Year", params.get("Year").toString().replace("\"", ""));
-                    result = builder.buildDescriptorByYear(info);
-                } else {
-                    result = "fail";
-                }
+                    result = builder.buildDescriptorByYear(params.get("Descriptor").toString().replace("\"", "").toLowerCase(),
+                            params.get("Type").toString().replace("\"", "").toLowerCase(),
+                            params.get("Year").toString().replace("\"", ""));
+                } else
+                    return "fail";
                 break;
             case "Movie":
-                if(params.containsKey("Title")) {
-                    String title = params.get("Title").toString().replace("\"", "");
-                    result = builder.buildMovie(title);
-                } else {
-                    result = "fail";
-                }
+                if(params.containsKey("Title"))
+                    result = builder.buildMovie(params.get("Title").toString().replace("\"", ""));
+                else
+                    return "fail";
                 break;
             case "MovieGenre":
                 if(params.containsKey("moviegenre")) {
-                    info.put("Genre", params.get("moviegenre").toString().replace("\"", ""));
+                    fields = params.get("moviegenre").toString().replace("\"", "");
                     if(params.containsKey("year")) {
-                        info.put("Year", params.get("year").toString().replace("\"", ""));
+                        fields += "," + params.get("year").toString().replace("\"", "");
                     }
-                    result = builder.buildMovieGenre(info);
-                } else {
-                    result = "fail";
-                }
+                    result = builder.buildMovieGenre(fields.split(","));
+                } else
+                    return "fail";
                 break;
             case "Person":
                 name = checkPerson(params);
@@ -75,44 +68,38 @@ public class DialogFlowParser {
                 if(params.containsKey("Type")) {
                     name = checkPerson(params);
                     result = personURL(name, builder);
-                } else {
-                    result = "fail";
-                }
+                } else
+                    return "fail";
+
                 break;
             case "TVShowGenre":
                 if(params.containsKey("tvgenre") && params.containsKey("type")) {
-                    info.put("Genre", params.get("tvgenre").toString().replace("\"", ""));
-                    if(params.containsKey("year")) {
-                        info.put("Year", params.get("year").toString().replace("\"", ""));
-                    }
-                    result = builder.buildTVGenre(info);
-                } else {
-                    result = "fail";
-                }
+                    fields = params.get("tvgenre").toString().replace("\"", "");
+                    if(params.containsKey("year"))
+                        fields += "," + params.get("year").toString().replace("\"", "");
+                    result = builder.buildTVGenre(fields.split(","));
+                } else
+                    return "fail";
                 break;
             case "TVShows":
                 if(params.containsKey("Title")) {
                     String title = params.get("Title").toString().replace("\"", "");
                     result = builder.buildTV(title);
                 } else {
-                    result = "fail";
+                    return "fail";
                 }
                 break;
             case "WithTitle":
                 if(params.containsKey("Title")){
-                    String title = getTitle(params.get("Title"));
-                    info.put("Title", title);
-                    if(params.containsKey("Type")) {
-                        info.put("Type", params.get("Type").toString().replace("\"", "").toLowerCase());
-                    }
-                    result = builder.buildFromTitle(info);
-                } else {
-                    result = "fail";
-                }
+                    fields = getTitle(params.get("Title"));
+                    if(params.containsKey("Type"))
+                        fields += "," + params.get("Type").toString().replace("\"", "").toLowerCase();
+                    result = builder.buildFromTitle(fields.split(","));
+                } else
+                    return "fail";
                 break;
             default:
-                result = "fail";
-                break;
+                return "fail";
         }
         return result;
     }
@@ -120,14 +107,12 @@ public class DialogFlowParser {
     private String getTitle(JsonElement title) {
         if(title.isJsonObject()){
             JsonObject obj = title.getAsJsonObject();
-            if(obj.has("TVShow")){
+            if(obj.has("TVShow"))
                 return obj.get("TVShow").toString().replace("\"", "");
-            } else {
+            else
                 return obj.get("Movie").toString().replace("\"", "");
-            }
-        } else {
+        } else
             return title.toString().replace("\"", "");
-        }
     }
 
     private String checkPerson(HashMap<String, JsonElement> params) {
@@ -138,29 +123,26 @@ public class DialogFlowParser {
                 JsonObject obj = person.getAsJsonObject();
                 if (obj.has("First")) {
                     name = obj.get("First").toString().replace("\"", "");
-                    if(obj.has("Last")) {
+                    if(obj.has("Last"))
                         name += " " + obj.get("Last").toString().replace("\"", "");
-                    }
                     return name;
-                } else {
+                } else
                     return "fail";
-                }
             } else {
                 name = params.get("person").toString().replace("\"", "");
                 return name;
             }
-        } else {
+        } else
             return "fail";
-        }
     }
 
     public String personURL(String name, URLBuilder builder) {
         String result;
-        if(!name.equals("fail")) {
+        if(!name.equals("fail"))
             result = builder.buildFromPerson(name);
-        } else {
-            result = "fail";
-        }
+        else
+            return "fail";
+
         return result;
     }
 }

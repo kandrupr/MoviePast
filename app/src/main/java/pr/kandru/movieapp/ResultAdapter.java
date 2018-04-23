@@ -3,7 +3,6 @@ package pr.kandru.movieapp;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -23,10 +23,15 @@ import com.squareup.picasso.Picasso;
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
     private Context context;
     private onItemClicked onClick;
+    private onItemPressed onItemPressed;
     private ResultHolder resultHolder;
 
     public interface onItemClicked {
         void onItemClick(Result result);
+    }
+
+    public interface onItemPressed{
+        void onItemPressed(Result result);
     }
 
     public ResultAdapter(Context context, ResultHolder results) {
@@ -71,6 +76,14 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                                         onClick.onItemClick(resultHolder.get(pos));
                                     }
                                 });
+
+                                holder.image.setOnLongClickListener(new View.OnLongClickListener() {
+                                    @Override
+                                    public boolean onLongClick(View view) {
+                                        onItemPressed.onItemPressed(resultHolder.get(pos));
+                                        return true;
+                                    }
+                                });
                             }
                         }
 
@@ -88,6 +101,14 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                                         onClick.onItemClick(resultHolder.get(pos));
                                     }
                                 });
+
+                                holder.text.setOnLongClickListener(new View.OnLongClickListener() {
+                                    @Override
+                                    public boolean onLongClick(View view) {
+                                        onItemPressed.onItemPressed(resultHolder.get(pos));
+                                        return true;
+                                    }
+                                });
                             }
                         }
                     });
@@ -101,6 +122,9 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
 
     public void setOnClick(onItemClicked onClick) {
         this.onClick=onClick;
+    }
+    public void setOnPress(onItemPressed onItemPressed) {
+        this.onItemPressed=onItemPressed;
     }
 
     public static class Holder extends RecyclerView.ViewHolder {

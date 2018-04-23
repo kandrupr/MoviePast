@@ -19,7 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoadingTextRequest"></activity>
         <activity android:name=".ResultsActivity"></activity>
         <activity android:name=".LoadingAPIRequest"></activity>
         <activity android:name=".InfoActivity"></activity>

@@ -7,7 +7,7 @@ import java.util.List;
  * Created by pkkan on 4/19/2018.
  */
 
-public class Actor extends InfoOverview implements Serializable{
+public class Actor extends InfoOverview {
     private String name, biography, poster;
     private List<String> images;
     private ResultHolder holder;

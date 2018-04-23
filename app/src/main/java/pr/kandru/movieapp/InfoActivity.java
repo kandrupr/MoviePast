@@ -1,19 +1,31 @@
 package pr.kandru.movieapp;
 
 import android.content.ComponentCallbacks2;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -25,7 +37,7 @@ import java.util.List;
  * Created by pkkan on 4/19/2018.
  */
 
-public class InfoActivity extends AppCompatActivity implements FilmographyAdapter.onItemClicked {
+public class InfoActivity extends AppCompatActivity implements FilmographyAdapter.onItemClicked, FilmographyAdapter.onItemPressed {
     private RecyclerView topView, bottomView;
     private GridLayoutManager layoutManagerBot, layoutManagerTop;
     private TextView title, bio, topText, bottomText;
@@ -37,6 +49,7 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
     public void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
+        Log.d("ACTIVITY", "RESUME");
 
         setContentView(R.layout.info_page_layout);
         title = findViewById(R.id.titleText);
@@ -62,6 +75,7 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
 
     @Override
     protected void onResume() {
+        Log.d("ACTIVITY", "RESUME");
         super.onResume();
         switch(form) {
             case ACTOR:
@@ -109,7 +123,9 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         bottomView.setAdapter(bottomAdapter);
 
         topAdapter.setOnClick(this);
+        topAdapter.setOnPress(this);
         bottomAdapter.setOnClick(this);
+        bottomAdapter.setOnPress(this);
     }
 
     private void displayMovie(Movie movie) {
@@ -131,7 +147,9 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         bottomView.setAdapter(bottomAdapter);
 
         topAdapter.setOnClick(this);
+        topAdapter.setOnPress(this);
         bottomAdapter.setOnClick(this);
+        bottomAdapter.setOnPress(this);
     }
 
     private void displayActor(Actor actor) {
@@ -155,6 +173,7 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         bottomView.setAdapter(bottomImageAdapter);
 
         topAdapter.setOnClick(this);
+        topAdapter.setOnPress(this);
     }
 
     private void setPoster(String poster, final String name) {
@@ -259,5 +278,12 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
                 break;
         }
 
+    }
+
+    @Override
+    public void onItemPressed(Result result) {
+        Toast toast = Toast.makeText(getApplicationContext(), result.getName(), Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL,0,0);
+        toast.show();
     }
 }

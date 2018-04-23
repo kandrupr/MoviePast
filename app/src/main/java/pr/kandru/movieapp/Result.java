@@ -3,13 +3,19 @@ package pr.kandru.movieapp;
 import java.io.Serializable;
 
 /**
- * Created by pkkan on 4/17/2018.
+ * Class is a container for a valid result from an TMDB search
  */
-
 public class Result implements Serializable {
-    private RequestType type;
-    private String name, id, poster;
+    private RequestType type;       /// Actor, Movie, TV Show
+    private String name, id, poster; /// Title/Name, TMDB ID, Poster URL
 
+    /**
+     * Constrcutor
+     * @param type Actor, Movie, TV Show
+     * @param name Title/Name
+     * @param id TMDB ID
+     * @param poster Poster URL
+     */
     public Result(RequestType type, String name, String id, String poster) {
         this.type = type;
         this.name = name;

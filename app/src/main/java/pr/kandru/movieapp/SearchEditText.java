@@ -13,22 +13,30 @@ import android.widget.TextView;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
- * Created by pkkan on 4/21/2018.
+ * A Custom EditText class to handle user interactions with an EditText
  */
-
 public class SearchEditText extends android.support.v7.widget.AppCompatEditText {
-    private ConstraintLayout searchBar, searchButtons;
+    private ConstraintLayout searchBar, searchButtons;  // Different layouts on the layout that has the EditText
     private TextView searchText;
     private SearchEditText inputText;
     private Context context;
-    private InputMethodManager imm;
+    private InputMethodManager imm; // Text Input Manager
 
+    /**
+     * Constructor
+     * @param context Application Context
+     * @param attrs EditText attributes
+     */
     public SearchEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context.getApplicationContext();
         imm = (InputMethodManager) this.context.getSystemService(INPUT_METHOD_SERVICE);
     }
 
+    /**
+     * Initially, view will still be building. Set siblings of EditText at a later time
+     * @param v Entire Layout View
+     */
     public void setSiblings(View v) {
         searchBar = v.findViewById(R.id.search_bar_layout);
         searchButtons = v.findViewById(R.id.search_button_layout);
@@ -36,6 +44,12 @@ public class SearchEditText extends android.support.v7.widget.AppCompatEditText 
         inputText = v.findViewById(R.id.textInput);
     }
 
+    /**
+     * Handles what to do when a user doesn't search but simply presses back
+     * @param keyCode Integer
+     * @param event Keyboard Event
+     * @return Boolean True to handle custom event
+     */
     @Override
     public boolean onKeyPreIme (int keyCode, KeyEvent event) {
         if(this.getVisibility() == VISIBLE) {
@@ -43,25 +57,30 @@ public class SearchEditText extends android.support.v7.widget.AppCompatEditText 
             searchText.setVisibility(VISIBLE);
             searchBar.setVisibility(INVISIBLE);
             inputText.setText("");
-            if(imm != null)
+            if(imm != null)     // Hide keyboard
                 imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
         }
         return true;
     }
 
+    /**
+     * When a user presses enter on a text search
+     * @param actionCode Integer What the user does
+     */
     @Override
     public void onEditorAction(int actionCode) {
-        if(actionCode == EditorInfo.IME_ACTION_SEARCH) {
+        if(actionCode == EditorInfo.IME_ACTION_SEARCH) {    // User presses search
             final String input = this.getText().toString();
-            if(!input.isEmpty()){
-                searchButtons.setVisibility(VISIBLE);
+            if(!input.isEmpty()){   // Not empty
+                searchButtons.setVisibility(VISIBLE);   // Set everything back to normal so it looks the same on return
                 searchText.setVisibility(VISIBLE);
                 searchBar.setVisibility(INVISIBLE);
                 inputText.setText("");
 
-                if(imm != null)
+                if(imm != null)     // Hide keyboard
                     imm.hideSoftInputFromWindow(getWindowToken(), 0);
 
+                // Get text input and build URL
                 final String type = ((TextView)searchBar.findViewById(R.id.textType)).getText().toString().toLowerCase();
                 String[] fields = {input, type};
                 String url = URLBuilder.getInstance(context).buildFromTitle(fields);
@@ -77,13 +96,21 @@ public class SearchEditText extends android.support.v7.widget.AppCompatEditText 
         }
     }
 
+    /**
+     * Handles what happens when someone types
+     * @param text CharSequence The current text
+     * @param start Integer
+     * @param lengthBefore Integer Length of string before
+     * @param lengthAfter Integer Length of string after
+     */
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        if(searchBar != null) {
-            if (lengthAfter == 0)
+        if(searchBar != null) {     // If the text input is not available
+            if (lengthAfter == 0)   // No text to text to show clear button
                 searchBar.findViewById(R.id.cancelImage).setVisibility(INVISIBLE);
-            else if (lengthBefore != 1 && lengthAfter == 1)
+            else if (lengthBefore != 1 && lengthAfter == 1) // Length is 0 or greater than one, and only has 1 character
+                // This check ensures that we are not constantly making it visible but doing it once
                 searchBar.findViewById(R.id.cancelImage).setVisibility(VISIBLE);
         }
     }

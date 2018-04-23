@@ -12,7 +12,7 @@ public class BuildResult {
     /**
      * Parse through an Actor, Movie, and TV Show request from TMDB
      * @param obj JSONObject with varying fields for an Actor, Movie, and TV Show
-     * @param type Enumerated type to define if the request was for an actor, movie or tv show
+     * @param type RequestType Enumerated type to define if the request was for an actor, movie or tv show
      * @return Result A valid result with its form of media, Actor Name/Movie or TV Show title, ID, and poster path
      */
     @Nullable
@@ -90,7 +90,7 @@ public class BuildResult {
      * Attempts to parse out talk shows from based on criteria
      * @param character String Character played on a TV show
      * @param genres String A list of genres made into a string
-     * @return bool Is this current result a talk show
+     * @return Boolean Is this current result a talk show
      */
     private boolean removeTalkShows(String character, String genres) {
         if(character.equals("Himself") || character.equals("Herself") || character.isEmpty()) {

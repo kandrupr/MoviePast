@@ -13,13 +13,12 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 /**
- * Created by pkkan on 3/26/2018.
+ * Custom ViewPager Adapter
  */
-
 public class SliderAdapter extends PagerAdapter {
     private Context context;
-    private int mCount = 0;
-    private final Handler h=new Handler();
+    //private int mCount = 0;
+    //private final Handler h=new Handler();
     private Runnable updateTask;
     private ConstraintLayout searchBar, searchButtons;
     private TextView searchText;
@@ -38,21 +37,41 @@ public class SliderAdapter extends PagerAdapter {
             "your favorite actors and actresses"
     };*/
 
+    /**
+     * Constructor
+     * @param context Application context
+     */
     public SliderAdapter(Context context) {
         this.context = context;
         updateTask = null;
     }
 
+    /**
+     * Get number of Items in the View Pager
+     * @return Integer size of view pager
+     */
     @Override
     public int getCount() {
         return headers.length;
     }
 
+    /**
+     * Tells us if the current view is showing the correct object
+     * @param view View being shown
+     * @param object Object The cbject being shown on view
+     * @return Boolean
+     */
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
 
+    /**
+     * Create layout when it is in view
+     * @param container ViewGroup The container holding all the views
+     * @param position Integer The page we are looking at
+     * @return Object The view of the current page
+     */
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -90,6 +109,12 @@ public class SliderAdapter extends PagerAdapter {
         return view;
     }
 
+    /**
+     * Handle when a page in View pager is not available
+     * @param container ViewGroup Contains all the views
+     * @param position Integer Position according to ViewPager
+     * @param object Object The page being destroyed
+     */
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
@@ -124,10 +149,19 @@ public class SliderAdapter extends PagerAdapter {
         }
     }*/
 
+    /**
+     * Get the headers for each page
+     * @return String header of the certain page in viewpager
+     */
     public String[] getHeaders() {
         return headers;
     }
 
+    /**
+     * Sets up our Edit Text
+     * @param type RequestType Actor, Movie, TV Show
+     * @return SearchEditText Instance of the custom EditText
+     */
     public SearchEditText setTextSearch(String type){
         searchButtons.setVisibility(INVISIBLE);
         searchText.setVisibility(INVISIBLE);
@@ -136,6 +170,9 @@ public class SliderAdapter extends PagerAdapter {
         return inputText;
     }
 
+    /**
+     * Sets Edit Text to empty
+     */
     public void clearInput() {
         ((TextView)searchBar.findViewById(R.id.textInput)).setText("");
     }

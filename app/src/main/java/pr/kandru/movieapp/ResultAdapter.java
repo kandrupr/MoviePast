@@ -10,52 +10,72 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 /**
- * Created by pkkan on 4/9/2018.
+ * Class that builds into the Grid Layout in the RecyclerView in the ResultsActivity
  */
-
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
     private Context context;
     private onItemClicked onClick;
     private onItemPressed onItemPressed;
     private ResultHolder resultHolder;
 
+    /**
+     * On click, the information activity is displayed
+     */
     public interface onItemClicked {
         void onItemClick(Result result);
     }
 
+    /**
+     * On hold, the result name is toasted
+     */
     public interface onItemPressed{
         void onItemPressed(Result result);
     }
 
+    /**
+     * Constructor
+     * @param context Application Context
+     * @param results Results to display
+     */
     public ResultAdapter(Context context, ResultHolder results) {
         this.resultHolder = results;
         this.context = context;
     }
 
+    /**
+     * Creates Holder Item to Parent RecyclerView
+     * @param parent ViewGroup The RecyclerView which holds all of the Holder items
+     * @param viewType Integer The position in the Adapter data
+     * @return Holder object
+     */
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_layout, parent, false);
         GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) layout.getLayoutParams();
-        lp.height = parent.getMeasuredHeight() / 3;
+        lp.height = parent.getMeasuredHeight() / 3;         // Get exactly 1/3 to get 3 results in a row
         layout.setLayoutParams(lp);
 
         return new Holder(layout);
     }
 
+    /**
+     * Binds Holder item to RecyclerView
+     * @param holder Holder Item
+     * @param position Integer The position in the Adapter data
+     */
     @Override
     public void onBindViewHolder(final Holder holder, int position) {
         final int pos = position;
         if(resultHolder.getImages().get(position).equals("blank")) {
-            holder.progress.setVisibility(View.GONE);
-            holder.image.setVisibility(View.GONE);
-            holder.text.setVisibility(View.VISIBLE);
+            holder.progress.setVisibility(View.GONE);   // No poster to load, hide progressbar
+            holder.image.setVisibility(View.GONE);      // Hide Image
+            holder.text.setVisibility(View.VISIBLE);    // Make Text Appear
             holder.text.setText(resultHolder.getNames().get(position));
             holder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         } else {
@@ -67,16 +87,15 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                         @Override
                         public void onSuccess() {
                             if (holder.progress != null) {
-                                holder.text.setVisibility(View.GONE);
-                                holder.progress.setVisibility(View.GONE);
-                                holder.image.setVisibility(View.VISIBLE);
+                                holder.text.setVisibility(View.GONE); // Successfully loaded image, Hide Text
+                                holder.progress.setVisibility(View.GONE);   // Hide progressbar
+                                holder.image.setVisibility(View.VISIBLE);   // Show Image
                                 holder.image.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         onClick.onItemClick(resultHolder.get(pos));
                                     }
                                 });
-
                                 holder.image.setOnLongClickListener(new View.OnLongClickListener() {
                                     @Override
                                     public boolean onLongClick(View view) {
@@ -90,9 +109,9 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                         @Override
                         public void onError() {
                             if (holder.progress != null) {
-                                holder.progress.setVisibility(View.GONE);
-                                holder.image.setVisibility(View.GONE);
-                                holder.text.setVisibility(View.VISIBLE);
+                                holder.progress.setVisibility(View.GONE);   // Failed to load image, hide progressbar
+                                holder.image.setVisibility(View.GONE);      // Hide Image
+                                holder.text.setVisibility(View.VISIBLE);    // Make Text Appear
                                 holder.text.setText(resultHolder.getNames().get(pos));
                                 holder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
                                 holder.text.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +120,6 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                                         onClick.onItemClick(resultHolder.get(pos));
                                     }
                                 });
-
                                 holder.text.setOnLongClickListener(new View.OnLongClickListener() {
                                     @Override
                                     public boolean onLongClick(View view) {
@@ -115,18 +133,34 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
         }
     }
 
+    /**
+     * Gets the number of items in the Adapter
+     * @return Integer size of items
+     */
     @Override
     public int getItemCount() {
         return resultHolder.size();
     }
 
+    /**
+     * Bind listener to activity
+     * @param onClick On click action
+     */
     public void setOnClick(onItemClicked onClick) {
         this.onClick=onClick;
     }
+
+    /**
+     * Bind listener to activity
+     * @param onItemPressed On hold item
+     */
     public void setOnPress(onItemPressed onItemPressed) {
         this.onItemPressed=onItemPressed;
     }
 
+    /**
+     * Individual Items in our RecyclerView
+     */
     public static class Holder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView text;

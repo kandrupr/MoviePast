@@ -33,19 +33,25 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
         this.images = images;
     }
 
+    /**
+     * Creates Holder Item to Parent RecyclerView
+     * @param parent ViewGroup The RecyclerView which holds all of the Holder items
+     * @param viewType Integer The position in the Adapter data
+     * @return Holder object
+     */
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_layout, parent, false);
         GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) layout.getLayoutParams();
-        lp.width = parent.getMeasuredWidth() / 3;
+        lp.width = parent.getMeasuredWidth() / 3;       // Get exactly 1/3 to get 3 results on a page
         layout.setLayoutParams(lp);
         return new ImageAdapter.Holder(layout);
     }
 
     /**
-     * Bind the item into the view
+     * Bind the item to view
      * @param holder Holder being and individual image
-     * @param position The position in the RecyclerView
+     * @param position Integer The position in the RecyclerView
      */
     @Override
     public void onBindViewHolder(final ImageAdapter.Holder holder, int position) {

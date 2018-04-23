@@ -19,9 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by pkkan on 3/31/2018.
+ * Load TMDB URL based off DialogFlow
  */
-
 public class LoadingAPIRequest extends AppCompatActivity {
     private String intentName;
     private String query;
@@ -47,6 +46,12 @@ public class LoadingAPIRequest extends AppCompatActivity {
         Singleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
+    /**
+     * JSONObject of Volley Request
+     * @param url String TMDB Search URL
+     * @param c Context Activity Context
+     * @return JSONObject of results
+     */
     private JsonObjectRequest createObject(String url, final Context c) {
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -78,11 +83,17 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         finish();
-                        Toast.makeText(c, "Network Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(c, "Couldn't load page", Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
+    /**
+     * When given an actor and a form of media
+     * @param url String TMDB Actor ID URL
+     * @param c Application Context
+     * @return JSONObject of actor credits
+     */
     private JsonObjectRequest actorFormObject(String url, final Context c) {
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -102,11 +113,16 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         finish();
-                        Toast.makeText(c, "Network Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(c, "Couldn't load page", Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
+    /**
+     * Create Volley request for an actors credits
+     * @param c Context Application Context
+     * @param id String an Actor's TMDB ID
+     */
     private void getActorForm(Context c, String id) {
         URLBuilder builder = URLBuilder.getInstance(c);
         String url = builder.buildPersonForm(id, form);
@@ -114,49 +130,60 @@ public class LoadingAPIRequest extends AppCompatActivity {
         Singleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
+    /**
+     * Parse TMDB Search Results
+     * @param response JSONObject results from TMDB search request
+     * @param type RequestType Actor, Movie, TVShow
+     */
     private void parseData(JSONObject response, RequestType type) {
         try {
             JSONArray jsonResults = response.getJSONArray("results");
             int size = jsonResults.length();
-            if(size == 0){
-                // FINISH AND TOAST NO RESULTS
-            } else if(size == 1) {
+            if(size == 0){                  // No results
+                finish();
+                Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();
+            } else if(size == 1) {          // Single Result
                 Result result = null;
                 JSONObject obj = (JSONObject) jsonResults.get(0);
-                if(type.equals(RequestType.ACTOR)) {
+                if(type.equals(RequestType.ACTOR)) {    // Check if popularity or vote count meets minimum
                     if (Float.parseFloat(obj.get("popularity").toString()) >= 1.0) { result = buildResult.checkData(obj, type); }
                 } else {
                     if (Integer.parseInt(obj.get("vote_count").toString()) >= 2) { result = buildResult.checkData(obj, type); }
                 }
                 if (result != null) {
-                    // NEW ACTIVITY WITH
-                    singleResult(result);
-                } else {
-                    // RETURN AND TOAST
+                    singleResult(result);   // New InfoActivity
+                } else {                    // After filtering, didn't make the cut
+                    finish();
+                    Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 ResultHolder results = searchResults(jsonResults, type);
-                if(results.size() == 0){
-                    // FINISH AND TOAST
+                if(results.size() == 0){    // No Results
+                    finish();
+                    Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();
                 } else if(results.size() == 1) {
-                    // TYPE Activity
-                    singleResult(results.get(0));
+                    singleResult(results.get(0));   // InfoActivity
                 } else {
-                    // RESULTS ACTIVITY
-                    multipleResults(results, query);
+                    multipleResults(results, query); // ResultsActivity beacause of multiple results
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            // TOAST AND FAIL
-        }
+            finish();
+            Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();        }
     }
 
+    /**
+     * Parse an actor's credits
+     * @param response JSONObject TMDB search actor results
+     * @param type  RequestType Actor, Movie, TVShow
+     */
     private void parseActorCredits(JSONObject response, RequestType type) {
         try {
             JSONArray jsonResults = response.getJSONArray("cast");
-            if(jsonResults.length() == 0){
-                // FINISH AND TOAST NO RESULTS
+            if(jsonResults.length() == 0){  // No results
+                finish();
+                Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();
             } else {
                 ResultHolder results = new ResultHolder();
                 Result result;
@@ -166,23 +193,28 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     if(result != null){ results.add(result); }
                 }
                 if(results.size() == 0) {
-                    // END ACTIVITY AND TOAST
+                    finish();           // No Results
+                    Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();
                 } else {
-                    // RESULTS ACTIVITY
-                    multipleResults(results, query);
+                    multipleResults(results, query);    // RESULTS ACTIVITY
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            // TOAST AND FAIL
-        }
+            finish();
+            Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();        }
     }
 
+    /**
+     * Parse Multi-Search data
+     * @param response TMDB Search Results
+     */
     private void parseMulti(JSONObject response) {
         try {
             JSONArray jsonResults = response.getJSONArray("results");
             if(jsonResults.length() == 0){
-                // FINISH AND TOAST NO RESULTS
+                finish();
+                Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();
             } else {
                 ResultHolder results = new ResultHolder();
                 Result result;
@@ -191,19 +223,25 @@ public class LoadingAPIRequest extends AppCompatActivity {
                     result = buildResult.checkMultiData(obj);
                     if(result != null){ results.add(result); }
                 }
-                if(results.size() == 0) {
-                    // TOAST AND FAIL
+                if(results.size() == 0) {           // No results
+                    finish();
+                    Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();
                 } else {
-                    // RESULTS ACTIVITY
-                    multipleResults(results, query);
+                    multipleResults(results, query); // Results Activity
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            // TOAST AND FAIL
+            finish();
+            Toast.makeText(this, "Didn't find anything", Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Get the Actor ID from TMDB result
+     * @param response TMDB Result
+     * @return String TMDB ID
+     */
     @Nullable
     private String getActorID(JSONObject response) {
         try {
@@ -216,6 +254,12 @@ public class LoadingAPIRequest extends AppCompatActivity {
         }
     }
 
+    /**
+     * Parse through array of results to see if it made the cut
+     * @param arr JSONArray Items to keep
+     * @param type RequestType Actor, Movie, TVShow
+     * @return ResultHolder Our Filtered Results
+     */
     private ResultHolder searchResults(JSONArray arr, RequestType type) {
         ResultHolder results = new ResultHolder();
         Result result;
@@ -243,6 +287,10 @@ public class LoadingAPIRequest extends AppCompatActivity {
         return results;
     }
 
+    /**
+     * Start new InfoActivity
+     * @param result Result A single result
+     */
     private void singleResult(Result result) {
         Intent intent = new Intent(this, LoadingInfo.class);
         Bundle bundle = new Bundle();
@@ -252,6 +300,11 @@ public class LoadingAPIRequest extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Start new ResultsActivity
+     * @param results ResultHolder results from parsing and filtering data
+     * @param query String What the user was asking for
+     */
     private void multipleResults(ResultHolder results, String query) {
         Intent intent = new Intent(this, ResultsActivity.class);
         Bundle bundle = new Bundle();

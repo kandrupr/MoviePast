@@ -20,13 +20,12 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created by pkkan on 4/19/2018.
- *
+ * Activity that loads a built TMDB URL result
  */
 public class LoadingInfo extends AppCompatActivity {
     private final String image_url = "https://image.tmdb.org/t/p/w154";
-    private RequestType type;
-    private String name, id, poster;
+    private RequestType type;       // Actor, Movie, TV Show
+    private String name, id, poster;    // Result attributes
     private BuildResult buildResult = new BuildResult();
 
     @Override
@@ -37,12 +36,24 @@ public class LoadingInfo extends AppCompatActivity {
         URLBuilder builder = URLBuilder.getInstance(getApplicationContext());
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        Result result = (Result) bundle.getSerializable("RESULT");
-        name = result.getName();
-        type = result.getType();
-        id = result.getId();
-        poster = result.getPoster();
+        if(bundle != null){
+            Result result = (Result) bundle.getSerializable("RESULT");
+            // Result attributes
+            if(result != null) {
+                name = result.getName();
+                type = result.getType();
+                id = result.getId();
+                poster = result.getPoster();
+            } else {
+                finish();
+                Toast.makeText(this, "Failed to load page", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            finish();
+            Toast.makeText(this, "Failed to load page", Toast.LENGTH_SHORT).show();
+        }
 
+        // New URL with specific ID
         String url = "";
         switch(type) {
             case ACTOR:
@@ -59,14 +70,25 @@ public class LoadingInfo extends AppCompatActivity {
                 finish();
                 break;
         }
+        // Get results on specific result
         getInfo(url);
     }
 
+    /**
+     * Adds a request to our Volley Singleton
+     * @param url String TMDB ID URL
+     */
     private void getInfo(String url) {
         JsonObjectRequest jsonObjectRequest = createObject(url, this);
         Singleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
+    /**
+     * JSONObject of Volley Request
+     * @param url String TMDB ID URL
+     * @param c Context Activity Context
+     * @return JSONObject of results
+     */
     private JsonObjectRequest createObject(String url, final Context c) {
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -96,17 +118,24 @@ public class LoadingInfo extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         finish();
-                        Toast.makeText(c, "Network Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(c, "Couldn't load page", Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
+    /**
+     * Find a specific field in a JSONObject
+     * @param obj Object Results
+     * @param field String What we are looking for
+     * @param error String Error Message
+     * @return String Field
+     */
     String findField(JSONObject obj, String field, String error) {
         String val;
         try {
             val = obj.get(field).toString();
             if(val.isEmpty() || val.equals("null")){
-                val = error;
+                val = error;        // Check if it is empty
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -115,6 +144,14 @@ public class LoadingInfo extends AppCompatActivity {
         return val;
     }
 
+    /**
+     * Create ResultHolder object for images, cast, and similar
+     * @param response JSONObject TMDB results
+     * @param first String first field to get object
+     * @param second String second field for an array
+     * @param type RequestType Actor, Movie, TV Show
+     * @return ResultHolder
+     */
     ResultHolder findCarouselInfo(JSONObject response, String first, String second, RequestType type){
         ResultHolder results = new ResultHolder();
         try {
@@ -124,7 +161,7 @@ public class LoadingInfo extends AppCompatActivity {
             for (int i = 0; i < size; i++) {
                 JSONObject obj = jsonCast.getJSONObject(i);
                 Result result = buildResult.checkData(obj, type);
-                if (result != null) { results.add(result); }
+                if (result != null) { results.add(result); }    // Add to results if not empty
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -132,29 +169,40 @@ public class LoadingInfo extends AppCompatActivity {
         return results;
     }
 
+    /**
+     * Create a comma separated String of genres
+     * @param obj JSONObject holding array of genres
+     * @return String genres
+     */
     private String findGenres(JSONObject obj) {
         String genres = "";
         try {
             JSONArray jsonGenres = obj.getJSONArray("genres");
             for (int i = 0; i < jsonGenres.length(); i++){
                 String genre = jsonGenres.getJSONObject(i).get("name").toString();
-                if(!genre.isEmpty() || !genre.equals("null")){
+                if(!genre.isEmpty() || !genre.equals("null"))   // Check to see if string is applicable
                     genres += genre + ", ";
-                }
             }
             if(genres.length() == 0){
                 genres = "No genres available";
-            } else {
+            } else {    // Remove trailing space and comma
                 genres = genres.substring(0,genres.length()-2);
             }
-        } catch (JSONException e) {
+        } catch (JSONException e) { // Some Error or no genres
             e.printStackTrace();
             genres = "No genres available";
-            // NO IMAGES THATS OKAY
         }
         return genres;
     }
 
+    /**
+     * Gets the first element in a JSONArray for a specific field
+     * @param obj JSONObject TMDB ID results
+     * @param arr String the array we are looking for
+     * @param field String field we are looking
+     * @param error String Error Message
+     * @return String Field
+     */
     private String findFirstArrayElement(JSONObject obj, String arr, String field, String error) {
         String val;
         try {
@@ -169,35 +217,40 @@ public class LoadingInfo extends AppCompatActivity {
         return val;
     }
 
+    /**
+     * Create an Actor Object
+     * @param response JSONObject TMDB Results
+     * @return Actor Object
+     */
     private Actor parseActorObject(JSONObject response) {
-        List<String> images = new ArrayList<>();
-        ResultHolder holder = new ResultHolder();
+        List<String> images = new ArrayList<>();    // Image URL
+        ResultHolder holder = new ResultHolder();   // Filmography
         String biography;
+        // Get actor images
         try {
             JSONArray arr = response.getJSONObject("images").getJSONArray("profiles");
             int size = arr.length();
-            if(size > 10) { size = 10; }
+            if(size > 10) { size = 10; }    // Up to 10
             String path;
             for (int i = 0; i < size; i++) {
                 JSONObject index = arr.getJSONObject(i);
                 path = index.get("file_path").toString();
-                if(!path.equals("null") || !path.isEmpty()) {
-                    images.add(image_url + path);
-                }
+                if(!path.equals("null") || !path.isEmpty())
+                    images.add(image_url + path);   // Add Images
             }
         } catch (JSONException e) {
-            e.printStackTrace();
-            // NO IMAGES THATS OKAY
-        }
+            e.printStackTrace();    // NO IMAGES THATS OKAY
 
+        }
+        // Get filmography
         try {
             JSONArray arr = response.getJSONObject("combined_credits").getJSONArray("cast");
             int size = arr.length();
-            if(size > 0) {
+            if(size > 0) {  // Make List of JSONObject to sort
                 List<JSONObject> myJsonArrayAsList = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++)
                     myJsonArrayAsList.add(arr.getJSONObject(i));
-
+                // Sort based off of popularity
                 Collections.sort(myJsonArrayAsList, new Comparator<JSONObject>() {
                     @Override
                     public int compare(JSONObject jsonObjectA, JSONObject jsonObjectB) {
@@ -212,12 +265,12 @@ public class LoadingInfo extends AppCompatActivity {
                         return compare;
                     }
                 });
-
+                // Get at least 20 results
                 arr = new JSONArray();
                 if (size > 20) { size = 20; }
                 for (int i = 0; i < size; i++)
                     arr.put(myJsonArrayAsList.get(i));
-
+                // Get 10 most popular results
                 for (int i = 0; i < size; i++) {
                     JSONObject obj = arr.getJSONObject(i);
                     Result result = buildResult.checkMultiData(obj);
@@ -227,34 +280,31 @@ public class LoadingInfo extends AppCompatActivity {
                     if(holder.size() == 10){ break; }
                 }
             }
-        } catch (JSONException e) {
+        } catch (JSONException e) { // No filmography
             e.printStackTrace();
         }
         biography = findField(response, "biography","No Information Available");
         return new Actor(name, biography, poster, images, holder);
     }
 
+    /**
+     * Create a Movie Object based off TMDB ID results
+     * @param response JSONObject TMDB ID results
+     * @return Movie Object
+     */
     private Movie parseMovieObject(JSONObject response) {
-        ResultHolder cast;
-        ResultHolder similar;
+        ResultHolder cast;      // Credits
+        ResultHolder similar;   // Similar movies
         String rating , runtime, releaseDate, overview ,genres;
         String mpaa = "";
 
+        // Get Movie attributes
         genres = findGenres(response);
-        //Log.d("MOVIE GENRES", genres);
-
         overview = findField(response, "overview", "No overview available");
-        //Log.d("MOVIE OVERVIEW", overview);
-
         releaseDate = findField(response, "release_date", "No release date available");
-        //Log.d("MOVIE RELEASE", releaseDate);
-
         runtime = findField(response, "runtime", "No runtime available");
-        //Log.d("MOVIE RUNTIME", runtime);
-
         rating = findField(response, "vote_average", "0/10");
-        //Log.d("MOVIE RATING", rating);
-
+        // Parse MPAA ratings
         try {
             JSONArray mpaaRatings = response.getJSONObject("release_dates").getJSONArray("results");
             for(int i = 0; i < mpaaRatings.length(); i++) {
@@ -267,21 +317,24 @@ public class LoadingInfo extends AppCompatActivity {
                 mpaa = "No rating available";
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            e.printStackTrace();    // No ratings available
             mpaa = "No rating available";
-            // NO IMAGES THATS OKAY
         }
-
         cast = findCarouselInfo(response, "credits", "cast", RequestType.ACTOR);
         similar = findCarouselInfo(response, "similar", "results", type);
 
         return new Movie(name, poster, rating, mpaa, runtime, releaseDate, overview, genres, cast, similar);
     }
 
+    /**
+     * Create TV Object based of TMDB ID results
+     * @param response JSONObject TMDB ID results
+     * @return TV Object
+     */
     private TVShow parseTVObject(JSONObject response) {
         String runTime, firstDate,  genres, network, origin,  numEpisodes, numSeason,overview, status, contentRatings;
-        ResultHolder cast;
-        ResultHolder similar;
+        ResultHolder cast;      // Cast
+        ResultHolder similar;   // Similar TV Shows
         try {
             runTime = response.getJSONArray("episode_run_time").get(0).toString();
             if(runTime.isEmpty() || runTime.equals("null")){
@@ -291,32 +344,16 @@ public class LoadingInfo extends AppCompatActivity {
             e.printStackTrace();
             runTime = "Run time is not available";
         }
-        //Log.d("TV RUN", runTime);
-
+        // Parse TV attributes
         firstDate = findField(response, "first_air_date", "First airing not available");
-        //Log.d("TV FIRST AIR", firstDate);
-
         genres = findGenres(response);
-        //Log.d("TV GENREs", genres);
-
         network = findFirstArrayElement(response, "networks", "name", "No TV Network available");
-        //Log.d("TV NETWORK", network);
-
         origin = findFirstArrayElement(response, "networks", "origin_country", "Don't have origin country");
-        //Log.d("TV ORIGIN", origin);
-
         numEpisodes = findField(response, "number_of_episodes", "Number of seasons unavailable");
-        //Log.d("TV EPISODES", numEpisodes);
-
         numSeason = findField(response, "number_of_seasons", "Number of seasons unavailable");
-        //Log.d("TV SEASONs", numSeason);
-
         overview = findField(response, "overview", "No overview available");
-        //Log.d("TV OVERVIEW", overview);
-
         status = findField(response, "status", "Don't have current status");
-        //Log.d("TV STATUS", status);
-
+        // Parse content ratings
         try {
             JSONObject cRatings = response.getJSONObject("content_ratings");
             contentRatings = findFirstArrayElement(cRatings,"results", "rating", "No Content Rating available");
@@ -324,7 +361,6 @@ public class LoadingInfo extends AppCompatActivity {
             e.printStackTrace();
             contentRatings = "No Content Rating available";
         }
-        //Log.d("TV CONTENT", contentRatings);
 
         cast = findCarouselInfo(response, "credits", "cast", RequestType.ACTOR);
         similar = findCarouselInfo(response, "similar", "results", type);
@@ -332,6 +368,11 @@ public class LoadingInfo extends AppCompatActivity {
         return new TVShow(name, poster, runTime, firstDate, genres, network, origin, numEpisodes, numSeason, overview, status, contentRatings, cast, similar);
     }
 
+    /**
+     * Move to InfoActivity now that all information is set
+     * @param info InfoOverview Our result object cast to its parent
+     * @param type RequestType Actor, Movie, TVShow
+     */
     private void showMedia(InfoOverview info, RequestType type) {
         Intent intent = new Intent(this, InfoActivity.class);
         Bundle bundle = new Bundle();

@@ -21,10 +21,13 @@ import java.util.List;
  */
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
-
     private Context context;
     private List<String> images;
-
+    /**
+     * Constructor
+     * @param context Application Context
+     * @param images A list of Image URLs used for actors
+     */
     public ImageAdapter(Context context, List<String> images) {
         this.context = context;
         this.images = images;
@@ -39,22 +42,27 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
         return new ImageAdapter.Holder(layout);
     }
 
+    /**
+     * Bind the item into the view
+     * @param holder Holder being and individual image
+     * @param position The position in the RecyclerView
+     */
     @Override
     public void onBindViewHolder(final ImageAdapter.Holder holder, int position) {
-        if(images.get(position).equals("blank")) {
+        if(images.get(position).equals("blank")) {  // No Image available, show error text
             holder.progress.setVisibility(View.GONE);
             holder.image.setVisibility(View.GONE);
             holder.text.setVisibility(View.VISIBLE);
             holder.text.setText(R.string.error);
             holder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         } else {
-            Picasso.with(context)
+            Picasso.with(context)       // Load the image
                     .load(images.get(position))
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                     .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
                     .into(holder.image,  new Callback() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess() {   // Image successfully loaded, show image
                             if (holder.progress != null) {
                                 holder.text.setVisibility(View.GONE);
                                 holder.progress.setVisibility(View.GONE);
@@ -63,7 +71,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
                         }
 
                         @Override
-                        public void onError() {
+                        public void onError() {     // Image failed to load, show error text
                             if (holder.progress != null) {
                                 holder.progress.setVisibility(View.GONE);
                                 holder.image.setVisibility(View.GONE);
@@ -76,15 +84,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
         }
     }
 
+    /**
+     * Number of items in our view
+     * @return Integer number of items
+     */
     @Override
     public int getItemCount() {
         return images.size();
     }
 
+    /**
+     * Individual Items in our RecyclerView
+     */
     public static class Holder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView text;
-        final ProgressBar progress;
+        final ProgressBar progress; // A progress spinner
 
         public Holder (View view) {
             super(view);

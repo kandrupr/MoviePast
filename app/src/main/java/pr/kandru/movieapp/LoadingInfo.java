@@ -7,16 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,8 +21,8 @@ import java.util.List;
 
 /**
  * Created by pkkan on 4/19/2018.
+ *
  */
-
 public class LoadingInfo extends AppCompatActivity {
     private final String image_url = "https://image.tmdb.org/t/p/w154";
     private RequestType type;

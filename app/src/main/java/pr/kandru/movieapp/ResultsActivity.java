@@ -41,6 +41,12 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
         resultsView = findViewById(R.id.resultView);
         layoutManager = new GridLayoutManager(ResultsActivity.this, 3);
         resultsView.setLayoutManager(layoutManager);
+
+        adapter = new ResultAdapter(ResultsActivity.this, results);
+        resultsView.setAdapter(adapter);
+
+        adapter.setOnClick(this);
+        adapter.setOnPress(this);// Bind the listener
     }
 
     @Override
@@ -51,10 +57,16 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
     @Override
     protected void onResume() {
         super.onResume();
-        adapter = new ResultAdapter(ResultsActivity.this, results);
-        resultsView.setAdapter(adapter);
-        adapter.setOnClick(this);
-        adapter.setOnPress(this);// Bind the listener
+        if(adapter == null) {
+            resultsView.setLayoutManager(layoutManager);
+
+            adapter = new ResultAdapter(ResultsActivity.this, results);
+            resultsView.setAdapter(adapter);
+
+            adapter.setOnClick(this);
+            adapter.setOnPress(this);// Bind the listener
+        }
+
     }
 
     @Override

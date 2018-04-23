@@ -9,33 +9,41 @@ import java.util.HashMap;
 import ai.api.model.Result;
 
 /**
- * Created by pkkan on 4/1/2018.
+ * Class that processes the language from DialogFlow/API.AI result
  */
-
 public class DialogFlowParser {
-    private Result json;
+    private Result json;    /// DialogFlow result
     private Context c;
-    private String intent;
+    private String intent;  /// The type of request DialogFlow thinks it is
 
+    /**
+     * Constructor
+     * @param context Application Context
+     * @param json DialogFlow result
+     */
     public DialogFlowParser(Context context, Result json) {
         this.c = context;
         this.json = json;
         this.intent = json.getMetadata().getIntentName();
     }
 
+    /**
+     * Returns the TMDB URL request
+     * @return A valid TMDB URL or a fail flag
+     */
     public String getURL() {
-        HashMap<String, JsonElement> params = json.getParameters();
-        String result, name;
-        URLBuilder builder = URLBuilder.getInstance(c);
-        String fields;
+        HashMap<String, JsonElement> params = json.getParameters(); // Parameters for the intent
+        String result, name;        // Result being what we send back, Name being an actor/actress name
+        URLBuilder builder = URLBuilder.getInstance(c);     // Builds our TMDB URL
+        String fields;      // Parameters for the intent as a String
         switch(this.intent) {
-            case "Descriptor":
+            case "Descriptor":  // Needs a descriptor and Type being Movie or TV Show
                 if(params.containsKey("Descriptor") && params.containsKey("Type")) {
                     result = builder.buildDescriptor(params.get("Descriptor").toString().replace("\"", "").toLowerCase(),
                             params.get("Type").toString().replace("\"", "").toLowerCase());
                 } else
                     return "fail";
-                break;
+                break;          // Needs a descriptor and Type being a Movie or TV Show and valid year
             case "DescriptorByYear":
                 if(params.containsKey("Descriptor") && params.containsKey("Type") && params.containsKey("Year")) {
                     result = builder.buildDescriptorByYear(params.get("Descriptor").toString().replace("\"", "").toLowerCase(),
@@ -44,13 +52,13 @@ public class DialogFlowParser {
                 } else
                     return "fail";
                 break;
-            case "Movie":
+            case "Movie":       // Movie Title
                 if(params.containsKey("Title"))
                     result = builder.buildMovie(params.get("Title").toString().replace("\"", ""));
                 else
                     return "fail";
                 break;
-            case "MovieGenre":
+            case "MovieGenre":  // Needs a genre, year is optional
                 if(params.containsKey("moviegenre")) {
                     fields = params.get("moviegenre").toString().replace("\"", "");
                     if(params.containsKey("year")) {
@@ -60,19 +68,18 @@ public class DialogFlowParser {
                 } else
                     return "fail";
                 break;
-            case "Person":
+            case "Person":      // Actor name
                 name = checkPerson(params);
                 result = personURL(name, builder);
                 break;
-            case "PersonForm":
+            case "PersonForm":  // Actor name and movie/tv shows
                 if(params.containsKey("Type")) {
                     name = checkPerson(params);
                     result = personURL(name, builder);
                 } else
                     return "fail";
-
                 break;
-            case "TVShowGenre":
+            case "TVShowGenre":     // Needs a genre, year is optional
                 if(params.containsKey("tvgenre") && params.containsKey("type")) {
                     fields = params.get("tvgenre").toString().replace("\"", "");
                     if(params.containsKey("year"))
@@ -81,7 +88,7 @@ public class DialogFlowParser {
                 } else
                     return "fail";
                 break;
-            case "TVShows":
+            case "TVShows":         // TV Show title
                 if(params.containsKey("Title")) {
                     String title = params.get("Title").toString().replace("\"", "");
                     result = builder.buildTV(title);
@@ -89,7 +96,7 @@ public class DialogFlowParser {
                     return "fail";
                 }
                 break;
-            case "WithTitle":
+            case "WithTitle":       // Gets a title, but not certain type of media
                 if(params.containsKey("Title")){
                     fields = getTitle(params.get("Title"));
                     if(params.containsKey("Type"))
@@ -104,6 +111,11 @@ public class DialogFlowParser {
         return result;
     }
 
+    /**
+     * Parses the title from an inner object of the param
+     * @param title Title of a TV Show or Movie Series
+     * @return
+     */
     private String getTitle(JsonElement title) {
         if(title.isJsonObject()){
             JsonObject obj = title.getAsJsonObject();
@@ -115,11 +127,16 @@ public class DialogFlowParser {
             return title.toString().replace("\"", "");
     }
 
+    /**
+     * Parses the name from an inner object of the param
+     * @param params check if a person is just a string or an Object with fields "First" and "Last"
+     * @return A name as a string
+     */
     private String checkPerson(HashMap<String, JsonElement> params) {
         String name;
         if(params.containsKey("person")) {
             JsonElement person = params.get("person");
-            if(person.isJsonObject()) {
+            if(person.isJsonObject()) { // Object has "First" and "Last" in obj
                 JsonObject obj = person.getAsJsonObject();
                 if (obj.has("First")) {
                     name = obj.get("First").toString().replace("\"", "");
@@ -136,6 +153,12 @@ public class DialogFlowParser {
             return "fail";
     }
 
+    /**
+     * Gets an TMDB Actor URL
+     * @param name Our built name
+     * @param builder Our URL Builder
+     * @return A valid TMDB Actor URL
+     */
     public String personURL(String name, URLBuilder builder) {
         String result;
         if(!name.equals("fail"))

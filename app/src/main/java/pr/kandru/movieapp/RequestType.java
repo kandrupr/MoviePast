@@ -1,7 +1,7 @@
 package pr.kandru.movieapp;
 
 /**
- * Created by pkkan on 4/17/2018.
+ * Enumerated type to identify if an item is a Movie, TV, Actor, or an Actors movies or TVShows
  */
 
 public enum RequestType {

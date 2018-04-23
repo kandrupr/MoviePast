@@ -1,12 +1,11 @@
 package pr.kandru.movieapp;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by pkkan on 4/19/2018.
+ * Actor class which holds attributes to display in InfoActivity
+ * Name, Biography, Poster is an image url, Images is a list of image urls, holder is a container for an actor's filmography
  */
-
 public class Actor extends InfoOverview {
     private String name, biography, poster;
     private List<String> images;

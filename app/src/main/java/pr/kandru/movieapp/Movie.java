@@ -1,11 +1,11 @@
 package pr.kandru.movieapp;
 
-import java.io.Serializable;
-
 /**
- * Created by pkkan on 4/20/2018.
+ * Movie class which holds attributes to display in InfoActivity
+ * Title, Poster is an image url, rating, MPAA-PG,PG-13,R, RunTime, Release, Description,
+ * Cast is a ResultHolder holding Name,ID,and poster URL to a cast member
+ * Similar is a ResultHolder holding Name,ID,and poster URL to a similar movie
  */
-
 public class Movie extends InfoOverview {
     private String title, poster, rating, mpaa, runtime, releaseDate;
     private String overview, genres;

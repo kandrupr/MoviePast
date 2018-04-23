@@ -3,9 +3,6 @@ package pr.kandru.movieapp;
 import java.io.Serializable;
 
 /**
- * Created by pkkan on 4/21/2018.
+ * Abstract class used to pass Serializable for our media types Actor, Movie and TVShow
  */
-
-public abstract class InfoOverview implements Serializable{
-
-}
+public abstract class InfoOverview implements Serializable {}

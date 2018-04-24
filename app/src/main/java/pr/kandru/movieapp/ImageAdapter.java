@@ -17,12 +17,20 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
- * Created by pkkan on 4/20/2018.
+ * Adapter for Image item in an Actor RequestType in InfoActivity
  */
-
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
     private Context context;
     private List<String> images;
+    private onItemClicked onClick;
+
+    /**
+     * Click Interface, Pass URL as string
+     */
+    public interface onItemClicked {
+        void onItemClick(String url);
+    }
+
     /**
      * Constructor
      * @param context Application Context
@@ -55,6 +63,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
      */
     @Override
     public void onBindViewHolder(final ImageAdapter.Holder holder, int position) {
+        final int pos = position;
         if(images.get(position).equals("blank")) {  // No Image available, show error text
             holder.progress.setVisibility(View.GONE);
             holder.image.setVisibility(View.GONE);
@@ -73,6 +82,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
                                 holder.text.setVisibility(View.GONE);
                                 holder.progress.setVisibility(View.GONE);
                                 holder.image.setVisibility(View.VISIBLE);
+                                holder.image.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        onClick.onItemClick(images.get(pos));  // Image URL
+                                    }
+                                });
                             }
                         }
 
@@ -98,6 +113,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
     public int getItemCount() {
         return images.size();
     }
+
+    /**
+     * Set Adapater to recognize onClick event
+     * @param onClick On Click Item
+     */
+    public void setOnClick(onItemClicked onClick) {
+        this.onClick=onClick;
+    }
+
 
     /**
      * Individual Items in our RecyclerView

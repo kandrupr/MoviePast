@@ -23,7 +23,7 @@ import java.util.List;
  * Activity that loads a built TMDB URL result
  */
 public class LoadingInfo extends AppCompatActivity {
-    private final String image_url = "https://image.tmdb.org/t/p/w154";
+    private final String image_url = "https://image.tmdb.org/t/p/w92";
     private RequestType type;       // Actor, Movie, TV Show
     private String name, id, poster;    // Result attributes
     private BuildResult buildResult = new BuildResult();

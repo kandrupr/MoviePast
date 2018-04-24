@@ -4,6 +4,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,16 +24,16 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
- * Created by pkkan on 4/19/2018.
+ * Activity to display individual Actor, Movie,
  */
-public class InfoActivity extends AppCompatActivity implements FilmographyAdapter.onItemClicked, FilmographyAdapter.onItemPressed {
-    private RecyclerView topView, bottomView;
+public class InfoActivity extends AppCompatActivity implements FilmographyAdapter.onItemClicked, FilmographyAdapter.onItemPressed, ImageAdapter.onItemClicked{
+    private RecyclerView topView, bottomView;               // RecyclerViews
     private GridLayoutManager layoutManagerBot, layoutManagerTop;
     private TextView title, bio, topText, bottomText;
-    private FilmographyAdapter topAdapter, bottomAdapter;
-    private ImageAdapter bottomImageAdapter;
-    private InfoOverview data;
-    private RequestType form;
+    private FilmographyAdapter topAdapter, bottomAdapter;   // Two adapters
+    private ImageAdapter bottomImageAdapter;                // If an actor is present, use ImageAdapter instead
+    private InfoOverview data;                              // Parent class of Actor, Movie, TVShow
+    private RequestType form;                               // Type Actor, Movie, or TVShow
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -49,9 +50,14 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        form = (RequestType) intent.getSerializableExtra("FORM");
-        data = (InfoOverview) bundle.getSerializable("DATA");
-
+        if(bundle != null) {
+            form = (RequestType) intent.getSerializableExtra("FORM");
+            data = (InfoOverview) bundle.getSerializable("DATA");
+        } else {
+            finish();
+            Toast.makeText(this, "Trouble loading information", Toast.LENGTH_SHORT).show();
+        }
+        // Allows overview text to be scrollable
         bio.setMovementMethod(new ScrollingMovementMethod());
         bio.setScrollbarFadingEnabled(false);
     }
@@ -91,6 +97,10 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         bottomImageAdapter = null;
     }
 
+    /**
+     * Display everything about a TVShow
+     * @param tv TV Object with attributes
+     */
     private void displayTVShow(TVShow tv) {
         bottomText.setText(R.string.similarTV);
         title.setText(tv.getTitle());
@@ -116,6 +126,10 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         bottomAdapter.setOnPress(this);
     }
 
+    /**
+     * Display everything about a Movie
+     * @param movie Movie Object with attributes
+     */
     private void displayMovie(Movie movie) {
         title.setText(movie.getTitle());
         bio.setText(movie.getOverview());
@@ -140,6 +154,10 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         bottomAdapter.setOnPress(this);
     }
 
+    /**
+     * Display everything about an Actor
+     * @param actor Actor Object with attributes
+     */
     private void displayActor(Actor actor) {
         topText.setText(R.string.filmography);
         bottomText.setText(R.string.images);
@@ -162,13 +180,19 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
 
         topAdapter.setOnClick(this);
         topAdapter.setOnPress(this);
+        bottomImageAdapter.setOnClick(this);
     }
 
+    /**
+     * Set and handle the poster
+     * @param poster Poster URL
+     * @param name   InfoOverView Name/Title
+     */
     private void setPoster(String poster, final String name) {
         final TextView text = findViewById(R.id.info_resultText);
         final ImageView image = findViewById(R.id.info_posterView);
         final ProgressBar progress= findViewById(R.id.info_progressLoader);
-        if(poster.equals("blank")) {
+        if(poster.equals("blank")) {        // No poster provided
             progress.setVisibility(View.GONE);
             image.setVisibility(View.GONE);
             text.setVisibility(View.VISIBLE);
@@ -182,7 +206,7 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
                     .into(image,  new Callback() {
                         @Override
                         public void onSuccess() {
-                            if (progress != null) {
+                            if (progress != null) {             // Poster set successfully
                                 text.setVisibility(View.GONE);
                                 progress.setVisibility(View.GONE);
                                 image.setVisibility(View.VISIBLE);
@@ -191,7 +215,7 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
 
                         @Override
                         public void onError() {
-                            if (progress != null) {
+                            if (progress != null) {             // Poster failed to load
                                 progress.setVisibility(View.GONE);
                                 image.setVisibility(View.GONE);
                                 text.setVisibility(View.VISIBLE);
@@ -203,6 +227,10 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         }
     }
 
+    /**
+     * Return back to MainActivity and delete all other activities
+     * @param v View view that was clicked
+     */
     public void onHomeButton(View v) {
         Intent i = new Intent(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -210,6 +238,10 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         startActivity(i);
     }
 
+    /**
+     * Move to a different InfoActivity based on the result
+     * @param result Result Object holding TMDB info
+     */
     @Override
     public void onItemClick(Result result) {
         Intent intent = new Intent(this, LoadingInfo.class);
@@ -221,7 +253,6 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
 
     @Override
     public void onTrimMemory(int level){
-
         // Determine which lifecycle or system event was raised.
         switch (level) {
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
@@ -268,10 +299,26 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
 
     }
 
+    /**
+     * Click on filmography items to Toast name/title
+     * @param result Result Object holding TMDB info
+     */
     @Override
     public void onItemPressed(Result result) {
         Toast toast = Toast.makeText(getApplicationContext(), result.getName(), Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL,0,0);
-        toast.show();
+        toast.show();       // Display, name/Title
+    }
+
+    /**
+     * Click on image items to show a dialog of that image
+     * @param url String Poster URL
+     */
+    @Override
+    public void onItemClick(String url) {
+        ImageDialog dialog = new ImageDialog();
+        dialog.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog_NoActionBar);
+        dialog.setURL(url);
+        dialog.show(this.getSupportFragmentManager(),"dialog");
     }
 }

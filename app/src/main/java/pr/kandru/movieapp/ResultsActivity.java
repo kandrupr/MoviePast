@@ -2,28 +2,24 @@ package pr.kandru.movieapp;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
-import android.view.MenuInflater;
 import android.view.View;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * Created by pkkan on 3/28/2018.
+ * Activity that displays results as a grid
  */
-
 public class ResultsActivity extends AppCompatActivity implements ResultAdapter.onItemClicked, ResultAdapter.onItemPressed {
-    private RecyclerView resultsView;
+    private RecyclerView resultsView;           // Main View
     private GridLayoutManager layoutManager;
-    private String query;
-    private ResultHolder results;
-    private ResultAdapter adapter;
+    private String query;                       // User query
+    private ResultHolder results;               // Results
+    private ResultAdapter adapter;              // RecyclerView adapter
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

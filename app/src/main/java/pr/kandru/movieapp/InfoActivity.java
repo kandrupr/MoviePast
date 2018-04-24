@@ -60,18 +60,8 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         // Allows overview text to be scrollable
         bio.setMovementMethod(new ScrollingMovementMethod());
         bio.setScrollbarFadingEnabled(false);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.d("ACTIVITY", "RESUME");
-        super.onResume();
-        switch(form) {
+        switch (form) {
             case ACTOR:
                 displayActor((Actor) data);
                 break;
@@ -82,19 +72,10 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
                 displayTVShow((TVShow) data);
                 break;
             default:
-                //FAIL AND TOAST
+                finish();
+                Toast.makeText(this, "Couldn't load data", Toast.LENGTH_SHORT).show();
                 break;
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        topView.setAdapter(null);
-        bottomView.setAdapter(null);
-        topAdapter = null;
-        bottomAdapter = null;
-        bottomImageAdapter = null;
     }
 
     /**

@@ -33,7 +33,12 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
         TextView queryText = findViewById(R.id.requestText);
         queryText.setText(query.toUpperCase());
 
-        results = (ResultHolder) bundle.getSerializable("RESULTS");
+        if (bundle != null) {
+            results = (ResultHolder) bundle.getSerializable("RESULTS");
+        } else {
+            finish();
+            Toast.makeText(this, "Couldn't get results", Toast.LENGTH_SHORT).show();
+        }
         resultsView = findViewById(R.id.resultView);
         layoutManager = new GridLayoutManager(ResultsActivity.this, 3);
         resultsView.setLayoutManager(layoutManager);
@@ -43,33 +48,6 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
 
         adapter.setOnClick(this);
         adapter.setOnPress(this);// Bind the listener
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(adapter == null) {
-            resultsView.setLayoutManager(layoutManager);
-
-            adapter = new ResultAdapter(ResultsActivity.this, results);
-            resultsView.setAdapter(adapter);
-
-            adapter.setOnClick(this);
-            adapter.setOnPress(this);// Bind the listener
-        }
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        resultsView.setAdapter(null);
-        adapter = null;
     }
 
     @Override

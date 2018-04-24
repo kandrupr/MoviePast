@@ -56,7 +56,8 @@
             android:fontFamily="@font/archivo_narrow_bold"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
-            android:textSize="24sp" />
+            android:textSize="26sp"
+            android:text="@string/tap"/>
 
         <ImageButton
             android:id="@+id/voiceButton"

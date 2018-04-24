@@ -10,6 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
 
     private SliderAdapter mSlider;
-    private ImageButton listenButton;
     private AIService aiService;
     private DialogFlowParser mParser;
     //private String mState = "open";
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         mSlider = new SliderAdapter(this);
         slideViewPager.setAdapter(mSlider);
         slideViewPager.setCurrentItem(1);
-        listenButton = findViewById(R.id.voiceButton);
         createDots(1);
     }
 
@@ -78,12 +78,6 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
             @Override
             public void onPageSelected(int position) {
-                /*
-                if(slideViewPager.getCurrentItem() == 2) {
-                    mSlider.createHandler();
-                } else {
-                    mSlider.endHandler();
-                }*/
                 createDots(position);
             }
             @Override
@@ -127,44 +121,48 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         Log.d("QUERY", query);
         Log.d("INTENT PARAMS ", result.getParameters().toString());
 
-
-        if(value.equals("fail")) {  // TOAST FAIL
-            Toast toast = Toast.makeText(getApplicationContext(), "Couldn't put your request together, try the typing it in!", Toast.LENGTH_LONG);
-            toast.show();
-        } else if(value.equals("invalid")) { // TOAST INVALID REQUEST
-            Toast toast = Toast.makeText(getApplicationContext(), "That's an odd request. Try something else!", Toast.LENGTH_LONG);
-            toast.show();
-        } else {
-            Intent i = new Intent(getApplicationContext(), LoadingAPIRequest.class);
-            i.putExtra("QUERY",  query);
-            i.putExtra("URL", value);
-            switch(intent) {
-                case "Movie":   // Movie
-                case "MovieGenre":
-                    i.putExtra("TYPE", "movie");
-                    break;
-                case "TVShows": // TV
-                case "TVShowGenre":
-                    i.putExtra("TYPE", "tv");
-                    break;
-                case "Person":  // Actor
-                    i.putExtra("TYPE", "actor");
-                    break;
-                case "PersonForm":  // Actor
-                    i.putExtra("TYPE", "actorForm");
-                    i.putExtra("FORM", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
-                    break;
-                case "WithTitle":   // Movie, TVShow, or ALL
-                    if(result.getParameters().containsKey("Type"))
+        Toast toast;
+        switch (value) {
+            case "fail": // TOAST FAIL
+                toast = Toast.makeText(getApplicationContext(), "Couldn't put your request together, try the typing it in!", Toast.LENGTH_LONG);
+                toast.show();
+                break;
+            case "invalid": // TOAST INVALID REQUEST
+                toast = Toast.makeText(getApplicationContext(), "That's an odd request. Try something else!", Toast.LENGTH_LONG);
+                toast.show();
+                break;
+            default:
+                Intent i = new Intent(getApplicationContext(), LoadingAPIRequest.class);
+                i.putExtra("QUERY", query);
+                i.putExtra("URL", value);
+                switch (intent) {
+                    case "Movie":   // Movie
+                    case "MovieGenre":
+                        i.putExtra("TYPE", "movie");
+                        break;
+                    case "TVShows": // TV
+                    case "TVShowGenre":
+                        i.putExtra("TYPE", "tv");
+                        break;
+                    case "Person":  // Actor
+                        i.putExtra("TYPE", "actor");
+                        break;
+                    case "PersonForm":  // Actor
+                        i.putExtra("TYPE", "actorForm");
+                        i.putExtra("FORM", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
+                        break;
+                    case "WithTitle":   // Movie, TVShow, or ALL
+                        if (result.getParameters().containsKey("Type"))
+                            i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
+                        else
+                            i.putExtra("TYPE", "multi");
+                        break;
+                    default:    // DESCRIPTOR & DESCRIPTOR BY YEAR
                         i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
-                    else
-                        i.putExtra("TYPE", "multi");
-                    break;
-                default:    // DESCRIPTOR & DESCRIPTOR BY YEAR
-                    i.putExtra("TYPE", result.getParameters().get("Type").toString().replace("\"", "").toLowerCase());
-                    break;
-            }
-            startActivity(i);
+                        break;
+                }
+                startActivity(i);
+                break;
         }
     }
 
@@ -183,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     }
 
     private void createDots(int pos) {
-        int size = mSlider.getHeaders().length;
+        int size = mSlider.getCount();
         if(dotLayout != null) {
             dotLayout.removeAllViews();
         }

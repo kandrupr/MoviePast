@@ -43,7 +43,6 @@ public class ImageDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.actor_image_dialog, container, false);
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         final ProgressBar progress = view.findViewById(R.id.progressLoader);
         final ImageView image = view.findViewById(R.id.resultImage);
         final ImageView cancel = view.findViewById(R.id.cancelImage);
@@ -80,6 +79,9 @@ public class ImageDialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(getDialog().getWindow() != null) {
+            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
         // Set new scale factors
         int width = (int) (getResources().getDisplayMetrics().widthPixels/1.15);
         int height = (int) (getResources().getDisplayMetrics().heightPixels/1.5);

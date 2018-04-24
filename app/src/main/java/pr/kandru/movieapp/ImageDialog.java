@@ -81,10 +81,12 @@ public class ImageDialog extends DialogFragment {
         super.onResume();
         if(getDialog().getWindow() != null) {
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            // Set new scale factors
+            int width = (int) (getResources().getDisplayMetrics().widthPixels/1.15);
+            int height = (int) (getResources().getDisplayMetrics().heightPixels/1.5);
+            getDialog().getWindow().setLayout(width, height);
+
         }
-        // Set new scale factors
-        int width = (int) (getResources().getDisplayMetrics().widthPixels/1.15);
-        int height = (int) (getResources().getDisplayMetrics().heightPixels/1.5);
-        getDialog().getWindow().setLayout(width, height);
+
     }
 }

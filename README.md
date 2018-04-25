@@ -19,7 +19,7 @@ Put your key into a resource file and name it "TMDBAPI".
 
 ### Walkthrough
 
-![alttext](app/src/main/assets/screenshots/0.png =100x20 "Home Page")
+![alttext](app/src/main/assets/screenshots/0.png =100x20)
 
 ### Basic commands
 ```

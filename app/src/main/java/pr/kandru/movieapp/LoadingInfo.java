@@ -26,7 +26,7 @@ public class LoadingInfo extends AppCompatActivity {
     private final String image_url = "https://image.tmdb.org/t/p/w92";
     private RequestType type;       // Actor, Movie, TV Show
     private String name, id, poster;    // Result attributes
-    private BuildResult buildResult = new BuildResult();
+    private final BuildResult buildResult = new BuildResult();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +130,7 @@ public class LoadingInfo extends AppCompatActivity {
      * @param error String Error Message
      * @return String Field
      */
-    String findField(JSONObject obj, String field, String error) {
+    private String findField(JSONObject obj, String field, String error) {
         String val;
         try {
             val = obj.get(field).toString();
@@ -152,7 +152,7 @@ public class LoadingInfo extends AppCompatActivity {
      * @param type RequestType Actor, Movie, TV Show
      * @return ResultHolder
      */
-    ResultHolder findCarouselInfo(JSONObject response, String first, String second, RequestType type){
+    private ResultHolder findCarouselInfo(JSONObject response, String first, String second, RequestType type){
         ResultHolder results = new ResultHolder();
         try {
             JSONArray jsonCast = response.getJSONObject(first).getJSONArray(second);
@@ -175,24 +175,24 @@ public class LoadingInfo extends AppCompatActivity {
      * @return String genres
      */
     private String findGenres(JSONObject obj) {
-        String genres = "";
+        StringBuilder genres = new StringBuilder();
         try {
             JSONArray jsonGenres = obj.getJSONArray("genres");
             for (int i = 0; i < jsonGenres.length(); i++){
                 String genre = jsonGenres.getJSONObject(i).get("name").toString();
                 if(!genre.isEmpty() || !genre.equals("null"))   // Check to see if string is applicable
-                    genres += genre + ", ";
+                    genres.append(genre).append(", ");
             }
             if(genres.length() == 0){
-                genres = "No genres available";
+                genres = new StringBuilder("No genres available");
             } else {    // Remove trailing space and comma
-                genres = genres.substring(0,genres.length()-2);
+                genres = new StringBuilder(genres.substring(0, genres.length() - 2));
             }
         } catch (JSONException e) { // Some Error or no genres
             e.printStackTrace();
-            genres = "No genres available";
+            genres = new StringBuilder("No genres available");
         }
-        return genres;
+        return genres.toString();
     }
 
     /**

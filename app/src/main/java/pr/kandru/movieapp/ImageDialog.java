@@ -19,10 +19,6 @@ import com.squareup.picasso.Picasso;
  */
 public class ImageDialog extends DialogFragment {
     private String url;
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     /**
      * Set Image URL

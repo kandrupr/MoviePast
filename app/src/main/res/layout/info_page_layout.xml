@@ -201,7 +201,7 @@
         app:layout_constraintBottom_toBottomOf="@id/guideCarouselTop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideCarouselTextTop"></android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toTopOf="@id/guideCarouselTextTop" />
 
     <TextView
         android:id="@+id/bottomText"
@@ -228,5 +228,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideCarouselTextBottom"></android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toTopOf="@id/guideCarouselTextBottom" />
 </android.support.constraint.ConstraintLayout>

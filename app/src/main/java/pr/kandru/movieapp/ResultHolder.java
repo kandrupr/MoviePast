@@ -8,7 +8,7 @@ import java.util.List;
  * A wrapper Class that holds image results, movie, tv, and actor results
  */
 public class ResultHolder implements Serializable {
-    private List<Result> results;
+    private final List<Result> results;
     /**
      * Constructor
      */
@@ -18,7 +18,7 @@ public class ResultHolder implements Serializable {
 
     /**
      * Add result to our list
-     * @param result A singluar result item
+     * @param result A singular result item
      */
     public void add(Result result) {
         results.add(result);

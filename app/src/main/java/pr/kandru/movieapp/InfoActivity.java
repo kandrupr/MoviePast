@@ -31,7 +31,6 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
     private GridLayoutManager layoutManagerBot, layoutManagerTop;
     private TextView title, bio, topText, bottomText;
     private FilmographyAdapter topAdapter, bottomAdapter;   // Two adapters
-    private ImageAdapter bottomImageAdapter;                // If an actor is present, use ImageAdapter instead
     private InfoOverview data;                              // Parent class of Actor, Movie, TVShow
     private RequestType form;                               // Type Actor, Movie, or TVShow
     @Override
@@ -154,7 +153,7 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         layoutManagerBot = new GridLayoutManager(InfoActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         bottomView.setLayoutManager(layoutManagerBot);
         List<String> images = actor.getImages();
-        bottomImageAdapter = new ImageAdapter(InfoActivity.this, images);
+        ImageAdapter bottomImageAdapter = new ImageAdapter(InfoActivity.this, images);
 
         topView.setAdapter(topAdapter);
         bottomView.setAdapter(bottomImageAdapter);
@@ -210,9 +209,9 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
 
     /**
      * Return back to MainActivity and delete all other activities
-     * @param v View view that was clicked
+     * @param view View view that was clicked
      */
-    public void onHomeButton(View v) {
+    public void onHomeButton(View view) {
         Intent i = new Intent(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
@@ -281,17 +280,6 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
     }
 
     /**
-     * Click on filmography items to Toast name/title
-     * @param result Result Object holding TMDB info
-     */
-    @Override
-    public void onItemPressed(Result result) {
-        Toast toast = Toast.makeText(getApplicationContext(), result.getName(), Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL,0,0);
-        toast.show();       // Display, name/Title
-    }
-
-    /**
      * Click on image items to show a dialog of that image
      * @param url String Poster URL
      */
@@ -301,5 +289,16 @@ public class InfoActivity extends AppCompatActivity implements FilmographyAdapte
         dialog.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog_NoActionBar);
         dialog.setURL(url);
         dialog.show(this.getSupportFragmentManager(),"dialog");
+    }
+
+    /**
+     * Click on filmography items to Toast name/title
+     * @param result Result Object holding TMDB info
+     */
+    @Override
+    public void onItemPress(Result result) {
+        Toast toast = Toast.makeText(getApplicationContext(), result.getName(), Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL,0,0);
+        toast.show();       // Display, name/Title
     }
 }

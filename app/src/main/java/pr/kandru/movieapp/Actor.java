@@ -7,9 +7,9 @@ import java.util.List;
  * Name, Biography, Poster is an image url, Images is a list of image urls, holder is a container for an actor's filmography
  */
 public class Actor extends InfoOverview {
-    private String name, biography, poster;
-    private List<String> images;
-    private ResultHolder holder;
+    final private String name, biography, poster;
+    final private List<String> images;
+    final private ResultHolder holder;
 
     public Actor(String name, String biography, String poster, List<String> images, ResultHolder holder) {
         this.name = name;

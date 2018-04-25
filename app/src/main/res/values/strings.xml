@@ -17,7 +17,11 @@
     <string name="movie">Movie</string>
     <string name="television">TV</string>
     <string name="search_input">Search&#8230;</string>
+    <string name="processing">Processing&#8230;</string>
+    <string name="listening">Listening&#8230;</string>
     <string name="cancel">Cancel</string>
     <string name="tap">Tap to start</string>
     <string name="history">Search History</string>
+    <string name='DialogFlowAPI'>010788562b17462f85a8f2b644cf3ebc</string>
+    <string name="about">About</string>
 </resources>

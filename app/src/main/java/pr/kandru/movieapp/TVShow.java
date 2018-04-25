@@ -7,10 +7,10 @@ package pr.kandru.movieapp;
  * Status - Airing/Canceled/Returning, Content Ratings - PG, TV-14 etc, Cast, and Similar TV Shows
  */
 public class TVShow extends InfoOverview {
-    private String title, poster, runTime, firstDate, genres, network;
-    private String origin, numEpisodes, numSeason, overview, status, contentRatings;
-    private ResultHolder cast;
-    private ResultHolder similar;
+    final private String title, poster, runTime, firstDate, genres, network;
+    final private String origin, numEpisodes, numSeason, overview, status, contentRatings;
+    final private ResultHolder cast;
+    final private ResultHolder similar;
 
     // Constructor
     public TVShow(String title, String poster, String runTime, String firstDate, String genres, String network, String origin, String numEpisodes, String numSeason, String overview, String status, String contentRatings, ResultHolder cast, ResultHolder similar) {

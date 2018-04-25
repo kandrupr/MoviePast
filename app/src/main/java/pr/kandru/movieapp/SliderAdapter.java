@@ -8,7 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
+
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -16,13 +22,15 @@ import static android.view.View.VISIBLE;
  * Custom ViewPager Adapter
  */
 public class SliderAdapter extends PagerAdapter {
-    private Context context;
+    private final Context context;
     private ConstraintLayout searchBar, searchButtons;
     private TextView searchText;
     private SearchEditText inputText;
+    private AnimationSet as;
+    private TextView mainTitle;
 
-    private int[] layouts = new int[]{
-            R.layout.slide_history , R.layout.slide_main, R.layout.slide_search, R.layout.slide_main
+    private final int[] layouts = new int[]{
+            R.layout.slide_history , R.layout.slide_main, R.layout.slide_search, R.layout.slide_about
     };
 
     /**
@@ -31,6 +39,7 @@ public class SliderAdapter extends PagerAdapter {
      */
     SliderAdapter(Context context) {
         this.context = context;
+        // Animation
     }
 
     /**
@@ -45,7 +54,7 @@ public class SliderAdapter extends PagerAdapter {
     /**
      * Tells us if the current view is showing the correct object
      * @param view View being shown
-     * @param object Object The cbject being shown on view
+     * @param object Object The object being shown on view
      * @return Boolean
      */
     @Override
@@ -70,8 +79,9 @@ public class SliderAdapter extends PagerAdapter {
 
             HistoryAdapter adapter = new HistoryAdapter(context);
             historyView.setAdapter(adapter);
-        }
-        if(searchText == null && position == 2) {
+        } else if(position == 1){
+          mainTitle = view.findViewById(R.id.textCommand);
+        } else if(searchText == null && position == 2) {
             searchBar = view.findViewById(R.id.search_bar_layout);
             searchButtons = view.findViewById(R.id.search_button_layout);
             searchText = view.findViewById(R.id.textSearch);
@@ -104,6 +114,20 @@ public class SliderAdapter extends PagerAdapter {
         ((TextView)searchBar.findViewById(R.id.textType)).setText(type);
         searchBar.setVisibility(VISIBLE);
         return inputText;
+    }
+
+    void setMainTitleText(int string) {
+        if(mainTitle != null) {
+            mainTitle.setText(string);
+        }
+    }
+
+    void setAnimation() {
+        //mainTitle.setAnimation(as);
+    }
+
+    void clearAnimation() {
+        //mainTitle.clearAnimation();
     }
 
     /**

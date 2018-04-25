@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class URLBuilder {
     private static URLBuilder single_instance = null;   // Singleton instance
     private final String tmdbUrl = "https://api.themoviedb.org/3/";
-    private String apiKey;
+    private final String apiKey;
     private final String ending = "&language=en-US&page=1";
     private final HashMap<String, String> tvGenre = new HashMap<String, String>()
     {{
@@ -30,14 +30,11 @@ public class URLBuilder {
         put("TV Movie","10770"); put("Thriller","53"); put("War","10752"); put("Western","37");
     }};
 
-    private final Context c;    // Context Used to get API Key and instance
-
     /**
      * Constructor
      * @param c Application Context
      */
     private URLBuilder(Context c) {
-        this.c = c;
         this.apiKey = "?api_key=" + c.getString(R.string.TMDBAPI);
     }
 
@@ -92,7 +89,7 @@ public class URLBuilder {
                     if(desc.equals("popular"))               // That is popular
                         url += "&sort_by=popularity.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year + "-12-31&vote_count.gte=50&with_original_language=en" + ending;
                     else                                     // That is top rated by user
-                        url += "&sort_by=vote_average.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year + "-12-31&vote_count.gte=50&with_original_language=en" + ending;;
+                        url += "&sort_by=vote_average.desc&air_date.gte=" + year + "-1-1&air_date.lte=" + year + "-12-31&vote_count.gte=50&with_original_language=en" + ending;
                 } else
                     return "invalid";                       // Failed to put request together
             }
@@ -199,12 +196,17 @@ public class URLBuilder {
     public String buildFromTitle(String[] fields) {
         String url = tmdbUrl + "search/";
         if(fields.length == 2) {    // Type defined
-            if(fields[1].equals("tv"))
-                url += "tv" + apiKey + "&query=";
-            else if(fields[1].equals("movie"))
-                url += "movie" + apiKey + "&region=US&query=";
-            else
-                url += "person" + apiKey + "&region=US&query=";
+            switch (fields[1]) {
+                case "tv":
+                    url += "tv" + apiKey + "&query=";
+                    break;
+                case "movie":
+                    url += "movie" + apiKey + "&region=US&query=";
+                    break;
+                default:
+                    url += "person" + apiKey + "&region=US&query=";
+                    break;
+            }
 
         } else                      // No type defined
             url += "multi" + apiKey + "&region=US&query=";

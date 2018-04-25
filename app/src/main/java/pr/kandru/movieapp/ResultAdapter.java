@@ -19,10 +19,10 @@ import com.squareup.picasso.Picasso;
  * Class that builds into the Grid Layout in the RecyclerView in the ResultsActivity
  */
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
-    private Context context;
+    private final Context context;
     private onItemClicked onClick;
     private onItemPressed onItemPressed;
-    private ResultHolder resultHolder;
+    private final ResultHolder resultHolder;
 
     /**
      * On click, the information activity is displayed
@@ -35,7 +35,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
      * On hold, the result name is toasted
      */
     public interface onItemPressed{
-        void onItemPressed(Result result);
+        void onItemPress(Result result);
     }
 
     /**
@@ -99,7 +99,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                                 holder.image.setOnLongClickListener(new View.OnLongClickListener() {
                                     @Override
                                     public boolean onLongClick(View view) {
-                                        onItemPressed.onItemPressed(resultHolder.get(pos));
+                                        onItemPressed.onItemPress(resultHolder.get(pos));
                                         return true;
                                     }
                                 });
@@ -123,7 +123,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
                                 holder.text.setOnLongClickListener(new View.OnLongClickListener() {
                                     @Override
                                     public boolean onLongClick(View view) {
-                                        onItemPressed.onItemPressed(resultHolder.get(pos));
+                                        onItemPressed.onItemPress(resultHolder.get(pos));
                                         return true;
                                     }
                                 });
@@ -162,8 +162,8 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder> {
      * Individual Items in our RecyclerView
      */
     public static class Holder extends RecyclerView.ViewHolder {
-        ImageView image;
-        TextView text;
+        final ImageView image;
+        final TextView text;
         final ProgressBar progress;
 
         public Holder (View view) {

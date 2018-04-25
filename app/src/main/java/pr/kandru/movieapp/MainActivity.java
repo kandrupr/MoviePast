@@ -10,13 +10,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationSet;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,10 +26,12 @@ import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 import ai.api.model.Result;
 
+/**
+ * Main Activity
+ */
 public class MainActivity extends AppCompatActivity implements AIListener{
     private ViewPager slideViewPager;
     private LinearLayout dotLayout;
-    private ImageView[] dots;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
@@ -39,15 +39,15 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     private SliderAdapter mSlider;
     private AIService aiService;
-    private DialogFlowParser mParser;
-    //private String mState = "open";
-    ViewPager.OnPageChangeListener listener;
+    private AnimationSet as;
+    private ViewPager.OnPageChangeListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         slideViewPager = findViewById(R.id.slideLayout);
         dotLayout = findViewById(R.id.dotsLayout);
 
@@ -57,11 +57,9 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         createDots(1);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
+    /**
+     * Add listeners back
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -84,8 +82,13 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             public void onPageScrollStateChanged(int state) {}
         };
         slideViewPager.addOnPageChangeListener(listener);
+        mSlider.setMainTitleText(R.string.tap);
+
     }
 
+    /**
+     * Remove listeners
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -93,26 +96,36 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         slideViewPager.removeOnPageChangeListener(listener);
     }
 
-    public void scrollToProfile(View v) { slideViewPager.setCurrentItem(0); }
+    public void scrollToProfile(View view) { slideViewPager.setCurrentItem(0); }
 
-    public void scrollToSearch(View v) {
+    public void scrollToSearch(View view) {
         slideViewPager.setCurrentItem(2);
     }
 
+    /**
+     * Have device start to listen
+     * @param view Current view
+     */
     public void onStartListening(final View view) {
-        //if(mState.equals("open")) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-            }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        }
+        if(permissionToRecordAccepted) {
             aiService.startListening();
-        //}
+        } else {
+            Toast.makeText(this, "Application needs permissions", Toast.LENGTH_SHORT).show();
+        }
     }
 
+    /**
+     * Response from Dialogflow/API.AI
+     * @param response
+     */
     @Override
     public void onResult(AIResponse response) {
         Result result = response.getResult();
-        mParser = new DialogFlowParser(getApplicationContext(), result);
+        DialogFlowParser mParser = new DialogFlowParser(getApplicationContext(), result);
         String intent = result.getMetadata().getIntentName();
         String query = result.getResolvedQuery();
         String value = mParser.getURL();
@@ -126,10 +139,12 @@ public class MainActivity extends AppCompatActivity implements AIListener{
             case "fail": // TOAST FAIL
                 toast = Toast.makeText(getApplicationContext(), "Couldn't put your request together, try the typing it in!", Toast.LENGTH_LONG);
                 toast.show();
+                mSlider.setMainTitleText(R.string.tap);
                 break;
             case "invalid": // TOAST INVALID REQUEST
                 toast = Toast.makeText(getApplicationContext(), "That's an odd request. Try something else!", Toast.LENGTH_LONG);
                 toast.show();
+                mSlider.setMainTitleText(R.string.tap);
                 break;
             default:
                 Intent i = new Intent(getApplicationContext(), LoadingAPIRequest.class);
@@ -174,19 +189,19 @@ public class MainActivity extends AppCompatActivity implements AIListener{
                 permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 break;
         }
-        if (!permissionToRecordAccepted ){
-            //TODO: Toast and fix logic;
-        }
-
     }
 
+    /**
+     * Create bottom dots on the screen used for scrolling
+     * @param pos Page position in viewpager
+     */
     private void createDots(int pos) {
         int size = mSlider.getCount();
         if(dotLayout != null) {
             dotLayout.removeAllViews();
         }
 
-        dots = new ImageView[size];
+        ImageView[] dots = new ImageView[size];
         for(int i =0; i < size; i++) {
             dots[i] = new ImageView(this);
 
@@ -206,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     public void onError(AIError error) {
         Toast toast = Toast.makeText(getApplicationContext(), "Didn't quite catch that. Try again!", Toast.LENGTH_LONG);
         toast.show();
-        //mState = "open";
+        mSlider.setMainTitleText(R.string.tap);
     }
 
     @Override
@@ -216,32 +231,26 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
     @Override
     public void onListeningStarted() {
-        //mState = "listening";
-/*
-fading animation
-final Animation in = new AlphaAnimation(0.0f, 1.0f);
-in.setDuration(3000);
-
-final Animation out = new AlphaAnimation(1.0f, 0.0f);
-out.setDuration(3000);
-
-AnimationSet as = new AnimationSet(true);
-as.addAnimation(out);
-in.setStartOffset(3000);
-as.addAnimation(in);
-*/
+        //mSlider.setAnimation();
+        mSlider.setMainTitleText(R.string.listening);
     }
 
     @Override
     public void onListeningCanceled() {
-        //mState = "open";
+        //mSlider.clearAnimation();
+        mSlider.setMainTitleText(R.string.tap);
     }
 
     @Override
     public void onListeningFinished() {
-        //mState = "finished";
+        //mSlider.clearAnimation();
+        mSlider.setMainTitleText(R.string.processing);
     }
 
+    /**
+     * Handle clicking on any of the TextSearch options
+     * @param v
+     */
     public void onClickMedia(View v){
         String type = ((TextView)v).getText().toString();
         SearchEditText inputText = mSlider.setTextSearch(type);

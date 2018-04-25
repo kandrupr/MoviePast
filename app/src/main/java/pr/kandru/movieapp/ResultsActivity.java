@@ -15,11 +15,7 @@ import android.widget.Toast;
  * Activity that displays results as a grid
  */
 public class ResultsActivity extends AppCompatActivity implements ResultAdapter.onItemClicked, ResultAdapter.onItemPressed {
-    private RecyclerView resultsView;           // Main View
-    private GridLayoutManager layoutManager;
-    private String query;                       // User query
     private ResultHolder results;               // Results
-    private ResultAdapter adapter;              // RecyclerView adapter
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +25,7 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        query = intent.getStringExtra("QUERY");
+        String query = intent.getStringExtra("QUERY");
         TextView queryText = findViewById(R.id.requestText);
         queryText.setText(query.toUpperCase());
 
@@ -39,11 +35,11 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
             finish();
             Toast.makeText(this, "Couldn't get results", Toast.LENGTH_SHORT).show();
         }
-        resultsView = findViewById(R.id.resultView);
-        layoutManager = new GridLayoutManager(ResultsActivity.this, 3);
+        RecyclerView resultsView = findViewById(R.id.resultView);
+        GridLayoutManager layoutManager = new GridLayoutManager(ResultsActivity.this, 3);
         resultsView.setLayoutManager(layoutManager);
 
-        adapter = new ResultAdapter(ResultsActivity.this, results);
+        ResultAdapter adapter = new ResultAdapter(ResultsActivity.this, results);
         resultsView.setAdapter(adapter);
 
         adapter.setOnClick(this);
@@ -59,7 +55,7 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
         startActivity(intent);
     }
 
-    public void onHomeButton(View v) {
+    public void onHomeButton(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
@@ -67,7 +63,7 @@ public class ResultsActivity extends AppCompatActivity implements ResultAdapter.
     }
 
     @Override
-    public void onItemPressed(Result result) {
+    public void onItemPress(Result result) {
         Toast toast = Toast.makeText(getApplicationContext(), result.getName(), Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL,0,0);
         toast.show();

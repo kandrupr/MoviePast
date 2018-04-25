@@ -7,10 +7,10 @@ package pr.kandru.movieapp;
  * Similar is a ResultHolder holding Name,ID,and poster URL to a similar movie
  */
 public class Movie extends InfoOverview {
-    private String title, poster, rating, mpaa, runtime, releaseDate;
-    private String overview, genres;
-    private ResultHolder cast;
-    private ResultHolder similar;
+    final private String title, poster, rating, mpaa, runtime, releaseDate;
+    final private String overview, genres;
+    final private ResultHolder cast;
+    final private ResultHolder similar;
 
     public Movie(String title, String poster, String rating, String mpaa, String runtime, String releaseDate, String overview, String genres, ResultHolder cast, ResultHolder similar) {
         this.title = title;

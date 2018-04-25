@@ -10,7 +10,7 @@ import com.squareup.leakcanary.RefWatcher;
  * Leak Canary class to look for memory leaks
  */
 public class ExampleApplication extends Application {
-    public static ExampleApplication instance;
+    private static ExampleApplication instance ;
     private RefWatcher refWatcher;
 
     @Override

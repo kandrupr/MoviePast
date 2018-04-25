@@ -11,7 +11,7 @@ import com.android.volley.toolbox.Volley;
 public class Singleton {
     private static Singleton mInstance;
     private RequestQueue mRequestQueue;
-    private static Context mCtx;
+    private final Context mCtx;
 
     private Singleton(Context context) {
         mCtx = context;
@@ -34,7 +34,7 @@ public class Singleton {
      * Returns instance of Request Queue
      * @return Return if available or create new instance
      */
-    public RequestQueue getRequestQueue() {
+    private RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
         }
@@ -44,7 +44,7 @@ public class Singleton {
     /**
      * Add a request
      * @param req Add the URL of a request
-     * @param <T>
+     * @param <T> RequestQueue
      */
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);

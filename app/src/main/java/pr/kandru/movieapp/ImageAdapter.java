@@ -20,8 +20,8 @@ import java.util.List;
  * Adapter for Image item in an Actor RequestType in InfoActivity
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
-    private Context context;
-    private List<String> images;
+    private final Context context;
+    private final List<String> images;
     private onItemClicked onClick;
 
     /**
@@ -115,7 +115,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
     }
 
     /**
-     * Set Adapater to recognize onClick event
+     * Set Adapter to recognize onClick event
      * @param onClick On Click Item
      */
     public void setOnClick(onItemClicked onClick) {
@@ -127,8 +127,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
      * Individual Items in our RecyclerView
      */
     public static class Holder extends RecyclerView.ViewHolder {
-        ImageView image;
-        TextView text;
+        final ImageView image;
+        final TextView text;
         final ProgressBar progress; // A progress spinner
 
         public Holder (View view) {

@@ -6,11 +6,11 @@ import java.io.Serializable;
  * Class is a container for a valid result from an TMDB search
  */
 public class Result implements Serializable {
-    private RequestType type;       /// Actor, Movie, TV Show
-    private String name, id, poster; /// Title/Name, TMDB ID, Poster URL
+    final private RequestType type;       /// Actor, Movie, TV Show
+    final private String name, id, poster; /// Title/Name, TMDB ID, Poster URL
 
     /**
-     * Constrcutor
+     * Constructor
      * @param type Actor, Movie, TV Show
      * @param name Title/Name
      * @param id TMDB ID

@@ -1,7 +1,6 @@
 package pr.kandru.movieapp;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,9 +11,9 @@ import ai.api.model.Result;
  * Class that processes the language from DialogFlow/API.AI result
  */
 public class DialogFlowParser {
-    private Result json;    /// DialogFlow result
-    private Context c;
-    private String intent;  /// The type of request DialogFlow thinks it is
+    private final Result json;    /// DialogFlow result
+    private final Context c;
+    private final String intent;  /// The type of request DialogFlow thinks it is
 
     /**
      * Constructor
@@ -114,7 +113,7 @@ public class DialogFlowParser {
     /**
      * Parses the title from an inner object of the param
      * @param title Title of a TV Show or Movie Series
-     * @return
+     * @return String Title
      */
     private String getTitle(JsonElement title) {
         if(title.isJsonObject()){
@@ -159,7 +158,7 @@ public class DialogFlowParser {
      * @param builder Our URL Builder
      * @return A valid TMDB Actor URL
      */
-    public String personURL(String name, URLBuilder builder) {
+    private String personURL(String name, URLBuilder builder) {
         String result;
         if(!name.equals("fail"))
             result = builder.buildFromPerson(name);

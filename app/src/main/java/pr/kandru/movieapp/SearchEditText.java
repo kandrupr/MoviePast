@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -19,8 +18,8 @@ public class SearchEditText extends android.support.v7.widget.AppCompatEditText 
     private ConstraintLayout searchBar, searchButtons;  // Different layouts on the layout that has the EditText
     private TextView searchText;
     private SearchEditText inputText;
-    private Context context;
-    private InputMethodManager imm; // Text Input Manager
+    private final Context context;
+    private final InputMethodManager imm; // Text Input Manager
 
     /**
      * Constructor

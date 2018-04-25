@@ -25,7 +25,7 @@ public class LoadingAPIRequest extends AppCompatActivity {
     private String intentName;
     private String query;
     private String form;
-    private BuildResult buildResult = new BuildResult();
+    private final BuildResult buildResult = new BuildResult();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

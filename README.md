@@ -18,7 +18,8 @@ Will need an API Key from TMDB. You can get one from signing up [here.](https://
 Put your key into a resource file and name it "TMDBAPI".
 
 ### Walkthrough
-<img src="0.jpg" alt="app/src/main/assets/screenshots/0.png" style="width: 200px;"/>
+
+![alttext](app/src/main/assets/screenshots/0.png =100x20 "Home Page")
 
 ### Basic commands
 ```

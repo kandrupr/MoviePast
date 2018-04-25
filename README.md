@@ -17,10 +17,6 @@ A few of the important ones
 Will need an API Key from TMDB. You can get one from signing up [here.](https://www.themoviedb.org/account/signup)
 Put your key into a resource file and name it "TMDBAPI".
 
-### Walkthrough
-
-![alttext](app/src/main/assets/screenshots/0.png | width=100)
-
 ### Basic commands
 ```
 Upcoming movies
@@ -33,6 +29,32 @@ Best comedies
 - Most movies
 - Most tv shows
 ```
+
+### Walkthrough
+Press the popcorn button to start listening. Start speaking when the page notifys you that it is "Listening...".
+<p>
+  <img width="200" height="400" alt="Home Page" src="app/src/main/assets/screenshots/0.png"> 
+  <img width="200" height="400" alt="Home Page" src="app/src/main/assets/screenshots/2.png">
+</p>
+
+It will the load results. Where you can select on one of the items to load its description...
+<p>
+  <img width="200" height="400" alt="Home Page" src="app/src/main/assets/screenshots/3.png">
+  <img width="200" height="400" alt="Home Page" src="app/src/main/assets/screenshots/4.png"> 
+</p>
+
+On the description page, you can click on cast, similar movies, and similar tv shows to show their description or click on image to get a blown up image.
+<p>
+  <img width="200" height="400" alt="Home Page" src="app/src/main/assets/screenshots/5.png">
+  <img width="200" height="400" alt="Home Page" src="app/src/main/assets/screenshots/6.png"> 
+</p>
+
+If the speech model can't understand what you are saying or can't find results on something, you can try a text request.
+<p>
+  <img width="200" height="400" alt="Home Page" src="app/src/main/assets/screenshots/1.png">
+  <img width="200" height="400" alt="Home Page" src="app/src/main/assets/screenshots/7.png"> 
+</p>
+
 ### What's left
 * Refine Speeh model
 * First and Last pages on Main Activity

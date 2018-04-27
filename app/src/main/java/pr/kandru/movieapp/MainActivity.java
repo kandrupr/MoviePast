@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        } else {
+            permissionToRecordAccepted = true;
         }
         if(permissionToRecordAccepted) {
             aiService.startListening();

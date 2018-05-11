@@ -56,7 +56,7 @@ If the speech model can't understand what you are saying or can't find results o
 </p>
 
 ### What's left
-* Refine Speeh model
+* Refine Speech model
 * First and Last pages on Main Activity
 * Help Button
 ### License

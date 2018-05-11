@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MovieApp</string>
+    <string name="app_name">Movie Past</string>
     <string name="voice_button">PopcornButton</string>
     <string name="account_button">Profile</string>
     <string name="search_button">Search</string>

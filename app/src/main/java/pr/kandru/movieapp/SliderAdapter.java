@@ -8,11 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import static android.view.View.INVISIBLE;
@@ -30,7 +26,7 @@ public class SliderAdapter extends PagerAdapter {
     private TextView mainTitle;
 
     private final int[] layouts = new int[]{
-            R.layout.slide_history , R.layout.slide_main, R.layout.slide_search, R.layout.slide_about
+            /*R.layout.slide_history,*/ R.layout.slide_main, R.layout.slide_search, R.layout.slide_about
     };
 
     /**
@@ -70,18 +66,20 @@ public class SliderAdapter extends PagerAdapter {
      */
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
+        System.out.println("INSTANITATE");
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(layouts[position], container, false);
         if(position == 0) {
-            RecyclerView historyView = view.findViewById(R.id.historyView);
-            GridLayoutManager layoutManager = new GridLayoutManager(context, 3);
-            historyView.setLayoutManager(layoutManager);
-
-            HistoryAdapter adapter = new HistoryAdapter(context);
-            historyView.setAdapter(adapter);
-        } else if(position == 1){
-          mainTitle = view.findViewById(R.id.textCommand);
-        } else if(searchText == null && position == 2) {
+//            RecyclerView historyView = view.findViewById(R.id.historyView);
+//            GridLayoutManager layoutManager = new GridLayoutManager(context, 3);
+//            historyView.setLayoutManager(layoutManager);
+//
+//            HistoryAdapter adapter = new HistoryAdapter(context);
+//            historyView.setAdapter(adapter);
+            mainTitle = view.findViewById(R.id.textCommand);
+//        } else if(position == 1){
+//          mainTitle = view.findViewById(R.id.textCommand);
+        } else if(searchText == null && position == 1) {
             searchBar = view.findViewById(R.id.search_bar_layout);
             searchButtons = view.findViewById(R.id.search_button_layout);
             searchText = view.findViewById(R.id.textSearch);
@@ -113,6 +111,9 @@ public class SliderAdapter extends PagerAdapter {
         searchText.setVisibility(INVISIBLE);
         ((TextView)searchBar.findViewById(R.id.textType)).setText(type);
         searchBar.setVisibility(VISIBLE);
+        searchButtons.invalidate();
+        searchText.invalidate();
+        searchBar.invalidate();
         return inputText;
     }
 

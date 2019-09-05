@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements AIListener{
 
         mSlider = new SliderAdapter(this);
         slideViewPager.setAdapter(mSlider);
-        slideViewPager.setCurrentItem(1);
-        createDots(1);
+        slideViewPager.setCurrentItem(0);
+        createDots(0);
     }
 
     /**
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     public void scrollToProfile(View view) { slideViewPager.setCurrentItem(0); }
 
     public void scrollToSearch(View view) {
-        slideViewPager.setCurrentItem(2);
+        slideViewPager.setCurrentItem(1);
     }
 
     /**
@@ -256,7 +256,8 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     public void onClickMedia(View v){
         String type = ((TextView)v).getText().toString();
         SearchEditText inputText = mSlider.setTextSearch(type);
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputText.postInvalidate();
+        InputMethodManager imm = this.getSystemService(InputMethodManager.class);
         if(imm != null) {
             imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
         }

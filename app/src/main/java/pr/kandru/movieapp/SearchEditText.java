@@ -1,5 +1,6 @@
 package pr.kandru.movieapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * A Custom EditText class to handle user interactions with an EditText
@@ -29,7 +29,7 @@ public class SearchEditText extends android.support.v7.widget.AppCompatEditText 
     public SearchEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context.getApplicationContext();
-        imm = (InputMethodManager) this.context.getSystemService(INPUT_METHOD_SERVICE);
+        imm = this.context.getSystemService(InputMethodManager.class);
     }
 
     /**
@@ -75,9 +75,9 @@ public class SearchEditText extends android.support.v7.widget.AppCompatEditText 
                 searchText.setVisibility(VISIBLE);
                 searchBar.setVisibility(INVISIBLE);
                 inputText.setText("");
-
+//
                 if(imm != null)     // Hide keyboard
-                    imm.hideSoftInputFromWindow(getWindowToken(), 0);
+                    imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
 
                 // Get text input and build URL
                 final String type = ((TextView)searchBar.findViewById(R.id.textType)).getText().toString().toLowerCase();
@@ -89,6 +89,7 @@ public class SearchEditText extends android.support.v7.widget.AppCompatEditText 
                 intent.putExtra("QUERY", input);
                 intent.putExtra("URL", url);
                 intent.putExtra("TYPE", type);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 context.startActivity(intent);
             }
